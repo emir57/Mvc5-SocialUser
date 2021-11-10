@@ -1,0 +1,171 @@
+﻿@model SocialUser.Models.GetChatViewModel
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "GetChatView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Styles.Render("~/Content/chat.css")
+@Styles.Render("~/Content/local.css")
+@Scripts.Render("~/Scripts/jquery-2.2.4.js")
+
+<div id="leftBar" class="d-block">
+    <div class="user">
+        <div><img class="profilePhoto" id="img" src="@ViewBag.userid1ProfilePhoto" /> <b class="UserName">@ViewBag.userid1userName</b><div id="bgHover" class="" style="width:70px;height:70px;border-radius:50%;position:absolute;top:20px;display:none;background-color:RGBA(0,0,0,0.3);"><a title="profil fotoğrafını güncelle" href="@Url.Action("SetProfilePhoto","Manage")"><i style="position:absolute;left:30px;top:30px;color:white;" class="far fa-edit fx-3x"></i></a></div> </div>
+    </div>
+    <script>
+        var img = document.getElementById("img");
+        var hover = document.getElementById("bgHover")
+        img.addEventListener("mouseover", function () {
+            hover.style.display = "block";
+
+        })
+        hover.addEventListener("mouseout", function () {
+            hover.style.display = "none";
+        })
+
+    </script>
+    @*<div class="user">
+            <img class="profilePhoto" src="@ViewBag.userid1ProfilePhoto" /> <b class="UserName">@ViewBag.userid1ProfilePhoto</b>
+        </div>*@
+
+    <div id="messageUsers">
+        <div class="user2">
+            <img class="profilePhoto" src="@ViewBag.userid2ProfilePhoto" /> <b class="UserName">@ViewBag.userid2userName</b>
+        </div>
+    </div>
+
+    <div class="bottom-button">
+        @Html.ActionLink("Geri Dön", "Index", new { user1 = Model.userid1, user2 = Model.userid2 }, new { id = "back", @class = "btn btn-danger" })
+    </div>
+</div>
+<div id="rightBar" class="d-block">
+    <div id="messages">
+
+
+
+    </div>
+    <div id="errorMessage">
+
+    </div>
+
+
+    <div id="messageBar" class="input-group">
+        <div id="messageBox">
+            <button id="close" class="append"><i class="fas fa-times"></i></button>
+            @Html.TextArea("text", "", new { id = "text", rows = "2", cols = "10", @class = "form-control text", placeholder = "Bir şeyler yaz.." })
+            @*<textarea name="text" class="form-control text" id="text" rows="2" placeholder="Bir şeyler yaz.."></textarea>*@
+            <button id="send" class=""><i class="fas fa-paper-plane"></i></button>
+
+
+            <script>
+            $(document).ready(function () {
+                var sendBtn = $("#send");
+                var text = $("#text");
+                var message = $("#errorMessage");
+                var closeBtn = $("#close");
+                message.hide();
+                closeBtn.hide();
+
+                text.keyup(function () {
+                    if (text.val().length >= 5) {
+                        closeBtn.fadeIn().show();
+                    } else if (text.val().length<5) {
+                        closeBtn.fadeOut("slow").hide();
+                    }
+                })
+                closeBtn.click(function () {
+                    text.val("");
+                    closeBtn.fadeOut("slow").hide();
+                    text.focus();
+                })
+
+                //btn click send
+                sendBtn.click(function () {
+                    if (text.val() == "") {
+                        showDiv("Yorum Boş olamaz");
+                    } else if (text.val().length > 150) {
+                        showDiv("Karakter Sınırı aşıldı.");
+                    }else {
+                        send();
+                    }
+
+                })
+                //key press enter send
+                text.keypress(function (event) {
+                    if (event.keyCode == 13) {
+                        if (event.shiftKey) { }
+                        else {
+                            if (text.val() == "") {
+                                showDiv("Yorum Boş olamaz");
+                            } else if (text.val().length > 150) {
+                                showDiv("Karakter Sınırı aşıldı.");
+                            } else {
+                                send();
+                            }
+                        }
+                    }if (event.keyCode == 27) {
+                        text.val("");
+                    }
+                })
+                text.key
+                //send method
+                function send() {
+                        $.ajax({
+                            url: "/Chat/ChatDo",
+                            type: "POST",
+                            data: { user1: '@User.Identity.GetUserId()', user2: '@Model.userid2', text: text.val() },
+                            dataType: "json",
+                            success: function () { }
+                        })
+                    text.val("");
+                    text.focusin();
+
+                }
+                //show and hide errormessage
+                function showDiv(msg) {
+                    message.empty().append(msg).fadeToggle().delay(1500).fadeToggle();
+                }
+            })
+            </script>
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    @Scripts.Render("~/Scripts/jquery.signalR-2.4.2.js")
+    @Scripts.Render("~/signalr/hubs")
+    <script>
+        $(function () {
+                                var hub = $.connection.sampleHub;
+                                var currentId = "@User.Identity.GetUserId()";
+                                var messageDiv = $("#messages");
+
+                                $.connection.hub.start().done(function () {
+                                    getChat();
+                                })
+                                hub.client.refreshChatData = function (currentUserId, userId) {
+                                    getChat();
+            }
+                                function getChat() {
+                                $.ajax({
+                                    url: "/Chat/LoadChatMessage",
+                                    type: "GET",
+                                    data: { user1: '@User.Identity.GetUserId()', user2: '@Model.userid2' },
+                                    success: function (result) {
+                                        messageDiv.empty().append(result);
+                                    }
+                                })
+                            }
+
+                            })
+
+    </script>
+
+}
+
+
+
+

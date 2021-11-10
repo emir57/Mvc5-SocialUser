@@ -1,0 +1,102 @@
+﻿@model SocialUser.Models.GetChatViewModel
+@using Microsoft.AspNet.Identity
+@using SocialUser.Models
+
+@Scripts.Render("~/Scripts/jquery-2.2.4.js")
+
+<div class="user">
+    <div><img class="profilePhoto" id="img" src="@Model.currentUser.profilePhoto" /> <b class="UserName">@Model.currentUser.UserName</b><div id="bgHover" class="" style="width:70px;height:70px;border-radius:50%;position:absolute;top:20px;display:none;background-color:RGBA(0,0,0,0.3);"><a title="profil fotoğrafını güncelle" href="@Url.Action("SetProfilePhoto","Manage")"><i style="position:absolute;left:30px;top:30px;color:white;" class="far fa-edit fx-3x"></i></a></div> </div>
+</div>
+<script>
+    var img = document.getElementById("img");
+    var hover = document.getElementById("bgHover")
+    img.addEventListener("mouseover", function () {
+        hover.style.display = "block";
+
+    })
+    hover.addEventListener("mouseout", function () {
+        hover.style.display = "none";
+    })
+    
+</script>
+
+<div id="messageUsers">
+    @foreach (var friends in Model.friends)
+    {
+        if (friends.Check == false) { continue; }
+        foreach (var user in Model.users)
+        {
+            if (friends.UserId1 == User.Identity.GetUserId())
+            {
+                if (friends.UserId2 == user.Id && friends.UserId1 == User.Identity.GetUserId())
+                {
+                    <div class="messageUser" id="@(user.Id)">
+                        <img class="profilePhoto" src="@user.profilePhoto" /> <b class="UserName">@user.UserName</b>@Html.ActionLink("Mesajlaş", "GetChatView", new { user1 = User.Identity.GetUserId(), user2 = user.Id }, new { @class = "btn btn-info MsgBtn" })
+                    </div>
+
+                    <script>
+                            $(function () {
+
+                            var userBtn = $("#@user.Id");
+                                 var messageDiv = $("#messages");
+                                 userBtn.click(function (){
+                                     $.ajax({
+                                         url: "/Chat/GetChatView",
+                                         type: "POST",
+                                         data: { user1: '@User.Identity.GetUserId()', user2: '@user.Id' },
+                                         success: function () {}
+                                     })
+                                 })
+
+                                 })
+                    </script>
+
+                }
+            }
+            else if (friends.UserId2 == User.Identity.GetUserId())
+            {
+                if (friends.UserId1 == user.Id && friends.UserId2 == User.Identity.GetUserId())
+                {
+                    <div class="messageUser" id="@(user.Id)">
+                        <img class="profilePhoto" src="@user.profilePhoto" /> <b class="UserName">@user.UserName</b>@Html.ActionLink("Mesajlaş", "GetChatView", new { user1 = User.Identity.GetUserId(), user2 = user.Id }, new { @class = "btn btn-info MsgBtn" })
+                    </div>
+                    <script>
+                            $(function () {
+                            var userBtn = $("#@user.Id");
+                                 var messageDiv = $("#messages");
+                                 userBtn.click(function (){
+                                     $.ajax({
+                                         url: "/Chat/GetChatView",
+                                         type: "POST",
+                                         data: { user1: '@User.Identity.GetUserId()', user2: '@user.Id' },
+                                         success: function () {}
+                                     })
+                                 })
+
+                                 })
+                    </script>
+                }
+            }
+
+        }
+    }
+
+    @foreach (var memberGroups in Model.members)
+    {
+        foreach (var group in Model.groups)
+        {
+            if (memberGroups.GroupId == group.GroupId && memberGroups.UserId== User.Identity.GetUserId())
+            {
+                <div class="messageUser" id="@(group.GroupId)">
+                    <b class="UserName">@group.GroupName<span class="text-success"> (GRUP)</span></b> @Html.ActionLink("Mesajlaş", "GetGroupView", new { groupId = group.GroupId }, new { @class = "btn btn-info MsgBtn" })
+                </div>
+                
+            }
+        }
+
+
+
+    }
+
+</div>
+

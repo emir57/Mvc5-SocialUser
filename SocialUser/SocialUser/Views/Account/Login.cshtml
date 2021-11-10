@@ -1,0 +1,46 @@
+﻿@using SocialUser.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Oturum aç";
+}
+@Styles.Render("~/Content/login.css")
+
+<div class="jumbotron justify-content">
+    <div class="row">
+        <div class="col-lg-4">
+            <h3 class="display-3">Giriş Yap</h3>
+            <hr class="hover" />
+            @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-group" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                @Html.LabelFor(a => a.UserName)<br />
+                @Html.ValidationMessageFor(a => a.UserName, "", new { @class = "text-danger" })
+
+                @Html.TextBox("userName", "", new { @class = "form-control" })
+
+                @Html.LabelFor(a => a.Password)<br />
+                @Html.ValidationMessageFor(a => a.Password, "", new { @class = "text-danger" })
+
+                @Html.TextBox("password", "", new { @class = "form-control", type = "password" })
+
+                <input type="submit" value="Giriş Yap" class="btn btn-primary" />
+
+                <p class="text-danger">
+                    @ViewBag.state
+                </p>
+            }
+        </div>
+        <div class="col-lg-8">
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

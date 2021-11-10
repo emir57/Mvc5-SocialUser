@@ -1,0 +1,213 @@
+﻿@model SocialUser.Models.IndexViewModel
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Yönet";
+}
+@*@Styles.Render("~/Content/local.css")*@
+@Styles.Render("~/Content/manageIndex.css")
+<div>
+    <b style="position:absolute;margin-top:35px;margin-left:75px;">@User.Identity.GetUserName()</b>
+</div>
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div>
+    <img class="profilePhotoMain" src="@ViewData["photoUrl"]" />
+    <h4>Hesap ayarlarınızı değiştirin</h4>
+    <a href="@Url.Action("UserProfile","Home",new { id=User.Identity.GetUserId() })" class="btn btn-primary">Profilime Git</a>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Parola:</dt>
+        <dd>
+            [
+            @if (Model.HasPassword)
+            {
+                @Html.ActionLink("Parolanızı değiştirin", "ChangePassword")
+            }
+            else
+            {
+                @Html.ActionLink("Oluştur", "SetPassword")
+            }
+            ]
+        </dd>
+        <dt>Profil Fotoğrafınızı Düzenleyin:</dt>
+        <dd>
+            [@Html.ActionLink("Fotoğraf Yükle", "SetProfilePhoto")]
+        </dd>
+        <dt>Profil Açıklamanızı Düzenleyin:</dt>
+        <dd>
+            @Html.TextBox("description", @ViewData["description"], new { id="description", @class="form-control",style="float:left;",placeHolder="profil açıklamanızı giriniz." })<a id="setBtn" style="float:left;" class="btn btn-primary">Kaydet</a><div class="text-success" id="statusDivSucc" style="float:left;margin-left:5px;"></div><div class="text-danger" id="statusDivErr" style="float: left; margin-left: 5px;"></div>
+        </dd>
+        <dt>Dış Oturum Açmalar:</dt>
+        <script>
+            $(document).ready(function () {
+                var btn = $("#setBtn");
+                
+                var statusDivSucc = $("#statusDivSucc");
+                btn.click(function () {
+                    var description = $("#description");
+                    statusDivSucc.empty();
+                    $.ajax({
+                        url: "/Manage/SetProfileDescription",
+                        type: "POST",
+                        data: { description: description.val() },
+                        dataType: "json",
+                        success: function () { location.reload(); }
+                    })
+                    statusDivSucc.append("Başarıyla Kaydedildi!");
+                })
+            })
+        </script>
+        @*
+        Telefon Numaraları, iki öğeli kimlik doğrulama sisteminde ikinci öğe olarak kullanılabilir.
+
+         Bu ASP.NET uygulamasını SMS kullanarak iki öğeli kimlik doğrulamayı destekleyecek şekilde
+                    ayarlama konusunda ayrıntılı bilgi için <a href="https://go.microsoft.com/fwlink/?LinkId=403804">bu makaleye</a> bakın.
+
+         İki öğeli kimlik doğrulamayı ayarladıktan sonra aşağıdaki blokları açıklama durumundan çıkarın
+        *@
+        @*
+        <dt>Telefon Numarası:</dt>
+        <dd>
+            @(Model.PhoneNumber ?? "Yok")
+            @if (Model.PhoneNumber != null)
+            {
+                <br />
+                <text>[&nbsp;&nbsp;@Html.ActionLink("Değiştir", "AddPhoneNumber")&nbsp;&nbsp;]</text>
+                using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <text>[<input type="submit" value="Kaldır" class="btn-link" />]</text>
+                }
+            }
+            else
+            {
+                <text>[&nbsp;&nbsp;@Html.ActionLink("Ekle", "AddPhoneNumber")
+            }
+        </dd>
+        *@
+        @*<dt>İki Öğeli Kimlik Doğrulama:</dt>
+        <dd>
+            <p>
+                Yapılandırılmış iki öğeli kimlik doğrulama sağlayıcısı yok. Bu ASP.NET uygulamasını iki öğeli kimlik doğrulamayı destekleyecek şekilde ayarlama
+                konusunda ayrıntılı bilgi için <a href="https://go.microsoft.com/fwlink/?LinkId=403804">bu makaleye</a>bakın.
+            </p>*@
+        @*@if (Model.TwoFactor)
+            {
+                using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <text>Etkin
+                    <input type="submit" value="Devre Dışı Bırak" class="btn btn-link" />
+                    </text>
+                }
+            }
+            else
+            {
+                using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <text>Devre dışı
+                    <input type="submit" value="Etkinleştir" class="btn btn-link" />
+                    </text>
+                }
+            }
+        </dd>*@
+    </dl>
+
+    <div class="jumbotron">
+        <h3 class="text-info">Arkadaşlık İsteği Gönder</h3>
+        @*@Html.TextBox("username", "", new { id = "usernameText", @class = "form-control", placeHolder = "Kullanıcı Adı Giriniz." })*@
+        <select class="form-control" id="usernameText">
+            <option value="" selected>Kullanıcı Adı Seçiniz.</option>
+            @foreach (var item in Model.users)
+            {
+                if (item.Id == User.Identity.GetUserId())
+                {
+                    continue;
+                }
+                <option value="@item.UserName">@item.UserName</option>
+            }
+        </select>
+        <button id="send" class="btn btn-primary">Arkadaşlık İsteğini Gönder</button>
+
+        <div id="divsucc" class="text-success">
+
+        </div>
+        <div id="diverr" class="text-danger">
+
+        </div>
+
+        @Scripts.Render("~/Scripts/jquery-2.2.4.js")
+        <script>
+            $(document).ready(function () {
+                var text = $("#usernameText");
+                var btn = $("#send");
+                var diverr = $("#diverr");
+                var divsucc = $("#divsucc");
+
+
+                btn.click(function () {
+                    diverr.empty().append("");
+                    divsucc.empty().append("");
+                    console.log(text.val())
+                    if (text.val() != "") {
+                        $.ajax({
+                            url: "Manage/Send",
+                            type: "POST",
+                            data: { username: text.val() },
+                            dataType: "json",
+                            success: function () {
+                            },
+                            error: function () {
+                            },
+                            complete: function () {
+                                divsucc.empty().append("Başarıyla Arkadaşlık isteği Gönderildi");
+                            }
+                        })
+                    } else {
+                        diverr.empty().append("Lütfen Kullanıcı adı seçiniz.");
+                    }
+                })
+            })
+        </script>
+    </div>
+
+    <div class="jumbotron" id="getList">
+
+    </div>
+
+</div>
+@section scripts{
+    @Scripts.Render("~/Scripts/jquery.signalR-2.4.2.js")
+    @Scripts.Render("~/signalr/hubs")
+    <script>
+    $(document).ready(function () {
+        var hub = $.connection.sampleHub;
+        var div = $("#getList");
+        var currentId = "@User.Identity.GetUserId()";
+
+        $.connection.hub.start().done(function () {
+            GetAll();
+        })
+
+        hub.client.refreshFriendData = function (user1, user2) {
+            if (user1 == currentId || user2 == currentId) {
+                GetAll();
+            }
+
+        }
+        function GetAll() {
+            $.ajax({
+                url: "Manage/GetFriendList",
+                type: "GET",
+                data: "application/html; charset=utf-8",
+                dataType: "html",
+                success: function (result) {
+                    div.empty().append(result);
+                }
+            })
+        }
+    })
+    </script>
+}
+

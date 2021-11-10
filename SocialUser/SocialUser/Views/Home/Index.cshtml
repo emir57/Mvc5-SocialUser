@@ -1,0 +1,135 @@
+﻿@model List<EntityLayer.Concrete.Post>
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Ana Sayfa";
+}
+@Styles.Render("~/Content/mainpage.css")
+
+<div class="containerMain">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="topShare">
+            @using (Html.BeginForm("PostAdd", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "form" }))
+            {
+                <div class="shareMain">
+                    @Html.TextArea("description", "", new { id = "description", name = "description", rows = "4", placeholder = "Bir Şeyler Paylaş", @class = "form-control description" })
+                    @Html.AntiForgeryToken()
+                    <div class="shareBottom">
+                        <div class="pictureInput bottom-item">
+                            <label class="pictureLabel" for="picture"><i class="attach fas fa-paperclip fa-2x"></i><span class="upload">Resim</span></label>
+                            <input name="picture" accept="image/png , image/jpeg , image/gif" id="picture" type="file" class="" style="display:none;" />
+                        </div>
+                        <div class="bottom-btn">
+                            @*<input value="paylaş" id="submit" type="submit" class="shareBtn btn btn-info" />*@
+                            <button id="submit" class="shareBtn bottom-btn btn btn-info">Paylaş</button>
+                        </div>
+                    </div>
+                    <div class="text-danger" id="errorDiv" style="text-align:center">
+
+                    </div>
+                </div>
+                <script>
+                    
+
+                    $(document).ready(function () {
+                        var btn = $("#submit");
+                        var message = $("#description");
+                        var picture = $('input[type="file"]');
+                        var errorDiv = $("#errorDiv");
+                        btn.click(function () {
+                            errorDiv.empty();
+                            if ((message.val() == "" || message.val().trim().length < 1) && (picture.val() == "" || picture.val().trim().length < 1)) {
+                                errorDiv.append("açıklama giriniz veya fotoğraf yükleyiniz.")
+                                return false;
+                            } else {
+                                $.ajax({
+                                    url: "/Home/PostAdd",
+                                    type: "POST",
+                                    data: new FormData($("form")[0]),
+                                    xhr: function () {
+                                        var xhR = $.ajaxSettings.xhr();
+                                        return xhR;
+                                    },
+                                    success: function () { }
+                                })
+                            }
+                            
+                        })
+                    })
+                </script>
+            }
+        </div>
+    }
+
+
+
+    <div id="load-div">
+        <div id="load" class="spinner-border text-info justify-content-center" role="status">
+            <span class="visually-hidden"></span>
+        </div>
+    </div>
+    <div class="containerFlow" id="containerFlow">
+
+
+    </div>
+</div>
+
+
+@section scripts{
+    @Scripts.Render("~/Scripts/jquery.signalR-2.4.2.js")
+    @Scripts.Render("~/signalr/hubs")
+    <script type="text/javascript">
+        $(function () {
+            
+            var hubNotify = $.connection.sampleHub;
+            $.connection.hub.start().done(function () {
+                getAll();
+            })
+            hubNotify.client.refreshPostData = function () {
+                getAll();
+            };
+        
+            function getAll() {
+                //check path
+                var path = window.location.pathname;
+                var url = "";
+                if (path == "/") {
+                    url = "Home/GetPosts";
+                } else {
+                    url = "GetPosts"
+                }
+                //**
+                var model = $("#containerFlow");
+                
+                $("#load").fadeIn().show();
+                setTimeout(function () {
+                    $.ajax({
+                        url: url,
+                        contentType: "application/html; charset=utf-8",
+                        type: "GET",
+                        dataType: "html",
+                        beforeSend: function () {
+                        },
+                        success: function (result) {
+                            $("#load").fadeOut(500);
+                            model.empty().append(result);
+                        }
+                    })
+                },100)
+                
+            }
+
+            
+
+        });
+        
+
+
+
+    </script>
+
+
+}
+
+
+

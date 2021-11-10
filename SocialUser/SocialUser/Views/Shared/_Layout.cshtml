@@ -1,0 +1,172 @@
+﻿@using Microsoft.AspNet.Identity
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100&display=swap" rel="stylesheet">
+    <title>@ViewBag.Title - SocialUser</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/navbar.css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/Scripts/jquery-2.2.4.js")
+
+</head>
+<body>
+    <div class="navbar navbar-bg navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"><i class="menuIcon fas fa-bars fa-lg"></i></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("SocialUser", "Index", "Home", new { area = "" }, new { @class = "navbar-brand navbar-item" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        @Html.ActionLink("Mesajlarım", "Index", "Chat", new { id = User.Identity.GetUserId() }, new { @class = "navbar-item" })
+                    </li>
+                    <li>
+                        @Html.TextBox("search", "", new { id = "search", @class = "form-control", style = "height:50px;color:black;", placeHolder = "Kullanıcı Ara" })
+                        <div id="searchUserDiv" style="display:none;">
+                            
+                        </div>
+                    </li>
+                </ul>
+                <script>
+                    var searchBox = $("#search");
+                    var div = $("#searchUserDiv");
+                    $("#searchUserDiv").hide();
+                    $("#searchUserDiv").empty()
+                    searchBox.keyup(function () {
+                        if (searchBox.val().length > 1 && searchBox.val()!="") {
+                            setTimeout(function () {
+                                $.ajax({
+                                    url: "/Home/GetUsers",
+                                    type: "GET",
+                                    data: { searchKey: searchBox.val() },
+                                    dataType: "html",
+                                    success: function (result) {
+                                        $("#searchUserDiv").empty().append(result);
+                                        $("#searchUserDiv").slideDown(500).show();
+                                    }
+                                })
+                            }, 100)
+                        }
+                        if (searchBox.val() == "") {
+                            $("#searchUserDiv").slideUp();
+                        }
+                        
+                    })
+                </script>
+                @if (Request.IsAuthenticated)
+                {
+                    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                    {
+
+                        @Html.AntiForgeryToken()
+                        <ul class="nav navbar-nav navbar-item login navbar-right">
+
+                            <li>
+
+                                @*@Html.ActionLink("Merhaba " + User.Identity.GetUserName() + "!",, routeValues: null, htmlAttributes: new {id="notification" @class="navbar-item",title = "Bildirimler" })*@
+                                <a class="navbar-item" id="notificationBtn">Merhaba @(User.Identity.GetUserName())!</a>
+                                <div id="notificationDiv">
+                                    <ul id="notifUl">
+                                        <li>
+                                            <img class="notifProfile" src="../../Content/profilePhoto/6c11ba14-656e-4d94-aa89-e8dd34a827d9.jpg" /> <b>deneme</b> <br /> gönderinizi beğendi.<a class="deleteNotifBtn"><i class="fas fa-minus fa-lg"></i></a>
+                                        </li>
+                                        <li>
+                                            <img class="notifProfile" src="../../Content/profilePhoto/6c11ba14-656e-4d94-aa89-e8dd34a827d9.jpg" /> <b>deneme</b> <br /> gönderinizi beğendi.<a class="deleteNotifBtn"><i class="fas fa-minus fa-lg"></i></a>
+                                        </li>
+                                        <li>
+                                            <img class="notifProfile" src="../../Content/profilePhoto/6c11ba14-656e-4d94-aa89-e8dd34a827d9.jpg" /> <b>deneme</b> <br /> gönderinizi beğendi.<a class="deleteNotifBtn"><i class="fas fa-minus fa-lg"></i></a>
+                                        </li>
+                                        <li>
+                                            <img class="notifProfile" src="../../Content/profilePhoto/6c11ba14-656e-4d94-aa89-e8dd34a827d9.jpg" /> <b>deneme</b> <br /> gönderinizi beğendi.<a class="deleteNotifBtn"><i class="fas fa-minus fa-lg"></i></a>
+                                        </li>
+                                        <li>
+                                            <img class="notifProfile" src="../../Content/profilePhoto/6c11ba14-656e-4d94-aa89-e8dd34a827d9.jpg" /> <b>deneme</b> <br /> gönderinizi beğendi.<a class="deleteNotifBtn"><i class="fas fa-minus fa-lg"></i></a>
+                                        </li>
+                                        <li>
+                                            <img class="notifProfile" src="../../Content/profilePhoto/6c11ba14-656e-4d94-aa89-e8dd34a827d9.jpg" /> <b>deneme</b> <br /> gönderinizi beğendi.<a class="deleteNotifBtn"><i class="fas fa-minus fa-lg"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Index","Manage")" class="navbar-item text-content-center">
+                                    <i class="fas fa-user person"></i> Profilim
+                                </a>
+                            </li>
+                            <li>
+                                <a class="navbar-item text-content-center" href="javascript:document.getElementById('logoutForm').submit()"><i class="fas fa-sign-out-alt"></i></a>
+                                @*<a href="@Url.Action("LogOff","Account")" class="navbar-item text-content-center">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>*@
+                            </li>
+                        </ul>
+                    }
+                }
+                else
+                {
+                    <ul class="nav navbar-nav navbar-item login">
+                        <li>
+                            @*@Html.ActionLink("Kaydol", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })*@
+                            <a href="@Url.Action("Register","Account")" class=" navbar-item text-content-center">
+                                Kaydol
+                            </a>
+                        </li>
+                        <li>
+                            @*@Html.ActionLink("Oturum aç", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })*@
+                            <a href="@Url.Action("Login","Account")" class=" navbar-item text-content-center">
+                                <i class="fas fa-user person"></i> Giriş Yap
+                            </a>
+                        </li>
+
+                    </ul>
+                }
+
+                @*<a href="@Url.Action("Profile","User")" class="navbar-item text-content-center">
+            <i class="fas fa-user person"></i> Profilim
+        </a>
+        <a href="@Url.Action("Logout","Home")" class="navbar-item text-content-center">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>*@
+                @*<a href="@Url.Action("Login","Account")" class="navbar-item text-content-center">
+            <i class="fas fa-user person"></i> Giriş Yap
+        </a>*@
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - SocialUser</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
+<script>
+    $(document).ready(function () {
+        var notifBtn = $("#notificationBtn");
+        var showDiv = $("#notificationDiv");
+        var deleteNotifBtn = $("#deleteNotifBtn");
+        notifBtn.click(function () {
+            showDiv.slideToggle();
+        })
+    })
+</script>

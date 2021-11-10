@@ -1,0 +1,199 @@
+.card{
+width:60%;
+position: relative;
+display: flex;
+flex-direction: column;
+min-width: 0;
+word-wrap: break-word;
+background-color: #fff;
+background-clip: border-box;
+border: 1px solid rgba(0, 0, 0, 0.125);
+border-radius: 0.25rem;
+margin:auto;
+margin-top:20px;
+
+-webkit-box-shadow: 0px 11px 17px -16px rgba(0,0,0,0.75);
+-moz-box-shadow: 0px 11px 17px -16px rgba(0,0,0,0.75);
+box-shadow: 0px 11px 17px -16px rgba(0,0,0,0.75);
+
+}
+.card:hover{
+
+}
+.card-header{
+position:relative;
+width:100%;
+height:60px;
+}
+.card-profile{
+margin:5px;
+width:60px;
+height:60px;
+object-fit:cover;
+border-radius:50%;
+}
+.card-hover-profile{
+width:90%;
+border-style:solid;
+border-color:#AEB6BF
+}
+.card-description{
+margin:30px auto 10px auto;
+width:95%;
+padding:5px;
+height:auto;
+}
+.card-image{
+position:relative;
+margin-top:10px;
+margin-bottom:10px;
+width:100%;
+}
+.card-picture{
+border-radius:5px;
+width:100%;
+border:1px solid #E1E1E1;
+}
+.card-footer{
+width:100%;
+position:relative;
+height:auto;
+}
+
+.detailsBtn{
+display:inline-block;
+padding: 0.5em 0.6em;
+font-size: 70%;
+text-align: center;
+float:right;
+color: #fff;
+background-color: #0d6efd;
+border-color: #0d6efd;
+line-height: 1;
+margin-bottom:5px;
+margin-right:5px;
+width:25%;
+}
+
+.detailsBtn:hover {
+color: #fff;
+background-color: #0b5ed7;
+border-color: #0a58ca;
+
+}
+
+.badge{
+font-size:65%;
+float:left;
+margin-left:5px;
+border-radius:20px;
+
+display: inline-block;
+  padding: 0.5em 0.6em;
+heigth:0.8rem;
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+background-color:#0d6efd;
+border:1px solid #0d6efd;
+margin-bottom:2%;
+}
+.likeBtn{
+cursor:pointer;
+text-decoration:none;
+}
+.likeBtn:hover{
+cursor:pointer;
+text-decoration:none;
+}
+
+.badgeUnlike{
+font-size:65%;
+float:left;
+margin-left:5px;
+border-radius:20px;
+
+display: inline-block;
+  padding: 0.5em 0.6em;
+heigth:0.8rem;
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+  color: #0d6efd;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+border:1px solid #0d6efd;
+}
+
+.deleteBtn{
+position:absolute;
+top:0;
+right:0;
+margin:5px;
+
+}
+.deleteBtn:hover{
+cursor:pointer;
+}
+
+
+@-webkit-keyframes spinner-border {
+  to {
+    transform: rotate(360deg) /* rtl:ignore */;
+  }
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg) /* rtl:ignore */;
+  }
+}
+.spinner-border {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  vertical-align: -0.125em;
+  border: 0.25em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  -webkit-animation: 0.75s linear infinite spinner-border;
+  animation: 0.75s linear infinite spinner-border;
+}
+#load-div{
+margin-top:10px;
+margin-left:47%;
+}
+#load{
+
+justify-content: center;
+display:flex;
+padding:1rem;
+
+align:center;
+}
+.userProfileDiv{
+cursor:pointer;
+display:none;
+margin:5px;
+width:60px;
+height:60px;
+position:absolute;
+top:0;
+border-radius:50%;
+background-color:RGBA(0,0,0,0.5);
+}
+.USERICO{
+border:none;
+background-color:RGBA(0,0,0,0);
+position:absolute;
+left:18px;
+top:18px;
+color:white;
+}

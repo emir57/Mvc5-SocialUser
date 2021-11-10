@@ -1,0 +1,107 @@
+.navbar-bg{
+background-color: #48C9B0;
+}
+.login{
+float:right;
+}
+.navbar-item{
+color:white;
+}
+.person{
+margin-left:1px;
+}
+.menuIcon{
+color:white;
+}
+#searchUserDiv{
+z-index:10;
+
+min-width:35rem;
+max-height:250px;
+overflow:auto;
+overflow-x:hidden;
+background-color:white;
+position:absolute;
+}
+.table-tr{
+padding:10px;
+margin:auto;
+}
+.userName-nav{
+font-weight:600;
+font-size:85%;
+}
+.friends-req{
+color:#273746;
+transition:all 0.3s;
+
+}
+.friends-req:hover{
+color:#2E86C1;
+}
+.find-img{
+width:45px;
+height:45px;
+border-radius:50%;
+object-fit:cover;
+}
+.btn-user{
+border:none;
+background-color:RGBA(0,0,0,0);
+float:right;
+vertical-align:middle;
+
+}
+#notificationBtn{
+cursor:pointer;
+text-decoration:none;
+}
+#notificationDiv{
+display:none;
+position:absolute;
+width:150%;
+height:250px;
+overflow:auto;
+background-color:#F2F3F4;
+border:1px solid #D6DBDF;
+}
+#notifUl{
+color:#283747;
+padding:10px;
+list-style:none;
+}
+#notifUl li{
+margin-top:1px;
+padding-bottom:5px;
+border-bottom:1px solid #D6DBDF;
+}
+#notifUl li:hover{
+background-color:#EAEDED;
+}
+.notifProfile{
+width:30px;
+height:30px;
+border-radius:50%;
+object-fit:cover;
+}
+.deleteNotifBtn{
+cursor:pointer;
+float:right;
+border:none;
+background-color:RGBA(0,0,0,0);
+}
+.deleteNotifBtn:hover{
+color:#B03A2E;
+}
+
+
+
+
+@media screen and (max-width: 767px) {
+
+  .login{
+	float:left;
+}
+}
+
+

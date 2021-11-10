@@ -1,0 +1,21 @@
+﻿@model SocialUser.Models.LastCommentViewModel
+<h4 id="lastCommentTitle">Son Yorumlar</h4>
+<hr />
+<ul>
+    @foreach (var comment in Model.comments)
+    {
+        <li>
+            <a href="@Url.Action("PostDetail",new { postid= comment.PostId })">
+                @{ 
+                    var description = comment.CommentDescription;
+
+                    description = description.Substring(0, 5);
+                    description = description.Trim(' ');
+                    description = description + "...";
+                }
+            @description
+            </a>
+        </li>
+    }
+
+</ul>

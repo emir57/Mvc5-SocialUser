@@ -1,0 +1,42 @@
+﻿@model SocialUser.Models.GetUserViewModel
+@using Microsoft.AspNet.Identity
+
+@if (Model.users.Count == 0)
+{
+    <h4 class="text-danger">Kullanıcı Bulunamadı</h4>
+
+}
+<table class="table table-bordered table-hover">
+
+    @foreach (var user in Model.users)
+    {
+
+        if (user.Id == User.Identity.GetUserId()) { continue; }
+
+        if (User.Identity.IsAuthenticated)
+        {
+            <tr class="table-tr">
+
+                <td>
+                    <img class="find-img" src="@user.profilePhoto" /> <span class="userName-nav">@user.UserName</span>
+                    <button onclick="location.href='@Url.Action("UserProfile", "Home", new { id = user.Id })'" class="btn-user"><span title="profiline git" class="friends-req"><i class="fas fa-id-card fa-3x"></i></span></button>
+                </td>
+            </tr>
+
+        }
+        else
+        {
+            <tr class="table-tr">
+
+                <td>
+                    <img class="find-img" src="@user.profilePhoto" /> <span class="userName-nav">@user.UserName</span>
+                    <button onclick="location.href='@Url.Action("Index", "Manage", new { username = user.UserName })'" class="btn-user"><span title="profiline git" class="friends-req"><i class="fas fa-id-card fa-3x"></i></span></button>
+                </td>
+            </tr>
+        }
+    }
+</table>
+
+
+
+

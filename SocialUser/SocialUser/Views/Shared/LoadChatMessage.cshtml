@@ -1,0 +1,58 @@
+﻿@model SocialUser.Models.GetChatViewModel
+@using Microsoft.AspNet.Identity
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+@if(Model.msg.Count == 0)
+{
+    <b style="display:flex;align-items:center;justify-content:center;">Konuşma Başlat. (@Model.currentUser.UserName)</b>
+}
+
+@foreach (var messages in Model.msg)
+{
+    if (messages.SenderMessageUser == User.Identity.GetUserId())
+    {
+        <div class="messageSpace">
+
+        </div>
+        <div class="currentUserMessage">
+            <div class="text">
+                @messages.MessageText
+            </div>
+
+            <span class="dateTime right">
+                @messages.MessageDateTime.Hour.@messages.MessageDateTime.Minute
+            </span>
+        </div>
+
+
+    }
+    else
+    {
+        <div class="messageSpace">
+
+        </div>
+        <div class="userMessage">
+            <div class="text">
+                @messages.MessageText
+            </div>
+            <span class="dateTime left">
+                @messages.MessageDateTime.Hour.@messages.MessageDateTime.Minute
+            </span>
+        </div>
+
+
+    }
+
+}
+
+
+
+<script>
+    function getYHeight() {
+        var height = document.querySelector("#messages").scrollHeight;
+        return height;
+    }
+    console.log(getYHeight())
+    document.querySelector("#messages").scrollTo(0, getYHeight());
+</script>

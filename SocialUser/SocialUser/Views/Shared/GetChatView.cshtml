@@ -1,0 +1,48 @@
+﻿@model SocialUser.Models.GetChatViewModel
+@using Microsoft.AspNet.Identity
+@Scripts.Render("~/Scripts/jquery-2.2.4.js")
+
+<div id="GetChatMessageBar">
+    
+    <script>
+        function getYHeight() {
+            var height = document.getElementById("GetChatMessageBar").scrollHeight;
+            return height;
+        }
+        document.getElementById("GetChatMessageBar").scrollTo(0, getYHeight());
+    </script>
+</div>
+
+
+
+
+<div id="messageBar" class="input-group">
+    <div id="messageBox">
+        <button class="append"><i class="fas fa-paperclip"></i></button>
+        @Html.TextBox("text", "", new { id = "text", cols = "10", @class = "form-control", placeholder = "Bir şeyler yaz.." })
+        <button id="send" class="btn btn-primary">Gönder</button>
+
+        <script>
+            $(document).ready(function () {
+                var sendBtn = $("#send");
+                var text = $("#text");
+                sendBtn.click(function () {
+                    if (text.val() != "" && text.val().length < 2000) {
+                        $.ajax({
+                            url: "/Chat/ChatDo",
+                            type: "POST",
+                            data: { user1: '@User.Identity.GetUserId()', user2: '@Model.userid2', text: text.val() },
+                            dataType:"json",
+                            success: function () {}
+                        })
+                        text.val("");
+                    }
+                })
+            })
+        </script>
+
+    </div>
+</div>
+
+
+

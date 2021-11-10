@@ -1,0 +1,71 @@
+﻿@model SocialUser.Models.GetGroupViewModel
+@using Microsoft.AspNet.Identity
+
+@foreach (var messages in Model.groupMessage)
+{
+    if (messages.SenderUserId == User.Identity.GetUserId())
+    {
+
+    <div class="currentUserMessage">
+        <div class="messageUserName">
+            @foreach (var user in Model.users)
+            {
+                if (user.Id == User.Identity.GetUserId())
+                {
+                    <span class="username"><b>@user.UserName</b></span>
+                    <hr class="usernameRow" />
+                }
+
+            }
+        </div>
+            @messages.Message
+        
+        <span class="dateTime right">
+            @messages.MessageDateTime.Hour.@messages.MessageDateTime.Minute
+        </span>
+    </div>
+    <div class="messageSpace">
+    </div>
+
+    }
+    else
+    {
+
+    <div class="userMessage">
+        <div class="messageUserName2">
+            @foreach (var user in Model.users)
+            {
+                if (user.Id == messages.SenderUserId)
+                {
+                    <span class="username"><b>@user.UserName</b></span>
+                    <hr class="usernameRow2"/>
+                }
+
+            }
+        </div>
+
+            @messages.Message
+        <span class="dateTime left">
+            @messages.MessageDateTime.Hour.@messages.MessageDateTime.Minute
+        </span>
+    </div>
+    <div class="messageSpace">
+
+    </div>
+
+    }
+
+
+
+    }
+
+
+
+    <script>
+        function getYHeight() {
+            var height = document.querySelector("#messages").scrollHeight;
+            return height;
+        }
+        console.log(getYHeight())
+        document.querySelector("#messages").scrollTo(0, getYHeight());
+    </script>

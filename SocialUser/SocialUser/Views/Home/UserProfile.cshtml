@@ -1,0 +1,100 @@
+﻿@model SocialUser.Models.ProfileView
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = " Kullanıcının Profili";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Styles.Render("~/Content/post.css")
+@Styles.Render("~/Content/profile.css")
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<div id="userProfileBar">
+    <div id="TopBar">
+        <img id="userProfilePhoto" src="@Model.user.profilePhoto" /><h4 id="Username">@Model.user.UserName</h4> <div id="infos"><span><b>Gönderi Sayısı</b> <span class="text-info">@Model.postCount</span></span> <b>|</b> <span><b>Arkadaş Sayısı</b> <span class="text-info">@Model.friendsCount</span></span></div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            if (User.Identity.GetUserId() == Model.user.Id) { }
+            else if (Model.isFriend == false)
+            {<button id="send" class="friendSend" title="arkadaşlık isteği gönder"><i class="fas fa-user-friends"></i></button> }
+            else if (Model.isFriend == true)
+            { <button id="delete" class="friendSend" title="arkadaşlıktan çıkar"><i class="fas fa-users-slash"></i></button>}
+            else { }
+    <script>
+                $(document).ready(function () {
+                    var sendBtn = $("#send");
+                    var deleteBtn = $("#delete");
+
+                    sendBtn.click(function () {
+                        $.ajax({
+                            url: "/Manage/Send",
+                            type: "POST",
+                            data: { username: '@Model.user.UserName' },
+                            dataType: "json",
+                            success: function () { }
+                        })
+                        alert("Arkadaşlık isteği başarıyla gönderildi.");
+                    })
+                    deleteBtn.click(function () {
+                        $.ajax({
+                            url: "/Manage/Delete",
+                            type: "POST",
+                            data: { id: '@Model.userFriendId' },
+                            dataType: "json",
+                            success: function () { }
+                        })
+                        alert("@(Model.user.UserName) arkadaşlıktan çıkartıldı.");
+                    })
+
+                })
+    </script>
+        }
+        <div id="description">@Model.user.profileDescription</div>
+    </div>
+
+</div>
+
+
+
+@if (User.Identity.GetUserId() == Model.user.Id)
+{<h2 class="">Gönderilerim</h2> }
+else
+{<h2 class="">@Model.user.UserName adlı kullanıcının gönderileri</h2>}
+
+<hr />
+<!--User posts-->
+<div class="containerFlow" id="containerFlow">
+    
+
+</div>
+
+@section scripts{
+    @Scripts.Render("~/Scripts/jquery.signalR-2.4.2.js")
+    @Scripts.Render("~/signalr/hubs")
+    <script>
+
+        $(document).ready(function () {
+            var hub = $.connection.sampleHub;
+
+            $.connection.hub.start().done(function () {
+                GetAll();
+            })
+            hub.client.refreshPostData = function () {
+                GetAll();
+            }
+            function GetAll() {
+                var div = $("#containerFlow");
+                $.ajax({
+                    url: "/Home/ProfileGetPosts",
+                    type: "GET",
+                    data: { id:'@Model.user.Id'},
+                    contentType:"application/html; charset=utf-8",
+                    success: function (result) { div.empty().append(result); }
+                })
+            }
+        })
+    </script>
+    } 
+

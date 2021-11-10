@@ -1,0 +1,156 @@
+﻿@using Microsoft.AspNet.Identity
+@model SocialUser.Models.IndexViewModel
+
+<div style="float: left; width: 49%; border-right: 2px solid #5D6D7E; margin-right: 2%; min-height: 300px; overflow: auto; overflow-x: hidden; ">
+    <h4>Arkadaşlık isteklerin</h4>
+    <hr />
+    @if (Model.friendsRequest != null)
+    {
+        <div class="warning">@Model.friendsRequest</div>
+    }
+
+
+    <table class="table table-bordered">
+        @foreach (var userFriends in Model.userFriends)
+        {
+            if (userFriends.Check == false)
+            {
+
+                if (userFriends.UserId2 == User.Identity.GetUserId())
+                {
+                    foreach (var user in Model.users)
+                    {
+
+                        if (userFriends.UserId1 == user.Id)
+                        {
+                            <tr>
+                                <td><img class="profilePhoto" src="@user.profilePhoto" /> @user.UserName</td>
+                                <td>
+                                    <button id="Accept@(userFriends.Id)" class="btn btn-success"><i class="fas fa-check"></i></button>
+                                    <button id="Decline@(userFriends.Id)" class="btn btn-danger"><i class="fas fa-times"></i></button>
+                                </td>
+
+                                <script>
+
+                            $(document).ready(function () {
+                                var accept = $("#Accept"+@(userFriends.Id));
+                                var decline = $("#Decline"+@(userFriends.Id));
+
+                                accept.click(function(){
+                                    $.ajax({
+                                        url: "Manage/Accept",
+                                        type: "POST",
+                                        data: { id:@(userFriends.Id)},
+                                        dataType: "json",
+                                        success: function () { }
+                                    })
+                                });
+                                decline.click(function(){
+                                    $.ajax({
+                                        url: "Manage/Delete",
+                                        type: "POST",
+                                        data: {id:@(userFriends.Id)},
+                                        dataType: "json",
+                                        success: function () {}
+                                    })
+                                })
+                            })
+                                </script>
+
+                            </tr>
+                        }
+                    }
+
+                }
+            }
+        }
+    </table>
+</div>
+
+<div style="float: left; width: 49%; min-height: 300px; overflow: auto; overflow-x:hidden;">
+    <h4>Arkadaşların</h4>
+    <hr />
+
+    @if (Model.friends != null)
+    {
+        <div class="warning">@Model.friends</div>
+    }
+
+
+    <table class="table table-bordered">
+        @foreach (var userFriends in Model.userFriends)
+        {
+            if (userFriends.Check == true)
+            {
+
+                if (userFriends.UserId2 == User.Identity.GetUserId())
+                {
+                    foreach (var user in Model.users)
+                    {
+
+                        if (userFriends.UserId1 == user.Id)
+                        {
+                            <tr>
+                                <td><img class="profilePhoto" src="@user.profilePhoto" /> @user.UserName</td>
+                                <td><button id="Delete@(userFriends.Id)" class="btn btn-danger"><i class="fas fa-user-minus"></i></button></td>
+
+                                <script>
+
+                            $(document).ready(function () {
+                                var deletebtn = $("#Delete"+@(userFriends.Id));
+
+                                deletebtn.click(function(){
+                                    $.ajax({
+                                        url: "Manage/Delete",
+                                        type: "POST",
+                                        data: { id:@(userFriends.Id)},
+                                        dataType: "json",
+                                        success: function () { }
+                                    })
+                                });
+                            })
+                                </script>
+
+                            </tr>
+                        }
+                    }
+
+                }
+                else if (userFriends.UserId1 == User.Identity.GetUserId())
+                {
+                    foreach (var user in Model.users)
+                    {
+
+                        if (userFriends.UserId2 == user.Id)
+                        {
+                            <tr>
+                                <td><img class="profilePhoto" src="@user.profilePhoto" /> @user.UserName</td>
+                                <td><button id="Delete@(userFriends.Id)" class="btn btn-danger"><i class="fas fa-user-minus"></i></button></td>
+
+                                <script>
+
+                            $(document).ready(function () {
+                                var deletebtn = $("#Delete"+@(userFriends.Id));
+
+                                deletebtn.click(function(){
+                                    $.ajax({
+                                        url: "Manage/Delete",
+                                        type: "POST",
+                                        data: { id:@(userFriends.Id)},
+                                        dataType: "json",
+                                        success: function () { }
+                                    })
+                                });
+                            })
+                                </script>
+
+                            </tr>
+                        }
+                    }
+                }
+
+            }
+        }
+    </table>
+</div>
+

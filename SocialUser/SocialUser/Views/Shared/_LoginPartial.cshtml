@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-item login navbar-right">
+        <li>
+            @Html.ActionLink("Merhaba " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+            <a href="@Url.Action("Profile","User")" class="navbar-item text-content-center">
+            <i class="fas fa-user person"></i> Profilim
+        </a>
+        <a href="@Url.Action("Logout","Home")" class="navbar-item text-content-center">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
+        </li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">Oturumu kapat</a></li>
+    </ul>
+    }
+}
+else
+{
+<ul class="nav navbar-nav navbar-item login navbar-right">
+    <li>@Html.ActionLink("Kaydol", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+    <li>@Html.ActionLink("Oturum aç", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    <a href="@Url.Action("Login","Account")" class="navbar-item text-content-center">
+        <i class="fas fa-user person"></i> Giriş Yap
+    </a>
+</ul>
+}

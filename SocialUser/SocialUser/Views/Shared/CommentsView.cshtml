@@ -1,0 +1,220 @@
+﻿@using BusinessLayer.Concrete
+@using Microsoft.AspNet.Identity
+@model SocialUser.Models.DetailViewModel
+
+<script src="../../Scripts/jquery-3.6.0.min.js"></script>
+
+@if (Model.c.Count == 0)
+{
+    <div align="center" id="statusCheck">
+        <span class="comment-Title">Henüz Yorum Yok.</span>
+    </div>
+}
+else if (Model.c.Count > 0)
+{
+    <div align="center" id="statusCheck">
+        <span class="comment-Title">Toplamda @Model.c.Count yorum.</span>
+    </div>
+}
+
+
+@foreach (var comment in Model.c)
+{
+    var userProfilePhoto = "";
+    <!--Get post comments-->
+    if (comment.PostId == Model.postid)
+    {
+        //get current user profile photo
+        foreach (var item in Model.user)
+        {
+            if (item.Id == comment.UserId)
+            {
+                userProfilePhoto = item.profilePhoto;
+                break;
+            }
+        }
+        <div class="commentBoxs">
+            <div class="comment">
+                @if (comment.UserId == User.Identity.GetUserId())
+                {
+                    @*@Html.ActionLink("Sil", "CommentDelete", new { id = comment.Id, postid = Model.postid }, new { @class = "btn btn-danger deleteBtn", onclick = "return confirm('yorumu silmek istediğinizden eminmisiniz?');" })*@
+                    <a id="commentDelete@(comment.Id)" class="deleteBtn"><i class="fas fa-trash-alt fa-lg"></i></a>
+                    <script>
+                            $(document).ready(function () {
+                                //comment
+                                        var btn2 = $("#commentDelete@(comment.Id)");
+                                        btn2.click(function () {
+                                        if (confirm("Yorumu silmek istediğinizden eminmisiniz?")) {
+                                            $.ajax({
+                                                url: "PostCommentDelete",
+                                                type: "Post",
+                                                data: { id:@comment.Id , postid:@Model.postid},
+                                                dataType: "json",
+                                                success: function () {}
+                                            })
+                                         }
+                                        })
+                            })
+                    </script>
+                }
+                <div class="commentUserTop">
+                    <img class="comment-card-profile" src="@userProfilePhoto" />
+                    <b>@comment.UserName</b>
+                </div>
+                <div class="commentUserBottom">
+                    @comment.CommentDescription
+                </div>
+                <!--DateTime-->
+                <div class="badge">
+                    @{ var date = (DateTime.Now - comment.CommentDateTime);
+                        var year = date.TotalDays / 365;
+                        if (date.Days >= 365)
+                        { <b>@(Convert.ToInt32(year)) yıl önce </b>}
+                        else if (date.Days > 0)
+                        { <b>@date.Days gün önce</b>}
+                    else if (date.Minutes == 0)
+                    { <b>@date.Seconds saniye önce</b>}
+                else if (date.Hours == 0)
+                { <b>@date.Minutes dakika önce</b>}
+            else if (date.Days == 0)
+            {<b>@date.Hours saat önce</b> }
+        else
+        { <b>@date</b>}
+                    }
+                </div>
+                <!--Answer Do-->
+                <div class="answerDo">
+                    <div class="dropdownAnswer">
+                        <button id="check@(comment.Id)" class="btn btn-info">Cevapla</button>
+                    </div>
+                    <div class="answerBox" id="answerBox@(comment.Id)">
+                        @using (Html.BeginForm("CommentAnswerDo", "Home", FormMethod.Post, new { id = "formcommentDo" + comment.Id, @class = "form-group" }))
+                        {
+                            @Html.TextBox("postid", comment.PostId, new { id = "postid" + comment.Id, @class = "dnone" })
+                            @Html.TextBox("commentid", comment.Id, new { id = "commentid" + comment.Id, @class = "dnone" })
+                            @Html.TextArea("commentText", "", new { rows = "5", id = "commentDoBox" + comment.Id, @class = "form-control commentAnswersBox com", placeholder = "Cevap Yaz.." })
+                            <button id="send@(comment.Id)" class="btn btn-primary com commentDoBtn">Cevapla</button><br /><br /><br /><br />
+                            <div class="CommentAnswerError" id="CommentAnswerError@(comment.Id)">
+                                Hatalı Yorum
+                            </div>
+                            <script>
+                                    //check and post
+                                    $(document).ready(function () {
+                                        var sendBtn = $("#send" +@comment.Id);
+                                        var errorDiv = $("#CommentAnswerError" +@comment.Id);
+                                        errorDiv.empty();
+                                        errorDiv.hide();
+
+                                        sendBtn.click(function (e) {
+                                            errorDiv.empty();
+                                            e.preventDefault();
+                                            var commentText = $("#commentDoBox" +@comment.Id).val();
+                                            var commentId = $("#commentid" +@comment.Id);
+                                            var postid = $("#postid" +@comment.Id);
+                                            if (commentText.length >= 2 && commentText.length < 1000 && commentText!=" ") {
+                                                $.ajax({
+                                                    url: "CommentAnswerDo",
+                                                    type: "POST",
+                                                    data: { postid: postid.val(), commentText: commentText, commentid: commentId.val() },
+                                                    dataType: "json",
+                                                    success: function () {}
+                                                });
+                                            } else {
+                                                errorDiv.show();
+                                                errorDiv.append("Yorum 2 karakterden fazla olmalı ve boşluk içermemeli!");
+                                            }
+                                        })
+                                    })
+                            </script>
+                        }
+                    </div>
+                    <script>
+                            $(document).ready(function () {
+                                var number = 0;
+                                var btn = $("#check" +@comment.Id);
+                                var box = $("#answerBox" +@comment.Id);
+                                box.hide();
+                                btn.click(function () {
+                                    if (number == 1) {
+                                        btn.html("Cevapla");
+                                        number = 0;
+                                    } else {
+                                        btn.html("Kapat");
+                                        number = 1;
+                                    }
+                                    box.fadeToggle().show();
+                                })
+
+                            })
+                    </script>
+                </div>
+            </div>
+            <!--Answers-->
+            @foreach (var answer in Model.cA)
+            {
+                if (answer.CommentId == comment.Id)
+                {
+                    foreach (var item in Model.user)
+                    {
+                        if (item.Id == answer.UserId)
+                        {
+                            var userComment = item;
+                            <div class="commentAnswer">
+                                @if (answer.UserId == User.Identity.GetUserId())
+                                {
+                                    @*@Html.ActionLink("Sil", "CommentAnswerDelete", new { id = answer.Id,UserId= User.Identity.GetUserId(),postid= comment.PostId}, new { @class = "btn btn-danger deleteBtn", onclick = "return confirm('yorumu silmek istediğinizden eminmisiniz?');" })*@
+                                    <a id="deleteBtnAnswer@(answer.Id)" class="deleteBtn"><i class="fas fa-trash-alt fa-lg"></i></a>
+                                    <script>
+                                    $(document).ready(function () {
+                                        //answer
+                                        var btn = $("#deleteBtnAnswer@(answer.Id)");
+                                        btn.click(function () {
+                                            if (confirm("Yorumu silmek istediğinizden eminmisiniz?")) {
+                                                $.ajax({
+                                                    url: "CommentAnswerDelete",
+                                                    type:"Post",
+                                                    data: { id:@answer.Id, UserId:'@User.Identity.GetUserId()', postid:@comment.PostId},
+                                                    dataType: "json",
+                                                    success: function () {}
+                                                })
+                                            }
+                                        })
+
+                                    })
+                                    </script>
+                                }
+                                <div class="commentAnswerUserTop">
+                                    <img class="comment-card-profile" src="@userComment.profilePhoto" />
+                                    <b>@answer.UserName</b>
+                                </div>
+                                <div class="commentAnswerUserBottom">
+                                    @answer.AnswerDescription
+                                </div>
+                                <!--DateTime Answers-->
+                                <div class="badge">
+                                    @{ var dateAnswer = (DateTime.Now - answer.AnswerDateTime);
+                                        var yearAnswer = date.TotalDays / 365;
+                                        if (date.Days >= 365)
+                                        { <b>@(Convert.ToInt32(yearAnswer)) yıl önce </b>}
+                                        else if (dateAnswer.Days > 0)
+                                        { <b>@dateAnswer.Days gün önce</b>}
+                                    else if (dateAnswer.Minutes == 0)
+                                    { <b>@dateAnswer.Seconds saniye önce</b>}
+                                else if (dateAnswer.Hours == 0)
+                                { <b>@dateAnswer.Minutes dakika önce</b>}
+                            else if (dateAnswer.Days == 0)
+                            {<b>@dateAnswer.Hours saat önce</b> }
+                        else
+                        { <b>@date</b>}
+                                    }
+                                </div>
+                            </div>
+
+                        }
+                    }
+                }
+            }
+        </div>
+
+    }
+}

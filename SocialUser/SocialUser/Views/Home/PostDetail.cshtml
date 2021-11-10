@@ -1,0 +1,223 @@
+﻿@model SocialUser.Models.DetailViewModel
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Gönderi Detayları";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Styles.Render("~/Content/detailpage.css")
+@Styles.Render("~/Content/post.css")
+@Scripts.Render("~/Scripts/jquery-2.2.4.js")
+<div id="likesOpen">
+
+</div>
+<div class="containerMain">
+    <div class="containerFlow">
+        <!--Post-->
+        <div class="card">
+            <div class="card-header">
+                <img class="card-profile" src="@ViewData["userProfilePhoto"]" />
+                <b>@ViewData["userName"]</b>
+                @if (ViewBag.postUserId == User.Identity.GetUserId())
+                {
+                    @*@Html.ActionLink("Sil", "PostDelete", new { id = ViewData["postId"] }, new { @class = "deleteBtn", onclick = "return confirm('Gönderiyi silmek istediğinizden emin misiniz?');" })*@
+                    <a href="@Url.Action("PostDelete", new { id = @ViewData["postId"] })" name="" onclick="return confirm('Silmek istediğinizden eminmisiniz?')" class="deleteBtn"><i class="fas fa-trash-alt fa-lg"></i></a>
+                }
+                else { }
+                <hr class="card-hover-profile" />
+            </div>
+            <div class="card-description">
+                @ViewData["description"]
+            </div>
+            <div class="card-image">
+                <!--Image-->
+                <img class="card-picture" src="@ViewData["postPicture"]" />
+            </div>
+            <div class="card-footer">
+                <!--DateTime-->
+                <div class="badge">
+                    @{ var date = (DateTime.Now - Convert.ToDateTime(ViewData["postDateTime"]));
+                        var year = date.TotalDays / 365;
+                        if (date.Days >= 365)
+                        { <b>@(Convert.ToInt32(year)) yıl önce </b>}
+                        else if (date.Days > 0)
+                        { <b>@date.Days gün önce</b>}
+                    else if (date.Minutes == 0)
+                    { <b>@date.Seconds saniye önce</b>}
+                else if (date.Hours == 0)
+                { <b>@date.Minutes dakika önce</b>}
+            else if (date.Days == 0)
+            {<b>@date.Hours saat önce</b> }
+        else
+        { <b>@date</b>}
+                    }
+                </div>
+                <div class="badgeLike">
+                    @if (Convert.ToBoolean(ViewData["checkLike"]) == false)
+                    {
+                        <a href="@Url.Action("PostLike","Home",new { postid = ViewData["postId"], check = false })" class="badgeUnlike likeBtn">
+                            <i class="far fa-thumbs-up"></i> @ViewData["likeCount"] Beğen
+                        </a>
+                    }
+                    else if(Convert.ToBoolean(ViewData["checkLike"]) == true)
+                    {
+                        <a href="@Url.Action("PostLike","Home",new { postid = ViewData["postId"], check = true })" class="badge likeBtn">
+                            <i class="fas fa-thumbs-up"></i> @ViewData["likeCount"] Beğen
+                        </a>
+                    }
+                </div>
+                <div id="likesBtn" class="badge">Beğenenler</div>
+
+            </div>
+        </div>
+    </div>
+    <!--post finish-->
+    <!--users like-->
+    <div id="likes" style="display:none;">
+        <span id="close"><i class="fas fa-times fa-3x"></i></span>
+        <h3 class="text-info" id="likesTitle">Beğenen Kullanıcılar</h3>
+        <table class="table table-bordered">
+            @foreach (var postlikes in Model.likes)
+            {
+                foreach (var user in Model.user)
+                {
+                    if (postlikes.UserId == user.Id)
+                    {
+                        <tr>
+                            <td><img class="card-profile" src="@user.profilePhoto" />@user.UserName</td>
+                        </tr>
+                    }
+                }
+            }
+
+
+        </table>
+        <script>
+
+            var mainDiv = $("#likes");
+            var backgroundDiv = $("#likesOpen");
+            mainDiv.hide();
+            backgroundDiv.hide();
+            $(document).ready(function () {
+                
+                var btn = $("#likesBtn");
+                var closeBtn = $("#close");
+                
+
+                btn.click(function () {
+                    mainDiv.fadeIn("slow", function () {
+                        mainDiv.show();
+                    })
+                    backgroundDiv.fadeIn("fast", function () {
+                        backgroundDiv.show();
+                    })  
+                })
+
+                closeBtn.click(function () {
+                    mainDiv.fadeOut("fast", function () {
+                        mainDiv.hide();
+                    })
+                    backgroundDiv.fadeOut("slow", function () {
+                        backgroundDiv.hide();
+                    })
+                })
+
+                backgroundDiv.click(function () {
+                    mainDiv.fadeOut("fast", function () {
+                        mainDiv.hide();
+                    })
+                    backgroundDiv.fadeOut("slow", function () {
+                        backgroundDiv.hide();
+                    })
+                })
+                
+
+            })
+        </script>
+    </div>
+
+    <!--Comments list-->
+    <div class="containerComments">
+        <!--Comment Do-->
+        <div class="commentDo">
+            @using (Html.BeginForm("PostDoComment", "Home", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.TextBox("postid", "", new { id = "postid", @class = "dnone" })
+                @Html.TextArea("text", new { id = "commentBox", placeholder = "Yorum Yap...", cols = "20", rows = "4", @class = "form-control commentBox" })
+                <input id="commentDoBtn" type="submit" value="Yorum Yap" class="btn btn-primary form-control" />
+                <div class="text-danger" align="center" id="errorDiv">
+
+                </div>
+                <script>
+
+                </script>
+            }
+        </div>
+        <hr />
+        <span class="comment-Title">Yorumlar</span>
+        <hr />
+        <!--Comments-->
+
+        <div id="commentDiv">
+
+        </div>
+
+    </div>
+    <!--Comments list finish-->
+</div>
+
+@section scripts{
+    @Scripts.Render("~/Scripts/jquery.signalR-2.4.2.js")
+    @Scripts.Render("~/signalr/hubs")
+    <script type="text/javascript">
+    $(function () {
+        var hubNotify = $.connection.sampleHub;
+        $.connection.hub.start().done(function () {
+            getAll();
+        })
+        hubNotify.client.refreshCommentData = function () {
+            getAll();
+        };
+    });
+
+        function getAll() {
+            var model = $("#commentDiv");
+            $.ajax({
+                url: "GetComments",
+                data: {postid:@ViewBag.postId},
+                contentType: "application/json; charset=utf-8",
+                type: "GET",
+                dataType: "html",
+                success: function (result) { model.empty().append(result); }
+            })
+        }
+        // do comment
+        $(document).ready(function () {
+            var btn = $("#commentDoBtn");
+            btn.click(function (e) {
+                var comment = $("#commentBox");
+                var postid = $("#postid");
+                var div = $("#errorDiv")
+                e.preventDefault();
+                if (comment.val().length > 5) {
+                    $.ajax({
+                        url: "PostDoComment",
+                        type: "post",
+                        data: { postid: postid.val(), text: comment.val() },
+                        dataType: "json",
+                        success: function () { }
+                    })
+                    comment.val("");
+                    div.empty().append("");
+                } else {
+                    div.empty().append("Yorum 5 karakterden Fazla Olmalıdır.")
+                }
+
+            })
+        })
+
+    </script>
+
+}
+
+

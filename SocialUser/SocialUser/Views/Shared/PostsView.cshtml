@@ -1,0 +1,173 @@
+﻿@model SocialUser.Models.PostViewModel
+@using Microsoft.AspNet.Identity
+
+@Styles.Render("~/Content/post.css")
+
+@foreach (var post in Model.posts)
+{
+    //Get user current profile photo
+    var postUserProfilePhoto = "";
+    foreach (var item in Model.users)
+    {
+        if (item.Id == post.UserId)
+        {
+            postUserProfilePhoto = item.profilePhoto;
+            break;
+        }
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <img id="i@(post.PostId)" class="card-profile" src="@postUserProfilePhoto" /><div title="@(post.Username) adlı kullanıcının profiline git" onclick="location.href = '/Home/UserProfile/@post.UserId'" class="userProfileDiv" id="s@(post.PostId)"><button id="a@(post.PostId)" class="USERICO"><i class="far fa-user"></i></button></div>
+            <script>
+                @*var img = document.querySelector("#i@(post.PostId)");
+
+                img.addEventListener("mouseover", function () {
+                    console.log("girdi");
+                    document.querySelector("#s@(post.PostId)").style.display = "block";
+                })
+                document.querySelector("#s@(post.PostId)").addEventListener("mouseout", function () {
+                    document.querySelector("#s@(post.PostId)").style.display = "none";
+                })*@
+                $(document).ready(function () {
+                    var img = $("#i@(post.PostId)");
+                    img.mouseover(function () {
+                        $("#s@(post.PostId)").fadeIn(200);
+                    })
+                    $("#s@(post.PostId)").mouseleave(function () {
+                        $("#s@(post.PostId)").fadeOut(200);
+                    })
+                })
+
+            </script>
+            <b>@post.Username</b>
+            @if (ViewBag.currentUserId == post.UserId)
+            {
+                @*@Html.ActionLink("Sil", "PostDelete", new { id = post.PostId }, new { id="deleteBtn", @class = "deleteBtn btn btn-danger", onclick = "return confirm('Gönderiyi silmek istediğinizden emin misiniz?');" })*@
+                <a id="delete@(post.PostId)" class="deleteBtn"><i class="fas fa-trash-alt fa-lg"></i></a>
+                <script>
+                    $(document).ready(function () {
+                        var btn = $("#delete" +@post.PostId);
+                        btn.click(function () {
+                            if (confirm('Gönderiyi silmek istediğinizden emin misiniz?')) {
+                                $.ajax({
+                                    url: "/Home/PostDelete",
+                                    type: "POST",
+                                    data: { id:@post.PostId},
+                                    dataType: "json",
+                                    success: function () { }
+                                })
+                            }
+                        })
+                    })
+                </script>
+            }
+            else
+            {
+
+            }
+
+            <hr class="card-hover-profile" />
+        </div>
+        <div class="card-description">
+            @post.Description
+
+        </div>
+        <div class="card-image">
+            <img class="card-picture" src="@post.PostPicture" />
+        </div>
+        <div class="card-footer">
+            @if (User.Identity.IsAuthenticated)
+            {
+                @Html.ActionLink("Detaylar..", "PostDetail", new { postid = post.PostId }, new { @class = "btn detailsBtn" })
+            }
+            else { }
+            <!--DateTime-->
+            <div class="badge bg-primary">
+                @{ var date = (DateTime.Now - post.PostDateTime);
+                    var year = date.TotalDays / 365;
+                    if (date.Days >= 365)
+                    { <b>@(Convert.ToInt32(year)) yıl önce </b>}
+                    else if (date.Days > 0)
+                    { <b>@date.Days gün önce</b>}
+                    else if (date.Minutes == 0)
+                    { <b>@date.Seconds saniye önce</b>}
+                    else if (date.Hours == 0)
+                    { <b>@date.Minutes dakika önce</b>}
+                    else if (date.Days == 0)
+                    {<b>@date.Hours saat önce</b> }
+                    else
+                    { <b>@date</b>}
+                    }
+
+            </div>
+            <div class="">
+                @{
+                    if (User.Identity.IsAuthenticated)
+                    {
+                        var check = false;
+                        var currentUserId = User.Identity.GetUserId();
+                        foreach (var postLike in Model.postLike)
+                        {
+
+                            //user like = true
+                            //find postLike tables userid and postid
+                            if (postLike.PostId == post.PostId && postLike.UserId == currentUserId)
+                            {
+                                //if check(user dont't like) show this button
+                                check = true;
+                                <a id="likeT@(post.PostId)" class="badge likeBtn"><i class="fas fa-thumbs-up"></i> @post.LikeCount</a>
+                                //liked post with ajax
+                                <script>
+                                    $(document).ready(function () {
+                                        var likeTBtn = $("#likeT@(post.PostId)");
+                                        //dont like true
+                                        likeTBtn.click(function () {
+                                            $.ajax({
+                                                url: "/Home/Postlike",
+                                                type: "GET",
+                                                data: { postid:@(post.PostId) , check: true },
+                                                dataType: "json",
+                                                success: function () { }
+                                            })
+                                        })
+                                    })
+                                </script>
+                                break;
+                            }
+                        }
+                        //if check false(user do like) show this button
+                        if (check == false)
+                        {
+                            <a id="likeF@(post.PostId)" class="badgeUnlike likeBtn"><i class="fas fa-thumbs-up"></i> @post.LikeCount</a>
+                            //liked delete post with ajax
+                            <script>
+                                $(document).ready(function () {
+                                        var likeFBtn = $("#likeF@(post.PostId)");
+                                        //like false
+                                        likeFBtn.click(function () {
+                                            $.ajax({
+                                                url: "/Home/PostLike",
+                                                type: "GET",
+                                                data: { postid:@(post.PostId) , check: false },
+                                                dataType: "json",
+                                                success: function () { }
+                                            })
+                                          })
+                                        })
+                            </script>
+                        }
+                    }
+                    else
+                    { <span class="badge"><i class="fas fa-thumbs-up"></i> @post.LikeCount</span> }
+                }
+
+
+
+            </div>
+
+        </div>
+
+    </div>
+}
+

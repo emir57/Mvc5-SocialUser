@@ -1,0 +1,87 @@
+#userProfileBar{
+position:relative;
+margin:auto;
+width:60%;
+margin-top:30px;
+background-color:#F4F6F7;
+border:2px solid #EAEDED;
+margin-bottom:30px;
+
+-webkit-box-shadow: 0px 11px 7px -12px rgba(0,0,0,0.75);
+-moz-box-shadow: 0px 11px 7px -12px rgba(0,0,0,0.75);
+box-shadow: 0px 11px 7px -12px rgba(0,0,0,0.75);
+
+}
+#TopBar{
+position:relative;
+min-height:120px;
+padding:5px;
+margin-top:0;
+border-bottom:1px solid white;
+}
+#userProfilePhoto{
+width:90px;
+height:90px;
+border-radius:50%;
+object-fit:cover;
+margin:15px;
+}
+#Username{
+display:inline-block;
+margin-left:40px;
+}
+#description{
+padding:10px;
+background-color: #F7F9F9;
+border:1px solid #EAEDED;
+width:60%;
+word-wrap:break-word;
+height:auto;
+margin-left:160px;
+margin-top:-49px;
+}
+#infos{
+margin-left:20px;
+display:inline-block;
+}
+.friendSend{
+border:none;
+background-color:RGBA(0,0,0,0);
+color:#3498DB;
+position:absolute;
+top:10px;
+right:10px;
+padding:5px;
+}
+
+@media only screen and (max-width: 980px){
+
+#userProfileBar{
+margin:auto;
+width:70%;
+
+}
+
+#TopBar{
+min-height:200px;
+padding:5px;
+margin-top:0;
+border-bottom:1px solid white;
+}
+
+#Username{
+display:inline-block;
+margin-left:10px;
+}
+#description{
+margin-left:0;
+margin-top:10px;
+width:100%;
+
+}
+#infos{
+margin-left:0;
+display:block;
+}
+
+}

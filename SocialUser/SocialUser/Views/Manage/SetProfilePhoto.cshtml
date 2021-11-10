@@ -1,0 +1,94 @@
+﻿@model SocialUser.Models.SetProfilePhoto
+@{
+    ViewBag.Title = "Profil fotoğrafınızı güncelleyin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Styles.Render("~/Content/local.css")
+<div class="jumbotron">
+    @using (Html.BeginForm("SetProfilePhoto", "Manage", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form", id = "formP" }))
+    {
+        @Html.AntiForgeryToken()
+        <img class="profilePhoto2"src="@ViewBag.photo"/> <img class="profilePhoto" src="@ViewBag.photo" /> <img class="profilePhoto3" src="@ViewBag.photo" /> <img style="margin-left:5px;" class="profilePhoto4" src="@ViewBag.photo" />
+        <br /><span style="margin-left:28px;">90x90</span><span style="margin-left:42px;">70x70</span><span style="margin-left:22px;">40x40</span><span style="margin-left:7px;">30x30</span>
+        <h4>Profil Fotoğrafınızı Güncelleyin</h4>
+        <hr />
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.profilePhoto, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                <input type="file" name="picture" id="picture" accept="image/gif, image/jpeg, image/png" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @*<input type="submit" value="Kaydet" class="btn btn-primary" />*@
+                <button id="submit" class="btn btn-primary">Kaydet</button>
+                <progress></progress>
+            </div>
+        </div>
+        <p class="text-danger">
+            @ViewBag.message
+        </p>
+    }
+    @using (Html.BeginForm("RemoveProfilePhoto", "Manage", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form", id = "formRemove" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Fotoğrafı Kaldır" class="btn btn-warning" />
+            </div>
+        </div>
+    }
+
+</div>
+<script>
+    $(document).ready(function () {
+        var picture = $("#picture");
+        var submit = $("#submit");
+        submit.click(function () {
+            $.ajax({
+                url: "/Manage/SetProfilePhoto",
+                type: "POST",
+                data: new FormData($("formP")[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                xhr: function () {
+                    var xhR = $.ajaxSettings.xhr();
+                    if (xhR.upload) {
+                        xhR.upload.addEventListener("progress", function (e) {
+                            if (e.lengthComputable) {
+                                $("progress").attr({
+                                    value: e.loaded,
+                                    max: e.total
+                                })
+                            }
+                        },false)
+                    }
+                    return xhR;
+                },
+                success: function () { }
+                
+            })
+        })
+    })
+
+
+
+
+    var form = document.forms["form"];
+    var picture = document.querySelector("#picture");
+    var message = document.querySelector(".text-danger");
+    message.innerHTML = "";
+    form.onsubmit = function() {
+        if (picture.files.length == 0) {
+            message.innerHTML = "Lütfen resim seçiniz.";
+            return false;
+            
+        } else {
+            return true;
+        }
+    }
+
+</script>
+

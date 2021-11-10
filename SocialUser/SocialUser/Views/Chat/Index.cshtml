@@ -1,0 +1,227 @@
+﻿@model SocialUser.Models.GetChatViewModel
+@using Microsoft.AspNet.Identity
+@using SocialUser.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+@Styles.Render("~/Content/chat.css")
+@Styles.Render("~/Content/local.css")
+@Scripts.Render("~/Scripts/jquery-2.2.4.js")
+
+<div id="groupDiv" class="CreateGroup" style="display:none;">
+    <div id="closeBtn"><i class="fas fa-times-circle fa-2x"></i></div>
+    <div id="groupDivMargin">
+        @* Create Group *@
+        <div id="groupDivLeft">
+            <h2 class="text-info">Grup Oluştur</h2>
+            <hr />
+            @using (Html.BeginForm("CreateGroup", "Chat", FormMethod.Post))
+            {
+                @Html.TextBox("groupName", "", new { id = "groupName", @class = "form-control", placeHolder = "Grup İsmi Giriniz." })
+                <button type="submit" id="createGroupp" class="btn btn-primary">Grubu Oluştur</button>
+            }
+
+            <div id="succCreate" class="text-success"></div>
+            <div id="errCreate" class="text-danger"></div>
+        </div>
+        @* Group Add User *@
+    <div id="groupDivRight">
+        <h2 class="text-info">Gruba arkadaşını ekle</h2>
+        <hr />
+        <h5>Kullanıcı Seçin.</h5>
+        <select class="form-control" id="user">
+            <option value="0">Kullanıcılar</option>
+            @foreach (var friend in Model.friends)
+            {
+                foreach (var user in Model.users)
+                {
+                    if (friend.UserId1 == user.Id && friend.UserId1 != User.Identity.GetUserId())
+                    {
+                        <option value="@user.Id">@user.UserName</option>
+                    }
+                    if (friend.UserId2 == user.Id && friend.UserId2 != User.Identity.GetUserId())
+                    {
+                        <option value="@user.Id">@user.UserName</option>
+                    }
+                }
+            }
+        </select>
+        <h5>Eklemek istediğiniz grubu seçin.</h5>
+        <select class="form-control" id="group">
+            <option value="0">Grup seçiniz.</option>
+            @foreach (var group in Model.groups)
+            {
+                if (group.CreateGroupUserId == User.Identity.GetUserId())
+                {
+                    <option value="@group.GroupId">(@group.GroupId) @group.GroupName</option>
+                }
+            }
+        </select>
+        <button id="AddUser" class="btn btn-primary">Ekle</button>
+        <button id="DeleteGroup" onclick="return confirm('Seçili grubu silmek istediğinizden eminmisiniz?');" class="btn btn-danger">Seçili Grubu Sil</button>
+        <div id="err" class="text-danger"></div>
+        <div id="succ" class="text-success"></div>
+        <script>
+            $(document).ready(function () {
+                var groupName = $("#groupName");
+                var AddUserBtn = $("#AddUser");
+                var DeleteGroupBtn = $("#DeleteGroup");
+                var createGroupBtn = $("#createGroup");
+                var user = $("#user");
+                var group = $("#group");
+                var err = $("#err");
+                var errCreate = $("#errCreate");
+                var succ = $("#succ");
+                var succCreate = $("#succCreate");
+
+                DeleteGroupBtn.attr("disabled", true);
+                group.change(function () {
+                    if (group.val() == 0) {
+                        DeleteGroupBtn.attr("disabled", true);
+                        
+                    }
+                    else {
+                        DeleteGroupBtn.attr("disabled", false);
+                        
+                    }
+                })
+                DeleteGroupBtn.click(function () {
+                    $.ajax({
+                        url: "/Chat/DeleteGroup",
+                        type: "POST",
+                        data: { id: group.val() },
+                        dataType: "json",
+                        success: function() { }
+
+                    });
+                    $("#group option[value=" + group.val() + "]").remove();
+                    DeleteGroupBtn.attr("disabled", true);
+                })
+
+                AddUserBtn.click(function () {
+                    err.empty();
+                    if (user.val() == "0") {
+                        err.append("<p>Lütfen Kullanıcı Seçiniz</p>");
+                    }
+                    else if (group.val() == "0") {
+                        err.append("<p>Lütfen Grup Seçiniz</p>");
+                    }
+                    else {
+                        $.ajax({
+                            url: "/Chat/AddUserGroup",
+                            type: "POST",
+                            data: { userId: user.val(), groupId: group.val() },
+                            dataType: "json",
+                            success: function () { }
+                        })
+                        succ.append("<p>Kullanıcı başarıyla eklendi.</p>");
+                    }
+                })
+                createGroupBtn.click(function () {
+                    err.empty();
+                    if (groupName.val() == "") {
+                        errCreate.append("<p>Grup Adı Boş olamaz.</p>");
+                    }
+                    else {
+                        $.ajax({
+                            url: "/Chat/CreateGroup",
+                            type: "POST",
+                            data: { groupName: groupName.val() },
+                            dataType: "json",
+                            success: function () { }
+                        })
+                        succCreate.append("<p>Grup Başarıyla Oluşturuldu.Grubu aktif etmek için lütfen arkadaşlarınızı ekleyin.</p>");
+                        
+                    }
+                })
+            })
+        </script>
+    </div>
+    </div>
+    
+    
+
+</div>
+<div id="background" style="display:none;">
+
+</div>
+
+
+<div id="leftBar" class="d-block">
+
+
+</div>
+<div id="rightBar" class="d-block">
+
+    <div class="jumbotron">
+        <h2 class="text-info main-title">Mesajlaşmaya Başla...</h2>
+        <h4 class="text-primary main-title">Hemde Doyasıya!</h4>
+    </div>
+    <button id="groupOpenBtn" class="btn btn-primary">Grup Oluştur veya Grubuna Arkadaş Ekle</button>
+    <div class="text-success" style="font-size:medium">
+        @ViewBag.message
+    </div>
+    
+    <script>
+        $(document).ready(function () {
+            var DivOpenBtn = $("#groupOpenBtn");
+            var groupDiv = $("#groupDiv");
+            var background = $("#background");
+            var closeBtn = $("#closeBtn");
+
+            DivOpenBtn.click(function () {
+                groupDiv.fadeIn(50).show();
+                background.fadeIn(300).show();
+            })
+            background.click(function () {
+                groupDiv.fadeOut(300).hide();
+                background.fadeOut(50).hide();
+            })
+            closeBtn.click(function () {
+                groupDiv.fadeOut(300).hide();
+                background.fadeOut(50).hide();
+            })
+
+        })
+    </script>
+</div>
+
+@section scripts{
+
+    @Scripts.Render("~/Scripts/jquery.signalR-2.4.2.js")
+    @Scripts.Render("~/signalr/hubs")
+
+    <script>
+        $(document).ready(function () {
+            var hub = $.connection.sampleHub;
+
+            $.connection.hub.start().done(function () {
+                getAllLeft();
+            })
+            hub.client.refreshAddFriend = function () {
+                getAllLeft();
+            }
+
+            function getAllLeft() {
+                var div = $("#leftBar");
+                $.ajax({
+                    url: "/Chat/GetLeftBarFriends",
+                    type: "GET",
+                    contentType: "application/html;charset=utf-8",
+                    dataType: "html",
+                    success: function (result) {
+                        div.empty().append(result);
+                        
+                    }
+                })
+            }
+        })
+    </script>
+
+}
+
+
