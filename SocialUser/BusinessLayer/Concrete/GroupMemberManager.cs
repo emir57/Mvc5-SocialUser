@@ -12,7 +12,7 @@ namespace BusinessLayer.Concrete
 {
     public class GroupMemberManager : IGroupMemberService
     {
-        IGroupMemberDal _member;
+        private IGroupMemberDal _member;
         public GroupMemberManager(IGroupMemberDal member)
         {
             _member = member;

@@ -13,7 +13,7 @@ namespace BusinessLayer.Concrete
 {
     public class UserFriendManager : IUserFriendService
     {
-        IUserFriendDal _friends;
+        private IUserFriendDal _friends;
         public UserFriendManager(IUserFriendDal friends)
         {
             _friends = friends;

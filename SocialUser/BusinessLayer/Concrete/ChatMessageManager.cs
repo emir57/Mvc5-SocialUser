@@ -2,6 +2,7 @@
 using DataAccessLayer.Abstract;
 using DataAccessLayer.Concrete.Repositories;
 using EntityLayer.Concrete;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,15 +14,20 @@ namespace BusinessLayer.Concrete
     public class ChatMessageManager : IChatMessageService
     {
 
-        IChatMessageDal _messages;
-        public ChatMessageManager(IChatMessageDal message)
+        private IChatMessageDal _messages;
+        private IValidator<ChatMessage> _chatMessageValidator;
+        public ChatMessageManager(IChatMessageDal message, IValidator<ChatMessage> chatMessageValidator)
         {
             _messages = message;
+            _chatMessageValidator = chatMessageValidator;
         }
 
         public async Task AddMessages(ChatMessage message)
         {
-            await _messages.Insert(message);
+            if(!(_chatMessageValidator.Validate(message).Errors.Count>0))
+            {
+                await _messages.Insert(message);
+            }
         }
 
         public async Task DeleteMessage(ChatMessage message)

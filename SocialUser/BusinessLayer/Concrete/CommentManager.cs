@@ -2,6 +2,7 @@
 using DataAccessLayer.Abstract;
 using DataAccessLayer.Concrete.Repositories;
 using EntityLayer.Concrete;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,16 +14,22 @@ namespace BusinessLayer.Concrete
 {
     public class CommentManager : ICommentService
     {
-        ICommentDal _comment;
+        private ICommentDal _comment;
+        private IValidator<Comment> _commentValidator;
 
-        public CommentManager(ICommentDal commentDal)
+        public CommentManager(ICommentDal commentDal, IValidator<Comment> commentValidator)
         {
             _comment = commentDal;
+            _commentValidator = commentValidator;
         }
 
         public async Task CommentAdd(Comment c)
         {
-            await _comment.Insert(c);
+            if (!(_commentValidator.Validate(c).Errors.Count > 0))
+            {
+                await _comment.Insert(c);
+            }
+                
         }
 
         public async Task<int> CommentCount(Expression<Func<Comment,bool>>filter)

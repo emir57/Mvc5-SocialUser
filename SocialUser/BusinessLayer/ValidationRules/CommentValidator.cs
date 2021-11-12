@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.ValidationRules
 {
-    public class CommentValidatior: AbstractValidator<Comment>
+    public class CommentValidator: AbstractValidator<Comment>
     {
-        public CommentValidatior()
+        public CommentValidator()
         {
             RuleFor(a => a.CommentDescription).NotEmpty().WithMessage("Yorum boş olamaz.");
             RuleFor(a => a.CommentDescription).MaximumLength(1000).WithMessage("Karakter sınırı aşıldı.");

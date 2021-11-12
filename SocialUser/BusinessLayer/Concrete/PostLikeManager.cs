@@ -13,7 +13,7 @@ namespace BusinessLayer.Concrete
 {
     public class PostLikeManager : IPostLikeService
     {
-        IPostLikeDal _postLike;
+        private IPostLikeDal _postLike;
         public PostLikeManager(IPostLikeDal postLikeDal)
         {
             _postLike = postLikeDal;

@@ -101,7 +101,7 @@ namespace SocialUser.Controllers
             //get post comments
             var comments = await _commentService.GetAll(a => a.PostId == id);
             //get post comments answers
-            var commentAnswers = await _commentAnswerService.GetAllBL();
+            var commentAnswers = await _commentAnswerService.GetAll();
 
             //delete post picture
             if (!(String.IsNullOrEmpty(post.PostPicture)))
@@ -125,7 +125,7 @@ namespace SocialUser.Controllers
                 {
                     if (answers.CommentId == comment.Id)
                     {
-                        await _commentAnswerService.CommentAnswerDeleteBL(answers);
+                        await _commentAnswerService.Delete(answers);
                     }
                 }
                 await _commentService.CommentDelete(comment);
@@ -179,7 +179,7 @@ namespace SocialUser.Controllers
                 DetailViewModel model = new DetailViewModel();
                 model.c = await _commentService.GetAll(a => a.PostId == post.PostId);
                 model.c = await _commentService.GetCommentListOrderedDateTime(a => a.CommentDateTime);
-                model.cA = await _commentAnswerService.GetAllBL(a => a.CommentId == postid);
+                model.cA = await _commentAnswerService.GetAll(a => a.CommentId == postid);
 
                 //get like users
                 model.likes = await _postLikeService.PostLikeList(a => a.PostId == postid);
@@ -274,14 +274,14 @@ namespace SocialUser.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var comment = await _commentService.FindComment(a => a.Id == id);
-                var commentAnswers = await _commentAnswerService.GetAllBL(a=>a.CommentId==comment.Id);
+                var commentAnswers = await _commentAnswerService.GetAll(a=>a.CommentId==comment.Id);
                 if (comment == null){ return RedirectToAction("Index"); }
                 else
                 {
                     
                     foreach (var answer in commentAnswers)
                     {
-                        await _commentAnswerService.CommentAnswerDeleteBL(answer);
+                        await _commentAnswerService.Delete(answer);
                     }
                     await _commentService.CommentDelete(comment);
 
@@ -300,8 +300,8 @@ namespace SocialUser.Controllers
             string currentUserId = User.Identity.GetUserId();
             if (currentUserId == UserId && id!=null)
             {
-                var getAnswer = await _commentAnswerService.FindPostBL(a => a.Id == id);
-                await _commentAnswerService.CommentAnswerDeleteBL(getAnswer);
+                var getAnswer = await _commentAnswerService.FindPost(a => a.Id == id);
+                await _commentAnswerService.Delete(getAnswer);
                 SampleHub.BroadcastComment();
                 return RedirectToAction("PostDetail", new { @postid = postid });
 
@@ -328,7 +328,7 @@ namespace SocialUser.Controllers
                     answer.AnswerDescription = commentText;
                     answer.AnswerDateTime = DateTime.Now;
                     //save answer
-                    await _commentAnswerService.CommentAnswerAddBL(answer);
+                    await _commentAnswerService.Add(answer);
                     SampleHub.BroadcastComment();
                     return RedirectToAction("PostDetail", new { @postid = postid });
                 }
@@ -386,7 +386,7 @@ namespace SocialUser.Controllers
             DetailViewModel model = new DetailViewModel();
             var comments = await _commentService.GetAll(a => a.PostId == postid);
             model.c = await _commentService.GetCommentListOrderedDateTime(a=>a.CommentDateTime,b=>b.PostId==postid);
-            model.cA = await _commentAnswerService.GetAllBL();
+            model.cA = await _commentAnswerService.GetAll();
             model.user = await _userService.GetAll();
             model.postid = (int)postid;
             //if (comments.Count() == 0)

@@ -199,7 +199,8 @@
                 var postid = $("#postid");
                 var div = $("#errorDiv")
                 e.preventDefault();
-                if (comment.val().length > 5) {
+                
+                if (comment.val().length > 1) {
                     $.ajax({
                         url: "PostDoComment",
                         type: "post",
@@ -210,7 +211,7 @@
                     comment.val("");
                     div.empty().append("");
                 } else {
-                    div.empty().append("Yorum 5 karakterden Fazla Olmalıdır.")
+                    div.empty().append("Yorum 1 karakterden Fazla Olmalıdır.")
                 }
 
             })

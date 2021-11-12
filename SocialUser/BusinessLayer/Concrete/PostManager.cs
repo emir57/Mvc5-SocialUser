@@ -2,6 +2,7 @@
 using DataAccessLayer.Abstract;
 using DataAccessLayer.Concrete.Repositories;
 using EntityLayer.Concrete;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,13 @@ namespace BusinessLayer.Concrete
 {
     public class PostManager : IPostService
     {
-        IPostDal _postDal;
+        private IPostDal _postDal;
+        private IValidator<Post> _postValidator;
 
-        public PostManager(IPostDal postDal)
+        public PostManager(IPostDal postDal, IValidator<Post> postValidator)
         {
             _postDal = postDal;
+            _postValidator = postValidator;
         }
 
         public async Task<List<Post>> GetAll(Expression<Func<Post,bool>> filter=null)
@@ -29,7 +32,11 @@ namespace BusinessLayer.Concrete
         }
         public async Task PostAdd(Post p)
         {
-            await _postDal.Insert(p);
+            if (!(_postValidator.Validate(p).Errors.Count > 0))
+            {
+                await _postDal.Insert(p);
+            }
+            
         }
         public async Task PostDelete(Post p)
         {
@@ -49,7 +56,10 @@ namespace BusinessLayer.Concrete
 
         public async Task PostUpdate(Post p)
         {
-            await _postDal.Update(p);
+            if (!(_postValidator.Validate(p).Errors.Count > 0))
+            {
+                await _postDal.Update(p);
+            }
         }
 
         public async Task<int> PostCount(Expression<Func<Post, bool>> filter)

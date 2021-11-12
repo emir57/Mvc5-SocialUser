@@ -1,7 +1,10 @@
 ﻿using BusinessLayer.Abstract;
 using BusinessLayer.Concrete;
+using BusinessLayer.ValidationRules;
 using DataAccessLayer.Abstract;
 using DataAccessLayer.EntityFramework;
+using EntityLayer.Concrete;
+using FluentValidation;
 using Ninject.Modules;
 using System;
 using System.Collections.Generic;
@@ -39,6 +42,12 @@ namespace BusinessLayer.DependencyResolvers.Ninject
             Bind<IPostDal>().To<EfPostDal>().InSingletonScope();
             Bind<IUserFriendDal>().To<EfUserFriendDal>().InSingletonScope();
 
+            //Validators
+            Bind<IValidator<Post>>().To<PostValidator>().InTransientScope();
+            Bind<IValidator<GroupMessage>>().To<GroupMessageValidator>().InTransientScope();
+            Bind<IValidator<Comment>>().To<CommentValidator>().InTransientScope();
+            Bind<IValidator<CommentAnswer>>().To<CommentAnswerValidator>().InTransientScope();
+            Bind<IValidator<ChatMessage>>().To<ChatMessageValidator>().InTransientScope();
         }
     }
 }

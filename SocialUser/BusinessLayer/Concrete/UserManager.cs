@@ -13,7 +13,7 @@ namespace BusinessLayer.Concrete
 {
     public class UserManager : IUserService
     {
-        IApplicationUserDal _user;
+        private IApplicationUserDal _user;
         public UserManager(IApplicationUserDal user)
         {
             _user = user;
