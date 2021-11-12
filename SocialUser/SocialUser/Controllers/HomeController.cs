@@ -1,4 +1,6 @@
-﻿using BusinessLayer.Concrete;
+﻿using BusinessLayer.Abstract;
+using BusinessLayer.Concrete;
+using BusinessLayer.Utilities;
 using DataAccessLayer.Concrete;
 using DataAccessLayer.EntityFramework;
 using EntityLayer.Concrete;
@@ -19,26 +21,26 @@ namespace SocialUser.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        PostManager _posts = new PostManager(new EfPostDal());
-        CommentManager _comments = new CommentManager(new EfCommentDal());
-        CommentAnswerManager _commentAnswers = new CommentAnswerManager(new EfCommentAnswerDal());
-        PostLikeManager _postLikes = new PostLikeManager(new EfPostLikeDal());
-        UserManager _users = new UserManager(new EfApplicationUserDal());
-        UserFriendManager _userFriend = new UserFriendManager(new EfUserFriendDal());
+        private IPostService _postService = NinjectInstanceFactory.GetInstance<IPostService>();
+        private ICommentService _commentService = NinjectInstanceFactory.GetInstance<ICommentService>();
+        private ICommentAnswerService _commentAnswerService = NinjectInstanceFactory.GetInstance<ICommentAnswerService>();
+        private IPostLikeService _postLikeService = NinjectInstanceFactory.GetInstance<IPostLikeService>();
+        private IUserService _userService = NinjectInstanceFactory.GetInstance<IUserService>();
+        private IUserFriendService _userFriendService = NinjectInstanceFactory.GetInstance<IUserFriendService>();
         //****************************************************
         //Methods
 
         //get current user
         public async Task<ApplicationUser> getCurrentUser(string id)
         {
-            return await _users.Find(a => a.Id == id);
+            return await _userService.Find(a => a.Id == id);
         }
         //save like count
         public async Task updateLikeCount(int postid, int currentLike)
         {
-            var count = await _posts.FindPost(a => a.PostId == postid);
+            var count = await _postService.FindPost(a => a.PostId == postid);
             count.LikeCount = currentLike;
-            await _posts.PostUpdate(count);
+            await _postService.PostUpdate(count);
         }
 
         //************************************************
@@ -82,7 +84,7 @@ namespace SocialUser.Controllers
                 post.Username = currentUser.UserName;
                 post.UserId = currentUser.Id;
                 post.PostDateTime = DateTime.Now;
-                await _posts.PostAdd(post);
+                await _postService.PostAdd(post);
 
                 SampleHub.BroadcastPost();
 
@@ -95,11 +97,11 @@ namespace SocialUser.Controllers
         public async Task<ActionResult> PostDelete(int id)
         {
             //get post
-            var post = await _posts.FindPost(a => a.PostId == id);
+            var post = await _postService.FindPost(a => a.PostId == id);
             //get post comments
-            var comments = await _comments.GetAll(a => a.PostId == id);
+            var comments = await _commentService.GetAll(a => a.PostId == id);
             //get post comments answers
-            var commentAnswers = await _commentAnswers.GetAllBL();
+            var commentAnswers = await _commentAnswerService.GetAllBL();
 
             //delete post picture
             if (!(String.IsNullOrEmpty(post.PostPicture)))
@@ -114,7 +116,7 @@ namespace SocialUser.Controllers
             }
 
             //delete post
-            await _posts.PostDelete(post);
+            await _postService.PostDelete(post);
 
             //delete comments and answers
             foreach (var comment in comments)
@@ -123,10 +125,10 @@ namespace SocialUser.Controllers
                 {
                     if (answers.CommentId == comment.Id)
                     {
-                        await _commentAnswers.CommentAnswerDeleteBL(answers);
+                        await _commentAnswerService.CommentAnswerDeleteBL(answers);
                     }
                 }
-                await _comments.CommentDelete(comment);
+                await _commentService.CommentDelete(comment);
             }
 
             SampleHub.BroadcastPost();
@@ -138,7 +140,7 @@ namespace SocialUser.Controllers
         {
 
             //get post
-            var post = await _posts.FindPost(a => a.PostId == postid);
+            var post = await _postService.FindPost(a => a.PostId == postid);
             if (post == null)
             {
                 return RedirectToAction("Index");
@@ -147,7 +149,7 @@ namespace SocialUser.Controllers
             {
                 string currentUserId = User.Identity.GetUserId();
                 //do current user like post? null=not like
-                var search = await _postLikes.PostLikeFind(a => a.UserId == currentUserId && a.PostId == postid);
+                var search = await _postLikeService.PostLikeFind(a => a.UserId == currentUserId && a.PostId == postid);
                 if(search == null)
                 {
                     //user not like = false
@@ -159,7 +161,7 @@ namespace SocialUser.Controllers
                 //get sharing post userId
                 var postUserId = post.UserId;
                 //get user
-                var user = await _users.Find(a => a.Id == postUserId);
+                var user = await _userService.Find(a => a.Id == postUserId);
 
 
                 //post info
@@ -175,13 +177,13 @@ namespace SocialUser.Controllers
                 
                 
                 DetailViewModel model = new DetailViewModel();
-                model.c = await _comments.GetAll(a => a.PostId == post.PostId);
-                model.c = await _comments.GetCommentListOrderedDateTime(a => a.CommentDateTime);
-                model.cA = await _commentAnswers.GetAllBL(a => a.CommentId == postid);
+                model.c = await _commentService.GetAll(a => a.PostId == post.PostId);
+                model.c = await _commentService.GetCommentListOrderedDateTime(a => a.CommentDateTime);
+                model.cA = await _commentAnswerService.GetAllBL(a => a.CommentId == postid);
 
                 //get like users
-                model.likes = await _postLikes.PostLikeList(a => a.PostId == postid);
-                model.user = await _users.GetAll();
+                model.likes = await _postLikeService.PostLikeList(a => a.PostId == postid);
+                model.user = await _userService.GetAll();
                 return View(model);
         }
         }
@@ -197,9 +199,9 @@ namespace SocialUser.Controllers
                     //like
                     like.UserId = currentUserId;
                     like.PostId = (int)postid;
-                    await _postLikes.PostLikeAdd(like);
+                    await _postLikeService.PostLikeAdd(like);
 
-                    var likes = await _postLikes.PostLikeList(a => a.PostId == postid);
+                    var likes = await _postLikeService.PostLikeList(a => a.PostId == postid);
                     int likecount = likes.Count();
 
                     //update post like count
@@ -211,10 +213,10 @@ namespace SocialUser.Controllers
                 else if(postid!= null && check==true)
                 {
                     //like delete
-                    var search = await _postLikes.PostLikeFind(a => a.PostId == postid && a.UserId == currentUserId);
-                    await _postLikes.PostLikeDelete(search);
+                    var search = await _postLikeService.PostLikeFind(a => a.PostId == postid && a.UserId == currentUserId);
+                    await _postLikeService.PostLikeDelete(search);
 
-                    var likes = await _postLikes.PostLikeList(a => a.PostId == postid);
+                    var likes = await _postLikeService.PostLikeList(a => a.PostId == postid);
                     int likecount = likes.Count();
 
                     //update post like count
@@ -236,7 +238,7 @@ namespace SocialUser.Controllers
         {
 
             //get post
-            var post = await _posts.FindPost(a => a.PostId == postid);
+            var post = await _postService.FindPost(a => a.PostId == postid);
             if (post == null)
             {
                 return RedirectToAction("Index");
@@ -256,7 +258,7 @@ namespace SocialUser.Controllers
                     comment.CommentDescription = text;
                     comment.CommentDateTime = DateTime.Now;
 
-                    await _comments.CommentAdd(comment);
+                    await _commentService.CommentAdd(comment);
 
                     SampleHub.BroadcastComment();
                     return RedirectToAction("PostDetail", new{ @postid = postid });
@@ -271,17 +273,17 @@ namespace SocialUser.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                var comment = await _comments.FindComment(a => a.Id == id);
-                var commentAnswers = await _commentAnswers.GetAllBL(a=>a.CommentId==comment.Id);
+                var comment = await _commentService.FindComment(a => a.Id == id);
+                var commentAnswers = await _commentAnswerService.GetAllBL(a=>a.CommentId==comment.Id);
                 if (comment == null){ return RedirectToAction("Index"); }
                 else
                 {
                     
                     foreach (var answer in commentAnswers)
                     {
-                        await _commentAnswers.CommentAnswerDeleteBL(answer);
+                        await _commentAnswerService.CommentAnswerDeleteBL(answer);
                     }
-                    await _comments.CommentDelete(comment);
+                    await _commentService.CommentDelete(comment);
 
 
                     SampleHub.BroadcastComment();
@@ -298,8 +300,8 @@ namespace SocialUser.Controllers
             string currentUserId = User.Identity.GetUserId();
             if (currentUserId == UserId && id!=null)
             {
-                var getAnswer = await _commentAnswers.FindPostBL(a => a.Id == id);
-                await _commentAnswers.CommentAnswerDeleteBL(getAnswer);
+                var getAnswer = await _commentAnswerService.FindPostBL(a => a.Id == id);
+                await _commentAnswerService.CommentAnswerDeleteBL(getAnswer);
                 SampleHub.BroadcastComment();
                 return RedirectToAction("PostDetail", new { @postid = postid });
 
@@ -312,7 +314,7 @@ namespace SocialUser.Controllers
         [HttpPost]
         public async Task<ActionResult> CommentAnswerDo(int? postid,int? commentid,string commentText,CommentAnswer answer)
         {
-            var comment = await _comments.FindComment(a => a.Id == commentid);
+            var comment = await _commentService.FindComment(a => a.Id == commentid);
             if (comment != null)
             {
                 if((postid!=null) && (commentid != null))
@@ -326,7 +328,7 @@ namespace SocialUser.Controllers
                     answer.AnswerDescription = commentText;
                     answer.AnswerDateTime = DateTime.Now;
                     //save answer
-                    await _commentAnswers.CommentAnswerAddBL(answer);
+                    await _commentAnswerService.CommentAnswerAddBL(answer);
                     SampleHub.BroadcastComment();
                     return RedirectToAction("PostDetail", new { @postid = postid });
                 }
@@ -346,18 +348,18 @@ namespace SocialUser.Controllers
             ProfileView model = new ProfileView();
             string currentUserId = User.Identity.GetUserId();
             //get user
-            var user = await _users.Find(a => a.Id == id);
+            var user = await _userService.Find(a => a.Id == id);
             if (user!=null)
             {
                 model.user = user;
                 //get user posts
-                var posts = await _posts.GetPostListOrdered(a => a.PostDateTime, b => b.UserId == id);
+                var posts = await _postService.GetPostListOrdered(a => a.PostDateTime, b => b.UserId == id);
                 model.posts = posts;
                 //get infos
-                model.postCount = await _posts.PostCount(a => a.UserId == id);
-                model.friendsCount = await _userFriend.FriendCount(a => a.UserId1 == id || a.UserId2 == id);
+                model.postCount = await _postService.PostCount(a => a.UserId == id);
+                model.friendsCount = await _userFriendService.FriendCount(a => a.UserId1 == id || a.UserId2 == id);
                 //current user is friend?
-                var friend = await _userFriend.Find(a => (a.UserId1 == id && a.UserId2 == currentUserId) || (a.UserId1 == currentUserId && a.UserId2 == id));
+                var friend = await _userFriendService.Find(a => (a.UserId1 == id && a.UserId2 == currentUserId) || (a.UserId1 == currentUserId && a.UserId2 == id));
                 //null not friend
                 if (friend == null)
                 {
@@ -382,10 +384,10 @@ namespace SocialUser.Controllers
         public async Task<PartialViewResult> GetComments(int? postid)
         {
             DetailViewModel model = new DetailViewModel();
-            var comments = await _comments.GetAll(a => a.PostId == postid);
-            model.c = await _comments.GetCommentListOrderedDateTime(a=>a.CommentDateTime,b=>b.PostId==postid);
-            model.cA = await _commentAnswers.GetAllBL();
-            model.user = await _users.GetAll();
+            var comments = await _commentService.GetAll(a => a.PostId == postid);
+            model.c = await _commentService.GetCommentListOrderedDateTime(a=>a.CommentDateTime,b=>b.PostId==postid);
+            model.cA = await _commentAnswerService.GetAllBL();
+            model.user = await _userService.GetAll();
             model.postid = (int)postid;
             //if (comments.Count() == 0)
             //{
@@ -409,9 +411,9 @@ namespace SocialUser.Controllers
             ViewBag.currentUserId = currentId;
             PostViewModel model = new PostViewModel();
             //model.posts = await _context.Posts.OrderByDescending(a => a.PostDateTime).ToListAsync();
-            model.posts = await _posts.GetPostListOrdered(a=>a.PostDateTime);
-            model.postLike = await _postLikes.PostLikeList();
-            model.users = await _users.GetAll();
+            model.posts = await _postService.GetPostListOrdered(a=>a.PostDateTime);
+            model.postLike = await _postLikeService.PostLikeList();
+            model.users = await _userService.GetAll();
             return PartialView("PostsView", model);
         }
         [AllowAnonymous]
@@ -421,9 +423,9 @@ namespace SocialUser.Controllers
             ViewBag.currentUserId = currentId;
             PostViewModel model = new PostViewModel();
             //model.posts = await _context.Posts.OrderByDescending(a => a.PostDateTime).ToListAsync();
-            model.posts = await _posts.GetPostListOrdered(a => a.PostDateTime,a=>a.UserId==id);
-            model.postLike = await _postLikes.PostLikeList();
-            model.users = await _users.GetAll();
+            model.posts = await _postService.GetPostListOrdered(a => a.PostDateTime,a=>a.UserId==id);
+            model.postLike = await _postLikeService.PostLikeList();
+            model.users = await _userService.GetAll();
             return PartialView("PostsView", model);
 
         }
@@ -431,7 +433,7 @@ namespace SocialUser.Controllers
         public async Task<PartialViewResult> GetLastComment()
         {
             LastCommentViewModel model = new LastCommentViewModel();
-            model.comments = await _comments.GetCommentListOrderedIdTake(a => a.Id,5);
+            model.comments = await _commentService.GetCommentListOrderedIdTake(a => a.Id,5);
             return PartialView("lastComment", model);
         }
         [AllowAnonymous]
@@ -440,9 +442,9 @@ namespace SocialUser.Controllers
             GetUserViewModel model = new GetUserViewModel();
             string currentUserId = User.Identity.GetUserId();
             //get search users
-            model.users = await _users.GetAll(a=>a.UserName.ToLower().Contains(searchKey.ToLower())&& a.Id!=currentUserId);
+            model.users = await _userService.GetAll(a=>a.UserName.ToLower().Contains(searchKey.ToLower())&& a.Id!=currentUserId);
             //get current user friend
-            model.userFriend = await _userFriend.GetAll(a => (a.Check == true)&&(a.UserId1==currentUserId || a.UserId2==currentUserId));
+            model.userFriend = await _userFriendService.GetAll(a => (a.Check == true)&&(a.UserId1==currentUserId || a.UserId2==currentUserId));
            return PartialView("GetUsersView",model);
         }
 

@@ -352,3 +352,5 @@ C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\SocialUser\obj\Debug\
 C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\SocialUser\obj\Debug\SocialUser.csproj.CopyComplete
 C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\SocialUser\obj\Debug\SocialUser.dll
 C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\SocialUser\obj\Debug\SocialUser.pdb
+C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\SocialUser\bin\Ninject.dll
+C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\SocialUser\bin\Ninject.xml

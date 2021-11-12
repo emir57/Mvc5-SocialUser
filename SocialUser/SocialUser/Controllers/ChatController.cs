@@ -1,4 +1,6 @@
-﻿using BusinessLayer.Concrete;
+﻿using BusinessLayer.Abstract;
+using BusinessLayer.Concrete;
+using BusinessLayer.Utilities;
 using DataAccessLayer.EntityFramework;
 using EntityLayer.Concrete;
 using Microsoft.AspNet.Identity;
@@ -15,24 +17,24 @@ namespace SocialUser.Controllers
     [Authorize]
     public class ChatController : Controller
     {
-        ChatMessageManager _chatMessage = new ChatMessageManager(new EfChatMessageDal());
-        UserManager _users = new UserManager(new EfApplicationUserDal());
-        UserFriendManager _userFriends = new UserFriendManager(new EfUserFriendDal());
-        GroupMessageManager _groupMessages = new GroupMessageManager(new EfGroupMessageDal());
-        GroupMemberManager _groupMembers = new GroupMemberManager(new EfGroupMemberDal());
-        GroupManager _groups = new GroupManager(new EfGroupDal());
+        private IChatMessageService _chatMessageService = NinjectInstanceFactory.GetInstance<IChatMessageService>();
+        private IUserService _userService = NinjectInstanceFactory.GetInstance<IUserService>();
+        private IUserFriendService _userFriendService = NinjectInstanceFactory.GetInstance<IUserFriendService>();
+        private IGroupMessageService _groupMessageService = NinjectInstanceFactory.GetInstance<IGroupMessageService>();
+        private IGroupMemberService _groupMemberService = NinjectInstanceFactory.GetInstance<IGroupMemberService>();
+        private IGroupService _groupService = new GroupManager(new EfGroupDal());
         public async Task<ApplicationUser> getCurrentUser(string id)
         {
-            return await _users.Find(a => a.Id == id);
+            return await _userService.Find(a => a.Id == id);
         }
         // GET: Chat
         public async Task<ActionResult> Index(string message)
         {
             GetChatViewModel model = new GetChatViewModel();
             string currentUserId = User.Identity.GetUserId();
-            model.friends = await _userFriends.GetAll(a => (a.UserId1 == currentUserId || a.UserId2 == currentUserId)&&(a.Check==true));
-            model.users = await _users.GetAll();
-            model.groups = await _groups.List(a=>a.CreateGroupUserId==currentUserId);
+            model.friends = await _userFriendService.GetAll(a => (a.UserId1 == currentUserId || a.UserId2 == currentUserId)&&(a.Check==true));
+            model.users = await _userService.GetAll();
+            model.groups = await _groupService.List(a=>a.CreateGroupUserId==currentUserId);
 
             ViewBag.message = message;
             return View(model);
@@ -43,8 +45,8 @@ namespace SocialUser.Controllers
             string currentUserId = User.Identity.GetUserId();
             GetChatViewModel chat = new GetChatViewModel();
             //search
-            var userid1 = await _users.Find(a => a.Id == user1);
-            var userid2 = await _users.Find(a => a.Id == user2);
+            var userid1 = await _userService.Find(a => a.Id == user1);
+            var userid2 = await _userService.Find(a => a.Id == user2);
 
             chat.userid1 = user1;
             chat.userid2 = user2;
@@ -63,7 +65,7 @@ namespace SocialUser.Controllers
         {
 
             GetChatViewModel chat = new GetChatViewModel();
-            chat.msg = await _chatMessage.GetMessages(user1, user2);
+            chat.msg = await _chatMessageService.GetMessages(user1, user2);
             return PartialView("LoadChatMessage", chat);
         }
         [HttpPost]
@@ -74,7 +76,7 @@ namespace SocialUser.Controllers
             message.MessageText = text;
             message.MessageDateTime = DateTime.Now;
             
-            await _chatMessage.AddMessages(message);
+            await _chatMessageService.AddMessages(message);
             SampleHub.BroadcastChat(user1, user2);
 
 
@@ -86,14 +88,14 @@ namespace SocialUser.Controllers
             GetChatViewModel chat = new GetChatViewModel();
             string currentUserId = User.Identity.GetUserId();
             chat.currentUser = await getCurrentUser(currentUserId);
-            chat.users = await _users.GetAll();
-            chat.friends = await _userFriends.GetAll(a => a.UserId1 == currentUserId || a.UserId2 == currentUserId);
+            chat.users = await _userService.GetAll();
+            chat.friends = await _userFriendService.GetAll(a => a.UserId1 == currentUserId || a.UserId2 == currentUserId);
             //get current user group id
-            var userGroups = await _groupMembers.List(a => a.UserId == currentUserId);
+            var userGroups = await _groupMemberService.List(a => a.UserId == currentUserId);
             //get groups
-            chat.groups = await _groups.List();
+            chat.groups = await _groupService.List();
             //get members
-            chat.members = await _groupMembers.List();
+            chat.members = await _groupMemberService.List();
             return PartialView("GetFriends",chat);
         }
 
@@ -103,12 +105,12 @@ namespace SocialUser.Controllers
         {
             GetGroupViewModel chat = new GetGroupViewModel();
             string currentUser = User.Identity.GetUserId();
-            chat.users = await _users.GetAll();
+            chat.users = await _userService.GetAll();
             chat.currentUser = await getCurrentUser(currentUser);
-            chat.groupsMembers = await _groupMembers.List(a => a.GroupId == groupId);
-            chat.currentUser = await _users.Find(a => a.Id == currentUser);
-            chat.groupMessage = await _groupMessages.GetMessages(a=>a.GroupId==groupId);
-            chat.group = await _groups.FindGroup(a => a.GroupId == groupId);
+            chat.groupsMembers = await _groupMemberService.List(a => a.GroupId == groupId);
+            chat.currentUser = await _userService.Find(a => a.Id == currentUser);
+            chat.groupMessage = await _groupMessageService.GetMessages(a=>a.GroupId==groupId);
+            chat.group = await _groupService.FindGroup(a => a.GroupId == groupId);
             chat.groupId = groupId;
             return View(chat);
         }
@@ -116,8 +118,8 @@ namespace SocialUser.Controllers
         {
             //user1 sender
             GetGroupViewModel chat = new GetGroupViewModel();
-            chat.groupMessage = await _groupMessages.GetMessages(a => a.GroupId == groupId);
-            chat.users = await _users.GetAll();
+            chat.groupMessage = await _groupMessageService.GetMessages(a => a.GroupId == groupId);
+            chat.users = await _userService.GetAll();
             chat.groupId = (int)groupId;
             return PartialView("LoadGroupMessage", chat);
         }
@@ -129,7 +131,7 @@ namespace SocialUser.Controllers
             message.SenderUserId = currentUserId;
             message.Message = text;
             message.MessageDateTime = DateTime.Now;
-            await _groupMessages.Add(message);
+            await _groupMessageService.Add(message);
             SampleHub.BroadcastGroupChat();
             return RedirectToAction("Index");
         }
@@ -142,17 +144,17 @@ namespace SocialUser.Controllers
             group.GroupDateTime = now;
             group.CreateGroupUserId = currentuserid;
             
-            await _groups.Add(group);
+            await _groupService.Add(group);
 
             SampleHub.BroadcastAddFriend();
             return RedirectToAction("Index",new {@message= "Grup başarıyla oluşturuldu.\nGrubu aktif etmek için arkadaşlarınızı ekleyin." });
         }
         public async Task<ActionResult> DeleteGroup(int id)
         {
-            var findGroup = await _groups.FindGroup(a => a.GroupId == id);
+            var findGroup = await _groupService.FindGroup(a => a.GroupId == id);
             if(findGroup!=null)
             {
-                await _groups.Delete(findGroup);
+                await _groupService.Delete(findGroup);
             }
             return RedirectToAction("Index");
         }
@@ -161,20 +163,20 @@ namespace SocialUser.Controllers
             if(userId!=null && groupId != 0)
             {
                 string currentUserId = User.Identity.GetUserId();
-                var getGroup = await _groups.FindGroup(a => a.GroupId == groupId);
-                var check = await _groupMembers.FindMember(a => a.GroupId == groupId && a.UserId == getGroup.CreateGroupUserId);
+                var getGroup = await _groupService.FindGroup(a => a.GroupId == groupId);
+                var check = await _groupMemberService.FindMember(a => a.GroupId == groupId && a.UserId == getGroup.CreateGroupUserId);
                 if(check == null)
                 {
                     CreateGroupUser.GroupId = groupId;
                     CreateGroupUser.UserId = getGroup.CreateGroupUserId;
                     CreateGroupUser.Role = "Manager";
-                    await _groupMembers.Add(CreateGroupUser);
+                    await _groupMemberService.Add(CreateGroupUser);
                 }
                 //add group members
                 m.UserId = userId;
                 m.GroupId = groupId;
                 m.Role = "User";
-                await _groupMembers.Add(m);
+                await _groupMemberService.Add(m);
                 SampleHub.BroadcastAddFriend();
             }
 
@@ -183,12 +185,12 @@ namespace SocialUser.Controllers
 
         public async Task<ActionResult> DoManager(int id)
         {
-            var getMember = await _groupMembers.FindMember(a => a.MemberId == id);
-            var getGroup = await _groups.FindGroup(a => a.GroupId == getMember.GroupId);
+            var getMember = await _groupMemberService.FindMember(a => a.MemberId == id);
+            var getGroup = await _groupService.FindGroup(a => a.GroupId == getMember.GroupId);
             if (getGroup.CreateGroupUserId != getMember.UserId)
             {
                 getMember.Role = "Manager";
-                await _groupMembers.Update(getMember);
+                await _groupMemberService.Update(getMember);
             }
             
 
@@ -196,12 +198,12 @@ namespace SocialUser.Controllers
         }
         public async Task<ActionResult> RemoveManager(int id)
         {
-            var getMember = await _groupMembers.FindMember(a => a.MemberId == id);
-            var getGroup = await _groups.FindGroup(a => a.GroupId == getMember.GroupId);
+            var getMember = await _groupMemberService.FindMember(a => a.MemberId == id);
+            var getGroup = await _groupService.FindGroup(a => a.GroupId == getMember.GroupId);
             if(getGroup.CreateGroupUserId != getMember.UserId)
             {
                 getMember.Role = "User";
-                await _groupMembers.Update(getMember);
+                await _groupMemberService.Update(getMember);
             }
             
 
@@ -210,11 +212,11 @@ namespace SocialUser.Controllers
 
         public async Task<ActionResult> GroupRemoveUser(int memberId,int groupId)
         {
-            var getMember = await _groupMembers.FindMember(a => a.MemberId == memberId);
-            var getGroup = await _groups.FindGroup(a => a.GroupId == groupId);
+            var getMember = await _groupMemberService.FindMember(a => a.MemberId == memberId);
+            var getGroup = await _groupService.FindGroup(a => a.GroupId == groupId);
             if(getGroup.CreateGroupUserId!= getMember.UserId)
             {
-                await _groupMembers.Delete(getMember);
+                await _groupMemberService.Delete(getMember);
             }
             
             return RedirectToAction("GetGroupView", new { @groupId = groupId });

@@ -17,6 +17,7 @@ namespace BusinessLayer.Abstract
         Task<Comment> FindComment(Expression<Func<Comment, bool>> filter);
         Task<List<Comment>> GetCommentListOrderedDateTime(Expression<Func<Comment, DateTime>> filter, Expression<Func<Comment, bool>> search = null);
         Task<List<Comment>> GetCommentListOrderedInt(Expression<Func<Comment, int>> filter);
+        Task<List<Comment>> GetCommentListOrderedIdTake(Expression<Func<Comment, int>> filter, int takeCount);
 
     }
 }

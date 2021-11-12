@@ -12,6 +12,8 @@ using System.Data.Entity;
 using EntityLayer.Concrete;
 using BusinessLayer.Concrete;
 using DataAccessLayer.EntityFramework;
+using BusinessLayer.Abstract;
+using BusinessLayer.Utilities;
 
 namespace SocialUser.Controllers
 {
@@ -19,13 +21,13 @@ namespace SocialUser.Controllers
     [Authorize]
     public class ManageController : Controller
     {
-        UserManager _users = new UserManager(new EfApplicationUserDal());
-        UserFriendManager _userFriend = new UserFriendManager(new EfUserFriendDal());
+        private IUserService _userService = NinjectInstanceFactory.GetInstance<IUserService>();
+        private IUserFriendService _userFriendService = NinjectInstanceFactory.GetInstance<IUserFriendService>();
 
         //get current user
         public async Task<ApplicationUser> getCurrentUser(string id)
         {
-            return await _users.Find(a => a.Id == id);
+            return await _userService.Find(a => a.Id == id);
         }
 
 
@@ -92,29 +94,29 @@ namespace SocialUser.Controllers
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId),
 
                 //Friends
-                userFriends = await _userFriend.GetAll(),
-                users = await _users.GetAll()
+                userFriends = await _userFriendService.GetAll(),
+                users = await _userService.GetAll()
         };
 
             return View(model);
         }
         public async Task<ActionResult> Accept(int? id)
         {
-            var result = await _userFriend.Find(a => a.Id == id);
+            var result = await _userFriendService.Find(a => a.Id == id);
             result.Check = true;
             var userid1 = result.UserId1;
             var userid2 = result.UserId2;
-            await _userFriend.Update(result);
+            await _userFriendService.Update(result);
             SampleHub.BroadcastFriend(userid1, userid2);
             
             return RedirectToAction("Index");
         }
         public async Task<ActionResult> Delete(int? id)
         {
-            var result = await _userFriend.Find(a => a.Id == id);
+            var result = await _userFriendService.Find(a => a.Id == id);
             var userid1 = result.UserId1;
             var userid2 = result.UserId2;
-            await _userFriend.Delete(result);
+            await _userFriendService.Delete(result);
             SampleHub.BroadcastFriend(userid1, userid2);
             return RedirectToAction("Index");
         }
@@ -124,10 +126,10 @@ namespace SocialUser.Controllers
             IndexViewModel model = new IndexViewModel();
             string currentUserId = User.Identity.GetUserId();
 
-            var user = await _users.Find(a => a.UserName == username);
+            var user = await _userService.Find(a => a.UserName == username);
 
             //check
-            var userFriendCheck = await _userFriend.Find(a => (a.UserId1 == currentUserId && a.UserId2 == user.Id) || (a.UserId2 == currentUserId && a.UserId1 == user.Id));
+            var userFriendCheck = await _userFriendService.Find(a => (a.UserId1 == currentUserId && a.UserId2 == user.Id) || (a.UserId2 == currentUserId && a.UserId1 == user.Id));
             if (userFriendCheck == null)
             {
                 if (user == null)
@@ -136,13 +138,13 @@ namespace SocialUser.Controllers
                 }
                 else
                 {
-                    var userCheck = _userFriend.Find(a => a.UserId1 == currentUserId && a.UserId2 == user.Id);
+                    var userCheck = _userFriendService.Find(a => a.UserId1 == currentUserId && a.UserId2 == user.Id);
                     if (userCheck != null)
                     {
                         userFriend.Check = false;
                         userFriend.UserId1 = currentUserId;
                         userFriend.UserId2 = user.Id;
-                        await _userFriend.Add(userFriend);
+                        await _userFriendService.Add(userFriend);
                         SampleHub.BroadcastFriend(currentUserId, user.Id);
                         return RedirectToAction("Index");
                     }
@@ -161,13 +163,13 @@ namespace SocialUser.Controllers
         public async Task<PartialViewResult> GetFriendList()
         {
             IndexViewModel model = new IndexViewModel();
-            model.userFriends = await _userFriend.GetAll();
-            model.users = await _users.GetAll();
+            model.userFriends = await _userFriendService.GetAll();
+            model.users = await _userService.GetAll();
 
             //friends Check
             string userId = User.Identity.GetUserId();
-            var friends = await _userFriend.GetAll(a => (a.Check == true) && ((a.UserId1 == userId) || (a.UserId2 == userId)));
-            var friendsRequest = await _userFriend.GetAll(a => (a.Check == false) && ((a.UserId1 == userId) || a.UserId2 == userId));
+            var friends = await _userFriendService.GetAll(a => (a.Check == true) && ((a.UserId1 == userId) || (a.UserId2 == userId)));
+            var friendsRequest = await _userFriendService.GetAll(a => (a.Check == false) && ((a.UserId1 == userId) || a.UserId2 == userId));
             if (friends.Count == 0)
             {
                 model.friends = "Henüz arkadaşınız yok.";
@@ -200,7 +202,7 @@ namespace SocialUser.Controllers
                 string currentUserId = User.Identity.GetUserId();
                 var currentUser = await getCurrentUser(currentUserId);
                 currentUser.profileDescription = description;
-                await _users.UpdateUser(currentUser);
+                await _userService.UpdateUser(currentUser);
             }
             return RedirectToAction("Index");
         }
@@ -238,7 +240,7 @@ namespace SocialUser.Controllers
             }
             
             currentUser.profilePhoto = databasePath;
-            await _users.UpdateUser(currentUser);
+            await _userService.UpdateUser(currentUser);
             SampleHub.BroadcastPost();
             return RedirectToAction("SetProfilePhoto");
             
@@ -263,7 +265,7 @@ namespace SocialUser.Controllers
             
             //set default photo
             currentUser.profilePhoto = "../../Content/profilePhoto/person.jpg";
-            await _users.UpdateUser(currentUser);
+            await _userService.UpdateUser(currentUser);
             SampleHub.BroadcastPost();
             return RedirectToAction("Index");
         }
