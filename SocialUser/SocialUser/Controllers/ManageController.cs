@@ -99,7 +99,7 @@ namespace SocialUser.Controllers
             var userid1 = result.UserId1;
             var userid2 = result.UserId2;
             await _userFriendService.Update(result);
-            SampleHub.BroadcastFriend(userid1, userid2);
+            SocialUserSignalRHub.BroadcastFriend(userid1, userid2);
 
             return RedirectToAction("Index");
         }
@@ -109,7 +109,7 @@ namespace SocialUser.Controllers
             var userid1 = result.UserId1;
             var userid2 = result.UserId2;
             await _userFriendService.Delete(result);
-            SampleHub.BroadcastFriend(userid1, userid2);
+            SocialUserSignalRHub.BroadcastFriend(userid1, userid2);
             return RedirectToAction("Index");
         }
         public async Task<ActionResult> Send(string username, UserFriend userFriend)
@@ -137,7 +137,7 @@ namespace SocialUser.Controllers
                         userFriend.UserId1 = currentUserId;
                         userFriend.UserId2 = user.Id;
                         await _userFriendService.Add(userFriend);
-                        SampleHub.BroadcastFriend(currentUserId, user.Id);
+                        SocialUserSignalRHub.BroadcastFriend(currentUserId, user.Id);
                         return RedirectToAction("Index");
                     }
 
@@ -233,7 +233,7 @@ namespace SocialUser.Controllers
 
             currentUser.profilePhoto = databasePath;
             await _userService.UpdateUser(currentUser);
-            SampleHub.BroadcastPost();
+            SocialUserSignalRHub.BroadcastPost();
             return RedirectToAction("SetProfilePhoto");
 
         }
@@ -258,7 +258,7 @@ namespace SocialUser.Controllers
             //set default photo
             currentUser.profilePhoto = "../../Content/profilePhoto/person.jpg";
             await _userService.UpdateUser(currentUser);
-            SampleHub.BroadcastPost();
+            SocialUserSignalRHub.BroadcastPost();
             return RedirectToAction("Index");
         }
         //

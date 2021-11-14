@@ -65,7 +65,7 @@ namespace SocialUser.Controllers
                 post.PostDateTime = DateTime.Now;
                 await _postService.PostAdd(post);
 
-                SampleHub.BroadcastPost();
+                SocialUserSignalRHub.BroadcastPost();
 
                 return RedirectToAction("Index");
             }
@@ -109,7 +109,7 @@ namespace SocialUser.Controllers
                 await _commentService.CommentDelete(comment);
             }
 
-            SampleHub.BroadcastPost();
+            SocialUserSignalRHub.BroadcastPost();
 
             return RedirectToAction("Index");
         }
@@ -177,7 +177,7 @@ namespace SocialUser.Controllers
                     int likecount = likes.Count();
 
                     await PostUtility.UpdateLikeCount((int)postid, likecount);
-                    SampleHub.BroadcastPost();
+                    SocialUserSignalRHub.BroadcastPost();
 
                     return RedirectToAction("PostDetail", new { @postid = postid });
                 }
@@ -192,7 +192,7 @@ namespace SocialUser.Controllers
 
                     //update post like count
                     await PostUtility.UpdateLikeCount((int)postid, likecount);
-                    SampleHub.BroadcastPost();
+                    SocialUserSignalRHub.BroadcastPost();
 
                     return RedirectToAction("PostDetail", new { @postid = postid });
                 }
@@ -227,7 +227,7 @@ namespace SocialUser.Controllers
 
                     await _commentService.CommentAdd(comment);
 
-                    SampleHub.BroadcastComment();
+                    SocialUserSignalRHub.BroadcastComment();
                     return RedirectToAction("PostDetail", new { @postid = postid });
                 }
                 else
@@ -252,7 +252,7 @@ namespace SocialUser.Controllers
                     }
                     await _commentService.CommentDelete(comment);
 
-                    SampleHub.BroadcastComment();
+                    SocialUserSignalRHub.BroadcastComment();
                     return RedirectToAction("PostDetail", new { @postid = postid });
                 }
             }
@@ -265,7 +265,7 @@ namespace SocialUser.Controllers
             {
                 var getAnswer = await _commentAnswerService.FindPost(a => a.Id == id);
                 await _commentAnswerService.Delete(getAnswer);
-                SampleHub.BroadcastComment();
+                SocialUserSignalRHub.BroadcastComment();
                 return RedirectToAction("PostDetail", new { @postid = postid });
 
             }
@@ -290,7 +290,7 @@ namespace SocialUser.Controllers
                     answer.AnswerDescription = commentText;
                     answer.AnswerDateTime = DateTime.Now;
                     await _commentAnswerService.Add(answer);
-                    SampleHub.BroadcastComment();
+                    SocialUserSignalRHub.BroadcastComment();
                     return RedirectToAction("PostDetail", new { @postid = postid });
                 }
                 else

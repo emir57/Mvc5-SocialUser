@@ -50,7 +50,7 @@ namespace SocialUser.Models
     public class LoginViewModel
     {
         [Required]
-        [StringLength(maximumLength:35,ErrorMessage ="Kullanıcı Adı 20karakteri aşamaz")]
+        [StringLength(maximumLength: 35, ErrorMessage = "Kullanıcı Adı 20karakteri aşamaz")]
         [Display(Name = "KullanıcıAdı")]
         public string UserName { get; set; }
 
@@ -67,7 +67,7 @@ namespace SocialUser.Models
     {
         [Required]
         [Display(Name = "KullanıcıAdı")]
-        [StringLength(maximumLength:35,ErrorMessage ="kullanıcı adı en fazla {0} karakter olabilir")]
+        [StringLength(maximumLength: 35, ErrorMessage = "kullanıcı adı en fazla {0} karakter olabilir")]
         public string UserName { get; set; }
 
         [Required]

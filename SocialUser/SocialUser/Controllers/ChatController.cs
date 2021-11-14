@@ -72,7 +72,7 @@ namespace SocialUser.Controllers
             message.MessageDateTime = DateTime.Now;
 
             await _chatMessageService.AddMessages(message);
-            SampleHub.BroadcastChat(user1, user2);
+            SocialUserSignalRHub.BroadcastChat(user1, user2);
 
 
             return RedirectToAction("Index");
@@ -127,7 +127,7 @@ namespace SocialUser.Controllers
             message.Message = text;
             message.MessageDateTime = DateTime.Now;
             await _groupMessageService.Add(message);
-            SampleHub.BroadcastGroupChat();
+            SocialUserSignalRHub.BroadcastGroupChat();
             return RedirectToAction("Index");
         }
         public async Task<ActionResult> CreateGroup(string groupName, Group group, GroupMember m1, GroupMember m2, GroupMember m3)
@@ -141,7 +141,7 @@ namespace SocialUser.Controllers
 
             await _groupService.Add(group);
 
-            SampleHub.BroadcastAddFriend();
+            SocialUserSignalRHub.BroadcastAddFriend();
             return RedirectToAction("Index", new { @message = "Grup başarıyla oluşturuldu.\nGrubu aktif etmek için arkadaşlarınızı ekleyin." });
         }
         public async Task<ActionResult> DeleteGroup(int id)
@@ -172,7 +172,7 @@ namespace SocialUser.Controllers
                 m.GroupId = groupId;
                 m.Role = "User";
                 await _groupMemberService.Add(m);
-                SampleHub.BroadcastAddFriend();
+                SocialUserSignalRHub.BroadcastAddFriend();
             }
 
             return RedirectToAction("Index");
