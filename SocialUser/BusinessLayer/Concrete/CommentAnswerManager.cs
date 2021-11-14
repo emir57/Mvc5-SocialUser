@@ -20,9 +20,6 @@ namespace BusinessLayer.Concrete
             _answer = commentAnswerDal;
             _commentAnswerValidator = commentAnswerValidator;
         }
-
-        GenericRepository<CommentAnswer> commentAnswers = new GenericRepository<CommentAnswer>();
-
         public async Task Add(CommentAnswer c)
         {
             if (!(_commentAnswerValidator.Validate(c).Errors.Count > 0))
