@@ -5,9 +5,7 @@ using EntityLayer.Concrete;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.Concrete
@@ -27,11 +25,11 @@ namespace BusinessLayer.Concrete
 
         public async Task Add(CommentAnswer c)
         {
-            if(!(_commentAnswerValidator.Validate(c).Errors.Count>0))
+            if (!(_commentAnswerValidator.Validate(c).Errors.Count > 0))
             {
                 await _answer.Insert(c);
             }
-            
+
         }
 
         public async Task Delete(CommentAnswer c)
@@ -48,7 +46,7 @@ namespace BusinessLayer.Concrete
         {
             return filter == null ?
                 await _answer.List() : //null
-                await _answer .List(filter); //not null
+                await _answer.List(filter); //not null
         }
     }
 }

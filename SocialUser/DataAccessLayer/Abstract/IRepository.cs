@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.Abstract
@@ -14,7 +12,7 @@ namespace DataAccessLayer.Abstract
         Task Delete(T p);
         Task Update(T p);
         Task<int> Count(Expression<Func<T, bool>> filter);
-        Task<List<T>> List(Expression<Func<T,bool>>filter);
+        Task<List<T>> List(Expression<Func<T, bool>> filter);
         Task<T> Search(Expression<Func<T, bool>> filter);
         Task<List<T>> OrderedDateTimeDesc(Expression<Func<T, DateTime>> filter, Expression<Func<T, bool>> search = null);
         Task<List<T>> OrderedDateTimeAsc(Expression<Func<T, DateTime>> filter, Expression<Func<T, bool>> search = null);

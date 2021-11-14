@@ -26,7 +26,7 @@ namespace BusinessLayer.Concrete
             {
                 await _message.Insert(groupMessage);
             }
-            
+
         }
 
         public async Task Delete(GroupMessage groupMessage)

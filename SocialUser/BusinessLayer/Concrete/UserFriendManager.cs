@@ -1,12 +1,9 @@
 ﻿using BusinessLayer.Abstract;
 using DataAccessLayer.Abstract;
-using DataAccessLayer.Concrete.Repositories;
 using EntityLayer.Concrete;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.Concrete
@@ -29,7 +26,7 @@ namespace BusinessLayer.Concrete
             await _friends.Delete(userFriend);
         }
 
-        public async Task<UserFriend> Find(Expression<Func<UserFriend,bool>>filter)
+        public async Task<UserFriend> Find(Expression<Func<UserFriend, bool>> filter)
         {
             return await _friends.Search(filter);
         }
@@ -39,7 +36,7 @@ namespace BusinessLayer.Concrete
             return await _friends.Count(filter);
         }
 
-        public async Task<List<UserFriend>> GetAll(Expression<Func<UserFriend, bool>> filter=null)
+        public async Task<List<UserFriend>> GetAll(Expression<Func<UserFriend, bool>> filter = null)
         {
             return filter == null ?
                 await _friends.List() :

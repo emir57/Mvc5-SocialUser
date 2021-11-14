@@ -1,12 +1,9 @@
 ﻿using BusinessLayer.Abstract;
 using DataAccessLayer.Abstract;
-using DataAccessLayer.Concrete.Repositories;
 using EntityLayer.Concrete;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.Concrete
@@ -38,7 +35,7 @@ namespace BusinessLayer.Concrete
 
         public async Task<PostLike> PostLikeFind(Expression<Func<PostLike, bool>> filter)
         {
-            return await _postLike .Search(filter);
+            return await _postLike.Search(filter);
         }
 
         public async Task<int> PostLikeCount(Expression<Func<PostLike, bool>> filter)

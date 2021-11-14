@@ -1,12 +1,8 @@
 ﻿using BusinessLayer.Abstract;
 using DataAccessLayer.Abstract;
-using DataAccessLayer.Concrete.Repositories;
 using EntityLayer.Concrete;
 using FluentValidation;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.Concrete
@@ -24,7 +20,7 @@ namespace BusinessLayer.Concrete
 
         public async Task AddMessages(ChatMessage message)
         {
-            if(!(_chatMessageValidator.Validate(message).Errors.Count>0))
+            if (!(_chatMessageValidator.Validate(message).Errors.Count > 0))
             {
                 await _messages.Insert(message);
             }
@@ -37,7 +33,7 @@ namespace BusinessLayer.Concrete
 
         public async Task<List<ChatMessage>> GetMessages(string user1, string user2)
         {
-            return await _messages.OrderedDateTimeAsc(a => a.MessageDateTime, a=>(a.SenderMessageUser==user1 && a.RecipientMessageUser==user2)||(a.SenderMessageUser==user2&&a.RecipientMessageUser==user1));
+            return await _messages.OrderedDateTimeAsc(a => a.MessageDateTime, a => (a.SenderMessageUser == user1 && a.RecipientMessageUser == user2) || (a.SenderMessageUser == user2 && a.RecipientMessageUser == user1));
         }
     }
 }

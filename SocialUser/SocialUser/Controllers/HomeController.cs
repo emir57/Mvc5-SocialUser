@@ -1,21 +1,15 @@
 ﻿using BusinessLayer.Abstract;
-using BusinessLayer.Concrete;
 using BusinessLayer.Utilities;
-using DataAccessLayer.Concrete;
-using DataAccessLayer.EntityFramework;
 using EntityLayer.Concrete;
 using Microsoft.AspNet.Identity;
 using SocialUser.Models;
 using SocialUser.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 
 namespace SocialUser.Controllers
 {
@@ -39,7 +33,7 @@ namespace SocialUser.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> PostAdd(string description,HttpPostedFileBase picture,Post post)
+        public async Task<ActionResult> PostAdd(string description, HttpPostedFileBase picture, Post post)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -58,7 +52,7 @@ namespace SocialUser.Controllers
                         databasePath = "../../Content/postPicture/" + filename;
                     }
                     else { return RedirectToAction("Index"); }
-                    
+
                 }
                 else { databasePath = ""; }
                 //add post
@@ -75,7 +69,7 @@ namespace SocialUser.Controllers
 
                 return RedirectToAction("Index");
             }
-            else{}
+            else { }
             return RedirectToAction("Index");
         }
 
@@ -99,7 +93,7 @@ namespace SocialUser.Controllers
                     System.IO.File.Delete(fullPath);
                 }
             }
-            
+
             await _postService.PostDelete(post);
 
             //delete comments and answers
@@ -132,7 +126,7 @@ namespace SocialUser.Controllers
                 string currentUserId = User.Identity.GetUserId();
                 //do current user like post? null=not like
                 var search = await _postLikeService.PostLikeFind(a => a.UserId == currentUserId && a.PostId == postid);
-                if(search == null)
+                if (search == null)
                 {
                     //user dont like = false
                     //user like = true
@@ -154,8 +148,8 @@ namespace SocialUser.Controllers
                 ViewData["postPicture"] = post.PostPicture;
                 ViewData["postDateTime"] = post.PostDateTime;
                 ViewData["likeCount"] = post.LikeCount;
-                
-                
+
+
                 DetailViewModel model = new DetailViewModel();
                 model.comment = await _commentService.GetAll(a => a.PostId == post.PostId);
                 model.comment = await _commentService.GetCommentListOrderedDateTime(a => a.CommentDateTime);
@@ -163,7 +157,7 @@ namespace SocialUser.Controllers
                 model.likes = await _postLikeService.PostLikeList(a => a.PostId == postid);
                 model.user = await _userService.GetAll();
                 return View(model);
-        }
+            }
         }
 
         public async Task<ActionResult> PostLike(int? postid, bool? check)
@@ -172,7 +166,7 @@ namespace SocialUser.Controllers
             {
                 PostLike like = new PostLike();
                 string currentUserId = User.Identity.GetUserId();
-                if(postid != null && check==false)
+                if (postid != null && check == false)
                 {
                     //like
                     like.UserId = currentUserId;
@@ -185,9 +179,9 @@ namespace SocialUser.Controllers
                     await PostUtility.UpdateLikeCount((int)postid, likecount);
                     SampleHub.BroadcastPost();
 
-                    return RedirectToAction("PostDetail",new { @postid = postid });
+                    return RedirectToAction("PostDetail", new { @postid = postid });
                 }
-                else if(postid!= null && check==true)
+                else if (postid != null && check == true)
                 {
                     //like delete
                     var search = await _postLikeService.PostLikeFind(a => a.PostId == postid && a.UserId == currentUserId);
@@ -211,7 +205,7 @@ namespace SocialUser.Controllers
         }
         //[ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<ActionResult> PostDoComment(int? postid, string text,Comment comment)
+        public async Task<ActionResult> PostDoComment(int? postid, string text, Comment comment)
         {
             var post = await _postService.FindPost(a => a.PostId == postid);
             if (post == null)
@@ -220,7 +214,7 @@ namespace SocialUser.Controllers
             }
             else
             {
-                if(User.Identity.IsAuthenticated)
+                if (User.Identity.IsAuthenticated)
                 {
                     var currentUserId = User.Identity.GetUserId();
                     var user = await UserUtility.GetCurrentUser(currentUserId);
@@ -234,7 +228,7 @@ namespace SocialUser.Controllers
                     await _commentService.CommentAdd(comment);
 
                     SampleHub.BroadcastComment();
-                    return RedirectToAction("PostDetail", new{ @postid = postid });
+                    return RedirectToAction("PostDetail", new { @postid = postid });
                 }
                 else
                 {
@@ -242,16 +236,16 @@ namespace SocialUser.Controllers
                 }
             }
         }
-        public async Task<ActionResult> PostCommentDelete(int? id,int postid)
+        public async Task<ActionResult> PostCommentDelete(int? id, int postid)
         {
             if (User.Identity.IsAuthenticated)
             {
                 var comment = await _commentService.FindComment(a => a.Id == id);
-                var commentAnswers = await _commentAnswerService.GetAll(a=>a.CommentId==comment.Id);
-                if (comment == null){ return RedirectToAction("Index"); }
+                var commentAnswers = await _commentAnswerService.GetAll(a => a.CommentId == comment.Id);
+                if (comment == null) { return RedirectToAction("Index"); }
                 else
                 {
-                    
+
                     foreach (var answer in commentAnswers)
                     {
                         await _commentAnswerService.Delete(answer);
@@ -259,15 +253,15 @@ namespace SocialUser.Controllers
                     await _commentService.CommentDelete(comment);
 
                     SampleHub.BroadcastComment();
-                    return RedirectToAction("PostDetail",new{ @postid = postid });
+                    return RedirectToAction("PostDetail", new { @postid = postid });
                 }
             }
             else { return RedirectToAction("Index"); }
         }
-        public async Task<ActionResult> CommentAnswerDelete(int? id,string UserId,int? postid)
+        public async Task<ActionResult> CommentAnswerDelete(int? id, string UserId, int? postid)
         {
             string currentUserId = User.Identity.GetUserId();
-            if (currentUserId == UserId && id!=null)
+            if (currentUserId == UserId && id != null)
             {
                 var getAnswer = await _commentAnswerService.FindPost(a => a.Id == id);
                 await _commentAnswerService.Delete(getAnswer);
@@ -281,12 +275,12 @@ namespace SocialUser.Controllers
             }
         }
         [HttpPost]
-        public async Task<ActionResult> CommentAnswerDo(int? postid,int? commentid,string commentText,CommentAnswer answer)
+        public async Task<ActionResult> CommentAnswerDo(int? postid, int? commentid, string commentText, CommentAnswer answer)
         {
             var comment = await _commentService.FindComment(a => a.Id == commentid);
             if (comment != null)
             {
-                if((postid!=null) && (commentid != null))
+                if ((postid != null) && (commentid != null))
                 {
                     string currentUserId = User.Identity.GetUserId();
                     var user = await UserUtility.GetCurrentUser(currentUserId);
@@ -316,7 +310,7 @@ namespace SocialUser.Controllers
             string currentUserId = User.Identity.GetUserId();
 
             var user = await _userService.Find(a => a.Id == id);
-            if (user!=null)
+            if (user != null)
             {
                 model.user = user;
 
@@ -344,17 +338,17 @@ namespace SocialUser.Controllers
             }
         }
 
-    //********************************************************************
+        //********************************************************************
         //AJAX PartialViews
         public async Task<PartialViewResult> GetComments(int? postid)
         {
             DetailViewModel model = new DetailViewModel();
             var comments = await _commentService.GetAll(a => a.PostId == postid);
-            model.comment = await _commentService.GetCommentListOrderedDateTime(a=>a.CommentDateTime,b=>b.PostId==postid);
+            model.comment = await _commentService.GetCommentListOrderedDateTime(a => a.CommentDateTime, b => b.PostId == postid);
             model.commentAnswer = await _commentAnswerService.GetAll();
             model.user = await _userService.GetAll();
             model.postid = (int)postid;
-            return PartialView("CommentsView",model);
+            return PartialView("CommentsView", model);
         }
         [AllowAnonymous]
         public async Task<PartialViewResult> GetPosts()
@@ -362,20 +356,20 @@ namespace SocialUser.Controllers
             string currentId = User.Identity.GetUserId();
             ViewBag.currentUserId = currentId;
             PostViewModel model = new PostViewModel();
-            
-            model.posts = await _postService.GetPostListOrdered(a=>a.PostDateTime);
+
+            model.posts = await _postService.GetPostListOrdered(a => a.PostDateTime);
             model.postLike = await _postLikeService.PostLikeList();
             model.users = await _userService.GetAll();
             return PartialView("PostsView", model);
         }
         [AllowAnonymous]
-        public async Task<PartialViewResult> ProfileGetPosts(string id) 
+        public async Task<PartialViewResult> ProfileGetPosts(string id)
         {
             string currentId = User.Identity.GetUserId();
             ViewBag.currentUserId = currentId;
             PostViewModel model = new PostViewModel();
-            
-            model.posts = await _postService.GetPostListOrdered(a => a.PostDateTime,a=>a.UserId==id);
+
+            model.posts = await _postService.GetPostListOrdered(a => a.PostDateTime, a => a.UserId == id);
             model.postLike = await _postLikeService.PostLikeList();
             model.users = await _userService.GetAll();
             return PartialView("PostsView", model);
@@ -385,7 +379,7 @@ namespace SocialUser.Controllers
         public async Task<PartialViewResult> GetLastComment()
         {
             LastCommentViewModel model = new LastCommentViewModel();
-            model.comments = await _commentService.GetCommentListOrderedIdTake(a => a.Id,5);
+            model.comments = await _commentService.GetCommentListOrderedIdTake(a => a.Id, 5);
             return PartialView("lastComment", model);
         }
         [AllowAnonymous]
@@ -394,10 +388,10 @@ namespace SocialUser.Controllers
             GetUserViewModel model = new GetUserViewModel();
             string currentUserId = User.Identity.GetUserId();
             //get search users
-            model.users = await _userService.GetAll(a=>a.UserName.ToLower().Contains(searchKey.ToLower())&& a.Id!=currentUserId);
+            model.users = await _userService.GetAll(a => a.UserName.ToLower().Contains(searchKey.ToLower()) && a.Id != currentUserId);
             //get current user friend
-            model.userFriend = await _userFriendService.GetAll(a => (a.Check == true)&&(a.UserId1==currentUserId || a.UserId2==currentUserId));
-           return PartialView("GetUsersView",model);
+            model.userFriend = await _userFriendService.GetAll(a => (a.Check == true) && (a.UserId1 == currentUserId || a.UserId2 == currentUserId));
+            return PartialView("GetUsersView", model);
         }
 
     }

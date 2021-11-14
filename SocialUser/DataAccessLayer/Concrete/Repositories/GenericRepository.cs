@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.Concrete.Repositories
@@ -33,7 +32,7 @@ namespace DataAccessLayer.Concrete.Repositories
 
         public async Task<List<T>> List()
         {
-            return  await _context.Set<T>().ToListAsync();
+            return await _context.Set<T>().ToListAsync();
         }
 
         public async Task<List<T>> List(Expression<Func<T, bool>> filter)
@@ -46,10 +45,10 @@ namespace DataAccessLayer.Concrete.Repositories
             _context.Entry(p).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
-        public async Task<List<T>> OrderedDateTimeDesc(Expression<Func<T,DateTime>>filter,Expression<Func<T,bool>>search=null)
+        public async Task<List<T>> OrderedDateTimeDesc(Expression<Func<T, DateTime>> filter, Expression<Func<T, bool>> search = null)
         {
-            return search==null?
-                await _context.Set<T>().OrderByDescending(filter).ToListAsync():
+            return search == null ?
+                await _context.Set<T>().OrderByDescending(filter).ToListAsync() :
                 await _context.Set<T>().OrderByDescending(filter).Where(search).ToListAsync();
         }
         public async Task<List<T>> OrderedDateTimeAsc(Expression<Func<T, DateTime>> filter, Expression<Func<T, bool>> search = null)
@@ -63,11 +62,11 @@ namespace DataAccessLayer.Concrete.Repositories
             return await _context.Set<T>().OrderByDescending(filter).ToListAsync();
         }
 
-        public async Task<int> Count(Expression<Func<T,bool>>filter)
+        public async Task<int> Count(Expression<Func<T, bool>> filter)
         {
             return await _context.Set<T>().Where(filter).CountAsync();
         }
-        public async Task<List<T>> OrderedTake(Expression<Func<T,int>>filter,int takeCount)
+        public async Task<List<T>> OrderedTake(Expression<Func<T, int>> filter, int takeCount)
         {
             return await _context.Set<T>().OrderByDescending(filter).Take(takeCount).ToListAsync();
         }

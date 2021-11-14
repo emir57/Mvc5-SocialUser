@@ -1,17 +1,14 @@
-﻿using System;
-using System.Data.Entity;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using DataAccessLayer.Concrete;
+﻿using DataAccessLayer.Concrete;
 using EntityLayer.Concrete;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using SocialUser.Models;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
 
 namespace SocialUser.Controllers
 {
@@ -25,7 +22,7 @@ namespace SocialUser.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -37,9 +34,9 @@ namespace SocialUser.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -123,7 +120,7 @@ namespace SocialUser.Controllers
             // Kullanıcı belirli bir süre içinde doğru kodları girmezse
             // hesap bir süre için kilitlenir. 
             // Hesap kilitleme ayarlarını IdentityConfig'de yapılandırabilirsiniz.
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -155,15 +152,15 @@ namespace SocialUser.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email,DateOfBirth=model.DateOfBirth };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, DateOfBirth = model.DateOfBirth };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     var registerUser = await _appContext.Users.SingleOrDefaultAsync(a => a.UserName == model.UserName);
                     registerUser.profilePhoto = "../../Content/profilePhoto/person.jpg";
                     await _appContext.SaveChangesAsync();
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // Hesap onayını ve parola sıfırlamayı etkinleştirme hakkında daha fazla bilgi için lütfen https://go.microsoft.com/fwlink/?LinkID=320771 adresini ziyaret edin.
                     // Bu bağlantı ile bir e-posta yollayın
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);

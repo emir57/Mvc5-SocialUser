@@ -1,31 +1,28 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
+﻿using BusinessLayer.Abstract;
+using BusinessLayer.Utilities;
+using EntityLayer.Concrete;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using SocialUser.Models;
-using System.IO;
-using System.Data.Entity;
-using EntityLayer.Concrete;
-using BusinessLayer.Concrete;
-using DataAccessLayer.EntityFramework;
-using BusinessLayer.Abstract;
-using BusinessLayer.Utilities;
 using SocialUser.Utilities;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
 
 namespace SocialUser.Controllers
 {
-    
+
     [Authorize]
     public class ManageController : Controller
     {
         private IUserService _userService = NinjectInstanceFactory.GetInstance<IUserService>();
         private IUserFriendService _userFriendService = NinjectInstanceFactory.GetInstance<IUserFriendService>();
 
-        
+
 
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
@@ -46,9 +43,9 @@ namespace SocialUser.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -91,7 +88,7 @@ namespace SocialUser.Controllers
                 //Friends
                 userFriends = await _userFriendService.GetAll(),
                 users = await _userService.GetAll()
-        };
+            };
 
             return View(model);
         }
@@ -103,7 +100,7 @@ namespace SocialUser.Controllers
             var userid2 = result.UserId2;
             await _userFriendService.Update(result);
             SampleHub.BroadcastFriend(userid1, userid2);
-            
+
             return RedirectToAction("Index");
         }
         public async Task<ActionResult> Delete(int? id)
@@ -146,12 +143,12 @@ namespace SocialUser.Controllers
 
                 }
             }
-            else 
-            { 
-                return RedirectToAction("Index"); 
+            else
+            {
+                return RedirectToAction("Index");
             }
 
-           
+
             return RedirectToAction("Index");
         }
 
@@ -174,14 +171,14 @@ namespace SocialUser.Controllers
                 model.friendsRequest = "Arkadaşlık isteğiniz yok.";
             }
 
-            return PartialView("FriendsList",model);
+            return PartialView("FriendsList", model);
         }
         public ActionResult SetProfilePhoto()
         {
             return View();
         }
         [HttpGet]
-        public async Task<ActionResult> SetProfilePhoto(int?id)
+        public async Task<ActionResult> SetProfilePhoto(int? id)
         {
             string currentUserId = User.Identity.GetUserId();
             var currentUser = await UserUtility.GetCurrentUser(currentUserId);
@@ -192,7 +189,7 @@ namespace SocialUser.Controllers
 
         public async Task<ActionResult> SetProfileDescription(string description)
         {
-            if(!string.IsNullOrWhiteSpace(description))
+            if (!string.IsNullOrWhiteSpace(description))
             {
                 string currentUserId = User.Identity.GetUserId();
                 var currentUser = await UserUtility.GetCurrentUser(currentUserId);
@@ -207,7 +204,7 @@ namespace SocialUser.Controllers
         {
             string currentUserId = User.Identity.GetUserId();
             var currentUser = await UserUtility.GetCurrentUser(currentUserId);
-            string databasePath ="";
+            string databasePath = "";
             if (picture.ContentLength >= 0)
             {
                 //delete old photo
@@ -220,7 +217,7 @@ namespace SocialUser.Controllers
                         System.IO.File.Delete(oldPath);
                     }
                 }
-                
+
                 //save new photo
                 string getEx = Path.GetExtension(picture.FileName);
                 string filename = Guid.NewGuid() + getEx;
@@ -233,12 +230,12 @@ namespace SocialUser.Controllers
                 ViewBag.message = "Fotoğraf Seçilemedi!";
                 return View();
             }
-            
+
             currentUser.profilePhoto = databasePath;
             await _userService.UpdateUser(currentUser);
             SampleHub.BroadcastPost();
             return RedirectToAction("SetProfilePhoto");
-            
+
         }
 
         [HttpPost]
@@ -248,7 +245,7 @@ namespace SocialUser.Controllers
             var currentUser = await UserUtility.GetCurrentUser(currentUserId);
             //old delete photo
             string oldFileName = currentUser.profilePhoto.Split('/')[4];
-            if (oldFileName != "person.jpg") 
+            if (oldFileName != "person.jpg")
             {
                 string oldPath = Server.MapPath("~/Content/profilePhoto/" + oldFileName);
                 if (System.IO.File.Exists(oldPath))
@@ -256,8 +253,8 @@ namespace SocialUser.Controllers
                     System.IO.File.Delete(oldPath);
                 }
             }
-            
-            
+
+
             //set default photo
             currentUser.profilePhoto = "../../Content/profilePhoto/person.jpg";
             await _userService.UpdateUser(currentUser);
@@ -522,7 +519,7 @@ namespace SocialUser.Controllers
             base.Dispose(disposing);
         }
 
-#region Yardımcılar
+        #region Yardımcılar
         // Dış oturumlar eklenirken XSRF koruması için kullanıldı
         private const string XsrfKey = "XsrfId";
 
@@ -573,6 +570,6 @@ namespace SocialUser.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }

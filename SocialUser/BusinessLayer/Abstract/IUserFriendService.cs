@@ -1,9 +1,7 @@
 ﻿using EntityLayer.Concrete;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.Abstract
@@ -15,8 +13,8 @@ namespace BusinessLayer.Abstract
         Task Delete(UserFriend userFriend);
         Task Update(UserFriend userFriend);
 
-        Task<List<UserFriend>> GetAll(Expression<Func<UserFriend,bool>>filter=null);
-        Task<int> FriendCount(Expression<Func<UserFriend,bool>>filter);
+        Task<List<UserFriend>> GetAll(Expression<Func<UserFriend, bool>> filter = null);
+        Task<int> FriendCount(Expression<Func<UserFriend, bool>> filter);
 
         Task<UserFriend> Find(Expression<Func<UserFriend, bool>> filter);
     }
