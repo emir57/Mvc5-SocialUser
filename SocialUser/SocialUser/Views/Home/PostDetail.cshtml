@@ -41,14 +41,14 @@
                         { <b>@(Convert.ToInt32(year)) yıl önce </b>}
                         else if (date.Days > 0)
                         { <b>@date.Days gün önce</b>}
-                    else if (date.Minutes == 0)
-                    { <b>@date.Seconds saniye önce</b>}
-                else if (date.Hours == 0)
-                { <b>@date.Minutes dakika önce</b>}
-            else if (date.Days == 0)
-            {<b>@date.Hours saat önce</b> }
-        else
-        { <b>@date</b>}
+                        else if (date.Minutes == 0)
+                        { <b>@date.Seconds saniye önce</b>}
+                        else if (date.Hours == 0)
+                        { <b>@date.Minutes dakika önce</b>}
+                        else if (date.Days == 0)
+                        {<b>@date.Hours saat önce</b> }
+                        else
+                        { <b>@date</b>}
                     }
                 </div>
                 <div class="badgeLike">
@@ -88,8 +88,6 @@
                     }
                 }
             }
-
-
         </table>
         <script>
 
@@ -159,7 +157,6 @@
         <!--Comments-->
 
         <div id="commentDiv">
-
         </div>
 
     </div>
