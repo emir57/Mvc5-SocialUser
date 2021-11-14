@@ -14,6 +14,7 @@ using BusinessLayer.Concrete;
 using DataAccessLayer.EntityFramework;
 using BusinessLayer.Abstract;
 using BusinessLayer.Utilities;
+using SocialUser.Utilities;
 
 namespace SocialUser.Controllers
 {
@@ -24,13 +25,7 @@ namespace SocialUser.Controllers
         private IUserService _userService = NinjectInstanceFactory.GetInstance<IUserService>();
         private IUserFriendService _userFriendService = NinjectInstanceFactory.GetInstance<IUserFriendService>();
 
-        //get current user
-        public async Task<ApplicationUser> getCurrentUser(string id)
-        {
-            return await _userService.Find(a => a.Id == id);
-        }
-
-
+        
 
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
@@ -82,7 +77,7 @@ namespace SocialUser.Controllers
                 : "";
 
             string userId = User.Identity.GetUserId();
-            var currentUser = await getCurrentUser(userId);
+            var currentUser = await UserUtility.GetCurrentUser(userId);
             ViewData["photoUrl"] = currentUser.profilePhoto;
             ViewData["description"] = currentUser.profileDescription;
             var model = new IndexViewModel
@@ -189,7 +184,7 @@ namespace SocialUser.Controllers
         public async Task<ActionResult> SetProfilePhoto(int?id)
         {
             string currentUserId = User.Identity.GetUserId();
-            var currentUser = await getCurrentUser(currentUserId);
+            var currentUser = await UserUtility.GetCurrentUser(currentUserId);
             ViewBag.photo = currentUser.profilePhoto;
 
             return View();
@@ -200,7 +195,7 @@ namespace SocialUser.Controllers
             if(!string.IsNullOrWhiteSpace(description))
             {
                 string currentUserId = User.Identity.GetUserId();
-                var currentUser = await getCurrentUser(currentUserId);
+                var currentUser = await UserUtility.GetCurrentUser(currentUserId);
                 currentUser.profileDescription = description;
                 await _userService.UpdateUser(currentUser);
             }
@@ -211,7 +206,7 @@ namespace SocialUser.Controllers
         public async Task<ActionResult> SetProfilePhoto(HttpPostedFileBase picture)
         {
             string currentUserId = User.Identity.GetUserId();
-            var currentUser = await getCurrentUser(currentUserId);
+            var currentUser = await UserUtility.GetCurrentUser(currentUserId);
             string databasePath ="";
             if (picture.ContentLength >= 0)
             {
@@ -250,7 +245,7 @@ namespace SocialUser.Controllers
         public async Task<ActionResult> RemoveProfilePhoto()
         {
             string currentUserId = User.Identity.GetUserId();
-            var currentUser = await getCurrentUser(currentUserId);
+            var currentUser = await UserUtility.GetCurrentUser(currentUserId);
             //old delete photo
             string oldFileName = currentUser.profilePhoto.Split('/')[4];
             if (oldFileName != "person.jpg") 

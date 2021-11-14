@@ -6,6 +6,7 @@ using DataAccessLayer.EntityFramework;
 using EntityLayer.Concrete;
 using Microsoft.AspNet.Identity;
 using SocialUser.Models;
+using SocialUser.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -28,27 +29,7 @@ namespace SocialUser.Controllers
         private IUserService _userService = NinjectInstanceFactory.GetInstance<IUserService>();
         private IUserFriendService _userFriendService = NinjectInstanceFactory.GetInstance<IUserFriendService>();
         //****************************************************
-        //Methods
 
-        //get current user
-        public async Task<ApplicationUser> getCurrentUser(string id)
-        {
-            return await _userService.Find(a => a.Id == id);
-        }
-        /// <summary>
-        /// Save like count
-        /// </summary>
-        /// <param name="postid">PostId</param>
-        /// <param name="currentLike">Post like count</param>
-        /// <returns></returns>
-        public async Task updateLikeCount(int postid, int currentLike)
-        {
-            var count = await _postService.FindPost(a => a.PostId == postid);
-            count.LikeCount = currentLike;
-            await _postService.PostUpdate(count);
-        }
-
-        //************************************************
         [AllowAnonymous]
         public ActionResult Index()
         {
@@ -64,7 +45,7 @@ namespace SocialUser.Controllers
             {
                 string databasePath = "";
                 string currentId = User.Identity.GetUserId();
-                var currentUser = await getCurrentUser(currentId);
+                var currentUser = await UserUtility.GetCurrentUser(currentId);
 
                 if (picture != null)
                 {
@@ -201,8 +182,7 @@ namespace SocialUser.Controllers
                     var likes = await _postLikeService.PostLikeList(a => a.PostId == postid);
                     int likecount = likes.Count();
 
-                    //update post like count
-                    await updateLikeCount((int)postid, likecount);
+                    await PostUtility.UpdateLikeCount((int)postid, likecount);
                     SampleHub.BroadcastPost();
 
                     return RedirectToAction("PostDetail",new { @postid = postid });
@@ -217,7 +197,7 @@ namespace SocialUser.Controllers
                     int likecount = likes.Count();
 
                     //update post like count
-                    await updateLikeCount((int)postid, likecount);
+                    await PostUtility.UpdateLikeCount((int)postid, likecount);
                     SampleHub.BroadcastPost();
 
                     return RedirectToAction("PostDetail", new { @postid = postid });
@@ -243,7 +223,7 @@ namespace SocialUser.Controllers
                 if(User.Identity.IsAuthenticated)
                 {
                     var currentUserId = User.Identity.GetUserId();
-                    var user = await getCurrentUser(currentUserId);
+                    var user = await UserUtility.GetCurrentUser(currentUserId);
 
                     comment.PostId = post.PostId;
                     comment.UserName = user.UserName;
@@ -309,7 +289,7 @@ namespace SocialUser.Controllers
                 if((postid!=null) && (commentid != null))
                 {
                     string currentUserId = User.Identity.GetUserId();
-                    var user = await getCurrentUser(currentUserId);
+                    var user = await UserUtility.GetCurrentUser(currentUserId);
                     answer.CommentId = (int)commentid;
                     answer.UserName = user.UserName;
                     answer.UserId = currentUserId;
