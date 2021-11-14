@@ -25,10 +25,6 @@
         })
 
     </script>
-    @*<div class="user">
-            <img class="profilePhoto" src="@ViewBag.userid1ProfilePhoto" /> <b class="UserName">@ViewBag.userid1ProfilePhoto</b>
-        </div>*@
-
     <div id="messageUsers">
         <div class="user2">
             <img class="profilePhoto" src="@ViewBag.userid2ProfilePhoto" /> <b class="UserName">@ViewBag.userid2userName</b>
@@ -41,14 +37,10 @@
 </div>
 <div id="rightBar" class="d-block">
     <div id="messages">
-
-
-
     </div>
+
     <div id="errorMessage">
-
     </div>
-
 
     <div id="messageBar" class="input-group">
         <div id="messageBox">
@@ -56,8 +48,6 @@
             @Html.TextArea("text", "", new { id = "text", rows = "2", cols = "10", @class = "form-control text", placeholder = "Bir şeyler yaz.." })
             @*<textarea name="text" class="form-control text" id="text" rows="2" placeholder="Bir şeyler yaz.."></textarea>*@
             <button id="send" class=""><i class="fas fa-paper-plane"></i></button>
-
-
             <script>
             $(document).ready(function () {
                 var sendBtn = $("#send");
@@ -128,7 +118,6 @@
                 }
             })
             </script>
-
         </div>
     </div>
 </div>
@@ -139,29 +128,28 @@
     @Scripts.Render("~/signalr/hubs")
     <script>
         $(function () {
-                                var hub = $.connection.sampleHub;
-                                var currentId = "@User.Identity.GetUserId()";
-                                var messageDiv = $("#messages");
+            var hub = $.connection.sampleHub;
+            var currentId = "@User.Identity.GetUserId()";
+            var messageDiv = $("#messages");
 
-                                $.connection.hub.start().done(function () {
-                                    getChat();
-                                })
-                                hub.client.refreshChatData = function (currentUserId, userId) {
-                                    getChat();
+            $.connection.hub.start().done(function () {
+                getChat();
+            })
+            hub.client.refreshChatData = function (currentUserId, userId) {
+                getChat();
             }
-                                function getChat() {
-                                $.ajax({
-                                    url: "/Chat/LoadChatMessage",
-                                    type: "GET",
-                                    data: { user1: '@User.Identity.GetUserId()', user2: '@Model.userid2' },
-                                    success: function (result) {
-                                        messageDiv.empty().append(result);
-                                    }
-                                })
-                            }
+            function getChat() {
+                $.ajax({
+                    url: "/Chat/LoadChatMessage",
+                    type: "GET",
+                    data: { user1: '@User.Identity.GetUserId()', user2: '@Model.userid2' },
+                    success: function (result) {
+                        messageDiv.empty().append(result);
+                    }
+                })
+            }
 
-                            })
-
+        })
     </script>
 
 }
