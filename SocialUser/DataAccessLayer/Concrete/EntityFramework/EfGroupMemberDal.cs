@@ -4,7 +4,7 @@ using EntityLayer.Concrete;
 
 namespace DataAccessLayer.Concrete.EntityFramework
 {
-    public class EfGroupMemberDal : GenericRepository<GroupMember>, IGroupMemberDal
+    public class EfGroupMemberDal : GenericRepository<GroupMember, SocialUserContext>, IGroupMemberDal
     {
     }
 }

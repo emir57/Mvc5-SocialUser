@@ -4,7 +4,7 @@ using EntityLayer.Concrete;
 
 namespace DataAccessLayer.Concrete.EntityFramework
 {
-    public class EfChatMessageDal : GenericRepository<ChatMessage>, IChatMessageDal
+    public class EfChatMessageDal : GenericRepository<ChatMessage, SocialUserContext>, IChatMessageDal
     {
     }
 }

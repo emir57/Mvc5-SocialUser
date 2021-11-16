@@ -139,23 +139,16 @@ namespace SocialUser.Controllers
                 var user = await _userService.Find(a => a.Id == postUserId);
 
                 //post info
-                ViewData["userProfilePhoto"] = user.profilePhoto;
-                ViewData["userName"] = post.Username;
-                ViewBag.postUserId = post.UserId;
-                ViewBag.postId = post.PostId;
-                ViewData["postId"] = post.PostId;
-                ViewData["description"] = post.Description;
-                ViewData["postPicture"] = post.PostPicture;
-                ViewData["postDateTime"] = post.PostDateTime;
-                ViewData["likeCount"] = post.LikeCount;
 
 
                 DetailViewModel model = new DetailViewModel();
+                model.Post = post;
                 model.comment = await _commentService.GetAll(a => a.PostId == post.PostId);
                 model.comment = await _commentService.GetCommentListOrderedDateTime(a => a.CommentDateTime);
                 model.commentAnswer = await _commentAnswerService.GetAll(a => a.CommentId == postid);
                 model.likes = await _postLikeService.PostLikeList(a => a.PostId == postid);
-                model.user = await _userService.GetAll();
+                model.users = await _userService.GetAll();
+                model.User = user;
                 return View(model);
             }
         }
@@ -346,7 +339,7 @@ namespace SocialUser.Controllers
             var comments = await _commentService.GetAll(a => a.PostId == postid);
             model.comment = await _commentService.GetCommentListOrderedDateTime(a => a.CommentDateTime, b => b.PostId == postid);
             model.commentAnswer = await _commentAnswerService.GetAll();
-            model.user = await _userService.GetAll();
+            model.users = await _userService.GetAll();
             model.postid = (int)postid;
             return PartialView("CommentsView", model);
         }
@@ -357,7 +350,7 @@ namespace SocialUser.Controllers
             ViewBag.currentUserId = currentId;
             PostViewModel model = new PostViewModel();
 
-            model.posts = await _postService.GetPostListOrdered(a => a.PostDateTime);
+            model.posts = await _postService.GetPostListOrdered(a=>a.PostDateTime);
             model.postLike = await _postLikeService.PostLikeList();
             model.users = await _userService.GetAll();
             return PartialView("PostsView", model);

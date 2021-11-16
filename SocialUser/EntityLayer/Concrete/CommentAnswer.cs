@@ -13,5 +13,7 @@ namespace EntityLayer.Concrete
         public string UserId { get; set; }
         public string AnswerDescription { get; set; }
         public DateTime AnswerDateTime { get; set; }
+
+        
     }
 }

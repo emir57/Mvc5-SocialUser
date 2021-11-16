@@ -4,7 +4,7 @@ using EntityLayer.Concrete;
 
 namespace DataAccessLayer.Concrete.EntityFramework
 {
-    public class EfGroupMessageDal : GenericRepository<GroupMessage>, IGroupMessageDal
+    public class EfGroupMessageDal : GenericRepository<GroupMessage, SocialUserContext>, IGroupMessageDal
     {
     }
 }

@@ -63,5 +63,6 @@ namespace BusinessLayer.Concrete
         {
             return await _postDal.Count(filter);
         }
+
     }
 }

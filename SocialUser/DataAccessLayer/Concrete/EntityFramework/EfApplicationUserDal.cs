@@ -29,7 +29,9 @@ namespace DataAccessLayer.Concrete.EntityFramework
 
         public async Task<List<ApplicationUser>> List(Expression<Func<ApplicationUser, bool>> filter)
         {
-            return await _context.Users.Where(filter).ToListAsync();
+            return await _context.Users
+                .Where(filter)
+                .ToListAsync();
         }
 
         public async Task<List<ApplicationUser>> List()
@@ -39,7 +41,8 @@ namespace DataAccessLayer.Concrete.EntityFramework
 
         public async Task<ApplicationUser> Search(Expression<Func<ApplicationUser, bool>> filter)
         {
-            return await _context.Users.SingleOrDefaultAsync(filter);
+            return await _context.Users
+                .SingleOrDefaultAsync(filter);
         }
 
         public async Task Update(ApplicationUser p)

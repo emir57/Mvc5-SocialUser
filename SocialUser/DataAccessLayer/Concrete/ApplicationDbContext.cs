@@ -1,5 +1,6 @@
 ﻿using EntityLayer.Concrete;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Data.Entity;
 
 namespace DataAccessLayer.Concrete
 {
@@ -9,7 +10,10 @@ namespace DataAccessLayer.Concrete
             : base("SocialUserContext", throwIfV1Schema: false)
         {
         }
-
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();

@@ -15,5 +15,6 @@ namespace BusinessLayer.Abstract
         Task<int> PostCount(Expression<Func<Post, bool>> filter);
         Task<Post> FindPost(Expression<Func<Post, bool>> filter);
         Task<List<Post>> GetPostListOrdered(Expression<Func<Post, DateTime>> filter, Expression<Func<Post, bool>> search = null);
+        
     }
 }

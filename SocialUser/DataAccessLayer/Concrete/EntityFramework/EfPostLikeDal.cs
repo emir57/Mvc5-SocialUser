@@ -4,7 +4,7 @@ using EntityLayer.Concrete;
 
 namespace DataAccessLayer.Concrete.EntityFramework
 {
-    public class EfPostLikeDal : GenericRepository<PostLike>, IPostLikeDal
+    public class EfPostLikeDal : GenericRepository<PostLike, SocialUserContext>, IPostLikeDal
     {
     }
 }

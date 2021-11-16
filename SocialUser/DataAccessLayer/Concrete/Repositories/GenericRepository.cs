@@ -9,17 +9,18 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Concrete.Repositories
 {
-    public class GenericRepository<T> : IRepository<T> where T : class, IEntity
+    public class GenericRepository<T,TContext> : IRepository<T> 
+        where T : class, IEntity
+        where TContext:DbContext,new()
     {
-        SocialUserContext _context = new SocialUserContext();
-
+        TContext _context = new TContext();
         public async Task Delete(T p)
         {
             _context.Entry(p).State = EntityState.Deleted;
             await _context.SaveChangesAsync();
         }
 
-        public async Task<T> Search(Expression<Func<T, bool>> filter)
+        public virtual async Task<T> Search(Expression<Func<T, bool>> filter)
         {
             return await _context.Set<T>().SingleOrDefaultAsync(filter);
         }
@@ -30,12 +31,12 @@ namespace DataAccessLayer.Concrete.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<T>> List()
+        public virtual async Task<List<T>> List()
         {
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<List<T>> List(Expression<Func<T, bool>> filter)
+        public virtual async Task<List<T>> List(Expression<Func<T, bool>> filter)
         {
             return await _context.Set<T>().Where(filter).ToListAsync();
         }

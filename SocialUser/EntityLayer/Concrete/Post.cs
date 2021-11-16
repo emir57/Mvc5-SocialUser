@@ -1,5 +1,6 @@
 ﻿using EntityLayer.Abstract;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace EntityLayer.Concrete
@@ -15,5 +16,7 @@ namespace EntityLayer.Concrete
         public string Description { get; set; }
         public int LikeCount { get; set; }
         public DateTime PostDateTime { get; set; }
+
+        
     }
 }

@@ -1,5 +1,6 @@
 ﻿using EntityLayer.Abstract;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace EntityLayer.Concrete
@@ -13,5 +14,7 @@ namespace EntityLayer.Concrete
         public string UserId { get; set; }
         public string CommentDescription { get; set; }
         public DateTime CommentDateTime { get; set; }
+
+        
     }
 }
