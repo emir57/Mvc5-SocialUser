@@ -24,6 +24,11 @@ namespace SocialUser.Controllers
         private IUserFriendService _userFriendService = NinjectInstanceFactory.GetInstance<IUserFriendService>();
         //****************************************************
 
+        public string PicturePath()
+        {
+            return Server.MapPath("~/Content/postPicture/");
+        }
+
         [AllowAnonymous]
         public ActionResult Index()
         {
@@ -43,18 +48,9 @@ namespace SocialUser.Controllers
 
                 if (picture != null)
                 {
-                    string getEx = Path.GetExtension(picture.FileName);
-                    if (getEx != ".jpg" || getEx != ".png")
-                    {
-                        string filename = Guid.NewGuid() + getEx;
-                        string path = Server.MapPath("~/Content/postPicture/");
-                        picture.SaveAs(Path.Combine(path, filename));
-                        databasePath = "../../Content/postPicture/" + filename;
-                    }
-                    else { return RedirectToAction("Index"); }
-
+                    string path = PicturePath();
+                    ImageUtility.UploadImage(picture, out databasePath, path);
                 }
-                else { databasePath = ""; }
                 //add post
                 post.Description = description;
                 post.LikeCount = 0;
@@ -66,10 +62,7 @@ namespace SocialUser.Controllers
                 await _postService.PostAdd(post);
 
                 SocialUserSignalRHub.BroadcastPost();
-
-                return RedirectToAction("Index");
             }
-            else { }
             return RedirectToAction("Index");
         }
 
@@ -86,8 +79,8 @@ namespace SocialUser.Controllers
             if (!(String.IsNullOrEmpty(post.PostPicture)))
             {
                 string[] pictureName = post.PostPicture.Split('/');
-                string picturePath = Server.MapPath("~/Content/postPicture/");
-                string fullPath = picturePath + pictureName[4];
+                
+                string fullPath = PicturePath() + pictureName[4];
                 if (System.IO.File.Exists(fullPath))
                 {
                     System.IO.File.Delete(fullPath);

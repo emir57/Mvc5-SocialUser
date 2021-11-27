@@ -22,6 +22,10 @@ namespace SocialUser.Controllers
         private IUserService _userService = NinjectInstanceFactory.GetInstance<IUserService>();
         private IUserFriendService _userFriendService = NinjectInstanceFactory.GetInstance<IUserFriendService>();
 
+        public string PicturePath()
+        {
+            return Server.MapPath("~/Content/postPicture/");
+        }
 
 
         private ApplicationSignInManager _signInManager;
@@ -217,13 +221,7 @@ namespace SocialUser.Controllers
                         System.IO.File.Delete(oldPath);
                     }
                 }
-
-                //save new photo
-                string getEx = Path.GetExtension(picture.FileName);
-                string filename = Guid.NewGuid() + getEx;
-                string path = Server.MapPath("~/Content/profilePhoto/");
-                databasePath = "../../Content/profilePhoto/" + filename;
-                picture.SaveAs(Path.Combine(path, filename));
+                ImageUtility.UploadImage(picture, out databasePath, PicturePath());
             }
             else
             {

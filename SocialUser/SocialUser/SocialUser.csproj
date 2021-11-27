@@ -249,6 +249,7 @@
     <Compile Include="Models\SocialUserSignalRHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\ImageUtility.cs" />
     <Compile Include="Utilities\PostUtility.cs" />
     <Compile Include="Utilities\UserUtility.cs" />
   </ItemGroup>
