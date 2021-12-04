@@ -1,10 +1,10 @@
 # Mvc5-SocialUser
-Mvc 5 ile yapmış olduğum sosyal medya sitesi
-Async Programming ⚙️
-using AJAX ⚙️
-using SignalR ⚙️
-using Microsoft Identity ⚙️
-
+Mvc 5 ile yapmış olduğum sosyal medya sitesi<br>
+Async Programming ⚙️<br>
+using AJAX ⚙️<br>
+using SignalR ⚙️<br>
+using Microsoft Identity ⚙️<br>
+<br>
 Tables📋
 User
 <table>
