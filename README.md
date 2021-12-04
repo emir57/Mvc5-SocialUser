@@ -42,7 +42,21 @@ Post
   <td>PostDateTime</td>
   </tr>
 </table>
-Post
+Role
+<table>
+  <tr>
+  <td>Id</td>
+  <td>Name</td>
+  </tr>
+</table>
+UserRoles
+<table>
+  <tr>
+  <td>UserId</td>
+  <td>RoleId</td>
+  </tr>
+</table>
+PostLike
 <table>
   <tr>
   <td>Id</td>
