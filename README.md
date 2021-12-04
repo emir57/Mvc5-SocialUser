@@ -69,6 +69,15 @@ ChatMessage
   <td>MessageDateTime</td>
   </tr>
 </table>
+Group
+<table>
+  <tr>
+  <td>GroupId</td>
+  <td>GroupName</td>
+  <td>GroupDateTime</td>
+  <td>CreateGroupUserId</td>
+  </tr>
+</table>
 GroupMessage
 <table>
   <tr>
