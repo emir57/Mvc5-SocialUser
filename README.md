@@ -108,6 +108,7 @@ GroupMember
   <td>MemberId</td>
   <td>GroupId</td>
   <td>UserId</td>
+  <td>Role</td>
   </tr>
 </table>
 GroupMessage
