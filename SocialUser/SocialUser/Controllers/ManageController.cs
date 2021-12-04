@@ -99,7 +99,7 @@ namespace SocialUser.Controllers
         public async Task<ActionResult> Accept(int? id)
         {
             var result = await _userFriendService.Find(a => a.Id == id);
-            result.Check = true;
+            result.CheckFriend = true;
             var userid1 = result.UserId1;
             var userid2 = result.UserId2;
             await _userFriendService.Update(result);
@@ -137,7 +137,7 @@ namespace SocialUser.Controllers
                     var userCheck = _userFriendService.Find(a => a.UserId1 == currentUserId && a.UserId2 == user.Id);
                     if (userCheck != null)
                     {
-                        userFriend.Check = false;
+                        userFriend.CheckFriend = false;
                         userFriend.UserId1 = currentUserId;
                         userFriend.UserId2 = user.Id;
                         await _userFriendService.Add(userFriend);
@@ -164,8 +164,8 @@ namespace SocialUser.Controllers
 
             //friends Check
             string userId = User.Identity.GetUserId();
-            var friends = await _userFriendService.GetAll(a => (a.Check == true) && ((a.UserId1 == userId) || (a.UserId2 == userId)));
-            var friendsRequest = await _userFriendService.GetAll(a => (a.Check == false) && ((a.UserId1 == userId) || a.UserId2 == userId));
+            var friends = await _userFriendService.GetAll(a => (a.CheckFriend == true) && ((a.UserId1 == userId) || (a.UserId2 == userId)));
+            var friendsRequest = await _userFriendService.GetAll(a => (a.CheckFriend == false) && ((a.UserId1 == userId) || a.UserId2 == userId));
             if (friends.Count == 0)
             {
                 model.friends = "Henüz arkadaşınız yok.";

@@ -27,7 +27,7 @@ namespace SocialUser.Controllers
         {
             GetChatViewModel model = new GetChatViewModel();
             string currentUserId = User.Identity.GetUserId();
-            model.friends = await _userFriendService.GetAll(a => (a.UserId1 == currentUserId || a.UserId2 == currentUserId) && (a.Check == true));
+            model.friends = await _userFriendService.GetAll(a => (a.UserId1 == currentUserId || a.UserId2 == currentUserId) && (a.CheckFriend == true));
             model.users = await _userService.GetAll();
             model.groups = await _groupService.List(a => a.CreateGroupUserId == currentUserId);
 

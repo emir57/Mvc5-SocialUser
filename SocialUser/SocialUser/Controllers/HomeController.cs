@@ -376,7 +376,7 @@ namespace SocialUser.Controllers
             //get search users
             model.users = await _userService.GetAll(a => a.UserName.ToLower().Contains(searchKey.ToLower()) && a.Id != currentUserId);
             //get current user friend
-            model.userFriend = await _userFriendService.GetAll(a => (a.Check == true) && (a.UserId1 == currentUserId || a.UserId2 == currentUserId));
+            model.userFriend = await _userFriendService.GetAll(a => (a.CheckFriend == true) && (a.UserId1 == currentUserId || a.UserId2 == currentUserId));
             return PartialView("GetUsersView", model);
         }
 
