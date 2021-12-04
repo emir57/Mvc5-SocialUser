@@ -144,10 +144,13 @@ CommentAnswer
   </tr>
 </table>
 ⭐Photos⭐
+<br>
 <img width="500" src="https://i.ibb.co/xsJRKPK/register.png">
 <img width="500" src="https://i.ibb.co/cQVpR09/login.png">
-<img width="500" src="https://i.ibb.co/2vgW2cD/1.png">
 <img width="500" src="https://i.ibb.co/0tdRdhj/postpaylas.png">
+<img width="500" src="https://i.ibb.co/2vgW2cD/1.png">
+<img width="500" src="https://i.ibb.co/Sw7RP2c/detay.png">
+<img width="500" src="https://i.ibb.co/jGCqjKP/detay2.png">
 <img width="500" src="https://i.ibb.co/w0FWPg8/profile-git.png">
 <img width="500" src="https://i.ibb.co/GxJn6PC/profil.png">
 <img width="500" src="https://i.ibb.co/bX9QxQQ/sayfam.png">
