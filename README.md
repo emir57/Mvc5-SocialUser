@@ -70,7 +70,7 @@ UserFriend
   <td>Id</td>
   <td>UserId1</td>
   <td>UserId2</td>
-  <td>[Check]</td>
+  <td>CheckFriend</td>
   </tr>
 </table>
 ChatMessage
