@@ -16,12 +16,6 @@ namespace SocialUser.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        //private IPostService _postService = NinjectInstanceFactory.GetInstance<IPostService>();
-        //private ICommentService _commentService = NinjectInstanceFactory.GetInstance<ICommentService>();
-        //private ICommentAnswerService _commentAnswerService = NinjectInstanceFactory.GetInstance<ICommentAnswerService>();
-        //private IPostLikeService _postLikeService = NinjectInstanceFactory.GetInstance<IPostLikeService>();
-        //private IUserService _userService = NinjectInstanceFactory.GetInstance<IUserService>();
-        //private IUserFriendService _userFriendService = NinjectInstanceFactory.GetInstance<IUserFriendService>();
         private IPostService _postService;
         private ICommentService _commentService;
         private ICommentAnswerService _commentAnswerService;
