@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Abstract;
+using BusinessLayer.Utilities.ValidationTool;
 using DataAccessLayer.Abstract;
 using EntityLayer.Concrete;
 using FluentValidation;
@@ -22,7 +23,7 @@ namespace BusinessLayer.Concrete
 
         public async Task Add(GroupMessage groupMessage)
         {
-            if (!(_groupMessageValidator.Validate(groupMessage).Errors.Count > 0))
+            if (ValidationTool.Validate(_groupMessageValidator,groupMessage))
             {
                 await _message.Insert(groupMessage);
             }
