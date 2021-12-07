@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Utilities.Interceptor
 {
-    public class AspectMethodInterceptor : IInterceptorSelector
+    public class AspectInterceptorSelector : IInterceptorSelector
     {
         public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
         {
