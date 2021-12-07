@@ -1,6 +1,9 @@
 # Mvc5-SocialUser
-Mvc 5 ile yapmış olduğum sosyal medya sitesi<br>
+(Data Layer)⚙️<br>
+(Business Layer)⚙️<br>
+(Presentation Layer)⚙️<br>
 Async Programming ⚙️<br>
+Dependency Injection ⚙️<br>
 using AJAX ⚙️<br>
 using SignalR ⚙️<br>
 using Microsoft Identity ⚙️<br>
