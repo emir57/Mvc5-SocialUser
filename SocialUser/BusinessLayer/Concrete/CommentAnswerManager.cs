@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Abstract;
+using BusinessLayer.Utilities.ValidationTool;
 using DataAccessLayer.Abstract;
 using DataAccessLayer.Concrete.Repositories;
 using EntityLayer.Concrete;
@@ -22,7 +23,7 @@ namespace BusinessLayer.Concrete
         }
         public async Task Add(CommentAnswer c)
         {
-            if (!(_commentAnswerValidator.Validate(c).Errors.Count > 0))
+            if (ValidationTool.Validate(_commentAnswerValidator,c))
             {
                 await _answer.Insert(c);
             }
