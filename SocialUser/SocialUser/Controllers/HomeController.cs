@@ -22,7 +22,6 @@ namespace SocialUser.Controllers
         private IPostLikeService _postLikeService;
         private IUserService _userService;
         private IUserFriendService _userFriendService;
-
         public HomeController(IUserFriendService userFriendService, IUserService userService, IPostLikeService postLikeService, ICommentAnswerService commentAnswerService, ICommentService commentService, IPostService postService)
         {
             _userFriendService = userFriendService;

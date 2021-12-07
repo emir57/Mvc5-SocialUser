@@ -12,12 +12,23 @@ namespace SocialUser.Controllers
     [Authorize]
     public class ChatController : Controller
     {
-        private IChatMessageService _chatMessageService = NinjectInstanceFactory.GetInstance<IChatMessageService>();
-        private IUserService _userService = NinjectInstanceFactory.GetInstance<IUserService>();
-        private IUserFriendService _userFriendService = NinjectInstanceFactory.GetInstance<IUserFriendService>();
-        private IGroupMessageService _groupMessageService = NinjectInstanceFactory.GetInstance<IGroupMessageService>();
-        private IGroupMemberService _groupMemberService = NinjectInstanceFactory.GetInstance<IGroupMemberService>();
-        private IGroupService _groupService = NinjectInstanceFactory.GetInstance<IGroupService>();
+        private IChatMessageService _chatMessageService;
+        private IUserService _userService;
+        private IUserFriendService _userFriendService;
+        private IGroupMessageService _groupMessageService;
+        private IGroupMemberService _groupMemberService;
+        private IGroupService _groupService;
+
+        public ChatController(IGroupService groupService, IGroupMemberService groupMemberService, IGroupMessageService groupMessageService, IUserFriendService userFriendService, IUserService userService, IChatMessageService chatMessageService)
+        {
+            _groupService = groupService;
+            _groupMemberService = groupMemberService;
+            _groupMessageService = groupMessageService;
+            _userFriendService = userFriendService;
+            _userService = userService;
+            _chatMessageService = chatMessageService;
+        }
+
         public async Task<ApplicationUser> getCurrentUser(string id)
         {
             return await _userService.Find(a => a.Id == id);

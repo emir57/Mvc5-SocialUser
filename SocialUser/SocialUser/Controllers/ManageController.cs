@@ -3,6 +3,7 @@ using BusinessLayer.Utilities;
 using EntityLayer.Concrete;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using SocialUser.Models;
 using SocialUser.Utilities;
@@ -19,28 +20,20 @@ namespace SocialUser.Controllers
     [Authorize]
     public class ManageController : Controller
     {
-        private IUserService _userService = NinjectInstanceFactory.GetInstance<IUserService>();
-        private IUserFriendService _userFriendService = NinjectInstanceFactory.GetInstance<IUserFriendService>();
+        private IUserService _userService;
+        private IUserFriendService _userFriendService;
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
+        public ManageController(IUserService userService, IUserFriendService userFriendService)
+        {
+            _userService = userService;
+            _userFriendService = userFriendService;
+        }
 
         public string PicturePath()
         {
             return Server.MapPath("~/Content/postPicture/");
         }
-
-
-        private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
-
-        public ManageController()
-        {
-        }
-
-        public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
-        {
-            UserManager = userManager;
-            SignInManager = signInManager;
-        }
-
         public ApplicationSignInManager SignInManager
         {
             get

@@ -5,6 +5,9 @@ using DataAccessLayer.Abstract;
 using DataAccessLayer.Concrete.EntityFramework;
 using EntityLayer.Concrete;
 using FluentValidation;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Owin.Security;
 using Ninject.Modules;
 
 namespace BusinessLayer.DependencyResolvers.Ninject
@@ -43,6 +46,8 @@ namespace BusinessLayer.DependencyResolvers.Ninject
             Bind<IValidator<Comment>>().To<CommentValidator>().InTransientScope();
             Bind<IValidator<CommentAnswer>>().To<CommentAnswerValidator>().InTransientScope();
             Bind<IValidator<ChatMessage>>().To<ChatMessageValidator>().InTransientScope();
+
+            
         }
     }
 }
