@@ -16,13 +16,28 @@ namespace SocialUser.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private IPostService _postService = NinjectInstanceFactory.GetInstance<IPostService>();
-        private ICommentService _commentService = NinjectInstanceFactory.GetInstance<ICommentService>();
-        private ICommentAnswerService _commentAnswerService = NinjectInstanceFactory.GetInstance<ICommentAnswerService>();
-        private IPostLikeService _postLikeService = NinjectInstanceFactory.GetInstance<IPostLikeService>();
-        private IUserService _userService = NinjectInstanceFactory.GetInstance<IUserService>();
-        private IUserFriendService _userFriendService = NinjectInstanceFactory.GetInstance<IUserFriendService>();
-        //****************************************************
+        //private IPostService _postService = NinjectInstanceFactory.GetInstance<IPostService>();
+        //private ICommentService _commentService = NinjectInstanceFactory.GetInstance<ICommentService>();
+        //private ICommentAnswerService _commentAnswerService = NinjectInstanceFactory.GetInstance<ICommentAnswerService>();
+        //private IPostLikeService _postLikeService = NinjectInstanceFactory.GetInstance<IPostLikeService>();
+        //private IUserService _userService = NinjectInstanceFactory.GetInstance<IUserService>();
+        //private IUserFriendService _userFriendService = NinjectInstanceFactory.GetInstance<IUserFriendService>();
+        private IPostService _postService;
+        private ICommentService _commentService;
+        private ICommentAnswerService _commentAnswerService;
+        private IPostLikeService _postLikeService;
+        private IUserService _userService;
+        private IUserFriendService _userFriendService;
+
+        public HomeController(IUserFriendService userFriendService, IUserService userService, IPostLikeService postLikeService, ICommentAnswerService commentAnswerService, ICommentService commentService, IPostService postService)
+        {
+            _userFriendService = userFriendService;
+            _userService = userService;
+            _postLikeService = postLikeService;
+            _commentAnswerService = commentAnswerService;
+            _commentService = commentService;
+            _postService = postService;
+        }
 
         public string PicturePath()
         {
