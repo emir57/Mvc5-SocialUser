@@ -1,5 +1,5 @@
 ﻿using BusinessLayer.Abstract;
-using BusinessLayer.Utilities;
+using BusinessLayer.Utilities.NinjectInstance;
 using EntityLayer.Concrete;
 using System;
 using System.Collections.Generic;

@@ -1,7 +1,7 @@
 ﻿using BusinessLayer.DependencyResolvers.Ninject;
 using Ninject;
 
-namespace BusinessLayer.Utilities
+namespace BusinessLayer.Utilities.NinjectInstance
 {
     public static class NinjectInstanceFactory
     {
