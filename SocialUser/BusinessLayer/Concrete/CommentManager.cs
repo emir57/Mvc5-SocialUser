@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Abstract;
+using BusinessLayer.Utilities.ValidationTool;
 using DataAccessLayer.Abstract;
 using EntityLayer.Concrete;
 using FluentValidation;
@@ -22,7 +23,7 @@ namespace BusinessLayer.Concrete
 
         public async Task CommentAdd(Comment c)
         {
-            if (!(_commentValidator.Validate(c).Errors.Count > 0))
+            if (ValidationTool.Validate(_commentValidator,c))
             {
                 await _comment.Insert(c);
             }
