@@ -141,6 +141,7 @@
     <Compile Include="Abstract\ICommentService.cs" />
     <Compile Include="Abstract\IPostLikeService.cs" />
     <Compile Include="Abstract\IPostService.cs" />
+    <Compile Include="Aspects\Autofac\Validation\ValidationAspect.cs" />
     <Compile Include="Concrete\ChatMessageManager.cs" />
     <Compile Include="Concrete\GroupMemberManager.cs" />
     <Compile Include="Concrete\GroupMessageManager.cs" />
@@ -175,9 +176,7 @@
       <Name>EntityLayer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
