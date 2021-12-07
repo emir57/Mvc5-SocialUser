@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Abstract;
+using BusinessLayer.Utilities.ValidationTool;
 using DataAccessLayer.Abstract;
 using EntityLayer.Concrete;
 using FluentValidation;
@@ -20,7 +21,7 @@ namespace BusinessLayer.Concrete
 
         public async Task AddMessages(ChatMessage message)
         {
-            if (!(_chatMessageValidator.Validate(message).Errors.Count > 0))
+            if (ValidationTool.Validate(_chatMessageValidator,message))
             {
                 await _messages.Insert(message);
             }
