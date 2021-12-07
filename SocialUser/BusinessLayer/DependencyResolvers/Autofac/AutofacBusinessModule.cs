@@ -14,8 +14,6 @@ namespace BusinessLayer.DependencyResolvers.Autofac
     {
         protected override void Load(ContainerBuilder builder)
         {
-
-
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()

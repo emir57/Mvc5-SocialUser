@@ -91,3 +91,11 @@ C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\BusinessLayer\bin\Deb
 C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\BusinessLayer\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\BusinessLayer\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\BusinessLayer\bin\Debug\System.ValueTuple.xml
+C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\BusinessLayer\bin\Debug\Autofac.dll
+C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\BusinessLayer\bin\Debug\Autofac.Extras.DynamicProxy.dll
+C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\BusinessLayer\bin\Debug\Castle.Core.dll
+C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\BusinessLayer\bin\Debug\Autofac.pdb
+C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\BusinessLayer\bin\Debug\Autofac.xml
+C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\BusinessLayer\bin\Debug\Autofac.Extras.DynamicProxy.pdb
+C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\BusinessLayer\bin\Debug\Autofac.Extras.DynamicProxy.xml
+C:\Users\lolem\Documents\GitHub\Mvc5-SocialUser\SocialUser\BusinessLayer\bin\Debug\Castle.Core.xml

@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Web.Mvc;
+using Autofac;
+using Autofac.Integration.Mvc;
+using Castle.DynamicProxy;
+using BusinessLayer.DependencyResolvers.Autofac;
 using DataAccessLayer.Concrete;
 using EntityLayer.Concrete;
 using Microsoft.AspNet.Identity;
@@ -16,6 +21,8 @@ namespace SocialUser
         // Kimlik doğrulamayı yapılandırma hakkında daha fazla bilgi için lütfen https://go.microsoft.com/fwlink/?LinkId=301864 adresini ziyaret edin
         public void ConfigureAuth(IAppBuilder app)
         {
+            
+
             // Veritabanı bağlamını ve kullanıcı yöneticisini ve oturum açma yöneticisini istek başına tek örnek kullanacak şekilde yapılandırın
             app.CreatePerOwinContext(ApplicationDbContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);

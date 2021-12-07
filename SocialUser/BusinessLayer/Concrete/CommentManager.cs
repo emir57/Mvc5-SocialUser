@@ -1,5 +1,7 @@
 ﻿using BusinessLayer.Abstract;
+using BusinessLayer.Aspects.Autofac.Validation;
 using BusinessLayer.Utilities.ValidationTool;
+using BusinessLayer.ValidationRules;
 using DataAccessLayer.Abstract;
 using EntityLayer.Concrete;
 using FluentValidation;
@@ -20,14 +22,13 @@ namespace BusinessLayer.Concrete
             _comment = commentDal;
             _commentValidator = commentValidator;
         }
-
+        //[ValidationAspect(typeof(CommentValidator))]
         public async Task CommentAdd(Comment c)
         {
-            if (ValidationTool.Validate(_commentValidator,c))
+            if (ValidationTool.Validate(_commentValidator, c))
             {
                 await _comment.Insert(c);
             }
-
         }
 
         public async Task<int> CommentCount(Expression<Func<Comment, bool>> filter)

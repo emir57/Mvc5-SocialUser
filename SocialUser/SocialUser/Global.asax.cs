@@ -1,3 +1,5 @@
+using Autofac;
+using Autofac.Integration.Mvc;
 using BusinessLayer.DependencyResolvers.Autofac;
 using SocialUser.App_Start;
 using System;
@@ -19,8 +21,6 @@ namespace SocialUser
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             ControllerBuilder.Current.SetControllerFactory(new NinjectController());
-
-            DependencyResolver.SetResolver(new AutofacBusinessModule());
             
         }
     }
