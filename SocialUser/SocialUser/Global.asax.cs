@@ -18,6 +18,7 @@ namespace SocialUser
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             ControllerBuilder.Current.SetControllerFactory(new NinjectController());
+            //ControllerBuilder.Current.SetControllerFactory();
         }
     }
 }
