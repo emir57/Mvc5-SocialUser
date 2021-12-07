@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Abstract;
+using BusinessLayer.Utilities.ValidationTool;
 using DataAccessLayer.Abstract;
 using EntityLayer.Concrete;
 using FluentValidation;
@@ -29,7 +30,7 @@ namespace BusinessLayer.Concrete
         }
         public async Task PostAdd(Post p)
         {
-            if (!(_postValidator.Validate(p).Errors.Count > 0))
+            if (ValidationTool.Validate(_postValidator,p))
             {
                 await _postDal.Insert(p);
             }
@@ -53,7 +54,7 @@ namespace BusinessLayer.Concrete
 
         public async Task PostUpdate(Post p)
         {
-            if (!(_postValidator.Validate(p).Errors.Count > 0))
+            if (ValidationTool.Validate(_postValidator, p))
             {
                 await _postDal.Update(p);
             }

@@ -9,14 +9,15 @@ namespace BusinessLayer.Utilities.ValidationTool
 {
     public class ValidationTool
     {
-        public static void Validate(IValidator validator,object entity)
+        public static bool Validate(IValidator validator,object entity)
         {
             var context = new ValidationContext<object>(entity);
             var result = validator.Validate(context);
             if (!result.IsValid)
             {
-                throw new ValidationException(result.Errors);
+                return false;
             }
+            return true;
         }
     }
 }
