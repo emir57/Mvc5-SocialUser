@@ -5,7 +5,7 @@
 }
 @Styles.Render("~/Content/login.css")
 
-<div class="form-signin">
+<main class="form-signin">
             @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-group" }))
             {
                 <img class="mb-4" src="https://getbootstrap.com/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
@@ -29,8 +29,7 @@
                     @ViewBag.state
                 </p>
             }
-        </div>
-</div>
+</main>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
