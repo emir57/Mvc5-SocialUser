@@ -123,9 +123,9 @@ namespace SocialUser.Controllers
             SampleHub.BroadcastGroupChat();
             return RedirectToAction("Index");
         }
-        public async Task<ActionResult> CreateGroup(string groupName, Group group,GroupMember m1,GroupMember m2, GroupMember m3)
+        public async Task<ActionResult> CreateGroup(string groupName, Group group)
         {
-            var now = DateTime.Now;
+            DateTime now = DateTime.Now;
             string currentuserid = User.Identity.GetUserId();
             group.GroupName = groupName;
             group.GroupDateTime = now;
@@ -136,10 +136,10 @@ namespace SocialUser.Controllers
         }
         public async Task<ActionResult> DeleteGroup(int id)
         {
-            var findGroup = await _groups.FindGroup(a => a.GroupId == id);
-            if(findGroup!=null)
+            Group group = await _groups.FindGroup(a => a.GroupId == id);
+            if(group != null)
             {
-                await _groups.Delete(findGroup);
+                await _groups.Delete(group);
             }
             return RedirectToAction("Index");
         }
