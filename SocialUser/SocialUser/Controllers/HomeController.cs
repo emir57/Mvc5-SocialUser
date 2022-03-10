@@ -252,22 +252,17 @@ namespace SocialUser.Controllers
                 if (comment == null){ return RedirectToAction("Index"); }
                 else
                 {
-                    
                     foreach (var answer in commentAnswers)
                     {
                         await _commentAnswers.CommentAnswerDeleteBL(answer);
                     }
                     await _comments.CommentDelete(comment);
-
-
                     SampleHub.BroadcastComment();
                     return RedirectToAction("PostDetail",new{ @postid = postid });
                 }
             }
-            else { return RedirectToAction("Index"); }
-            
-            
-
+            else 
+                return RedirectToAction("Index");
         }
         public async Task<ActionResult> CommentAnswerDelete(int? id,string UserId,int? postid)
         {
@@ -278,12 +273,9 @@ namespace SocialUser.Controllers
                 await _commentAnswers.CommentAnswerDeleteBL(getAnswer);
                 SampleHub.BroadcastComment();
                 return RedirectToAction("PostDetail", new { @postid = postid });
-
             }
             else
-            {
                 return RedirectToAction("Index");
-            }
         }
         [HttpPost]
         public async Task<ActionResult> CommentAnswerDo(int? postid,int? commentid,string commentText,CommentAnswer answer)
