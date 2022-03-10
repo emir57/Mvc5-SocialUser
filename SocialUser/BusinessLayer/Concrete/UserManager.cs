@@ -3,25 +3,28 @@ using DataAccessLayer.Abstract;
 using EntityLayer.Concrete;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.Concrete
 {
     public class UserManager : IUserService
     {
-        private IApplicationUserDal _user;
+        IApplicationUserDal _user;
         public UserManager(IApplicationUserDal user)
         {
             _user = user;
         }
-        public async Task<ApplicationUser> Find(Expression<Func<ApplicationUser, bool>> filter)
+        public async Task<ApplicationUser> Find(Expression<Func<ApplicationUser,bool>>filter)
         {
             //return await _context.Users.SingleOrDefaultAsync(filter);
             return await _user.Search(filter);
         }
 
-        public async Task<List<ApplicationUser>> GetAll(Expression<Func<ApplicationUser, bool>> filter = null)
+        public async Task<List<ApplicationUser>> GetAll(Expression<Func<ApplicationUser, bool>> filter=null)
         {
             return filter == null ?
                 await _user.List() :

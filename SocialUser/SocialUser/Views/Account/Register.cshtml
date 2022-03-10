@@ -5,42 +5,61 @@
 
 @Styles.Render("~/Content/register.css")
 
-<main class="form-signin">
-    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-    {
-        @Html.AntiForgeryToken()
-        <img class="mb-4" src="https://getbootstrap.com/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
-        <h1 class="h3 mb-3 fw-normal">Kayıt Ol</h1>
-        @Html.ValidationSummary("", new { @class = "text-danger" })
-        <div class="form-floating">
-            @Html.LabelFor(m => m.UserName, new { @class = "control-label" })<br />
+<div class="jumbotron justify-content">
+    <div class="row">
+        <div class="col-lg-4">
+            <h3 class="display-3">Kayıt Ol</h3>
+            <hr class="hover" />
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <h4>Yeni bir hesap oluşturun.</h4>
+                <hr />
+                @Html.ValidationSummary("", new { @class = "text-danger" })
 
-            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                @Html.LabelFor(m => m.UserName, new { @class = "control-label" })<br />
+
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+
+
+
+                @Html.LabelFor(m => m.Email, new { @class = "control-label" })<br />
+
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+
+
+
+                @Html.LabelFor(m => m.DateOfBirth, new { @class = "control-label" })<br />
+
+                @Html.TextBoxFor(m => m.DateOfBirth, new { @class = "form-control",type="date" })
+
+
+
+                @Html.LabelFor(m => m.Password, new { @class = "control-label" })<br />
+
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+
+
+
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "control-label" })<br />
+
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })<br />
+
+
+                <input type="submit" class="btn btn-primary" value="Kaydol" />
+
+            }
         </div>
-        <div class="form-floating">
-            @Html.LabelFor(m => m.Email, new { @class = "control-label" })<br />
+        <div class="col-lg-8">
 
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-        </div>
-        <div class="form-floating">
-            @Html.LabelFor(m => m.DateOfBirth, new { @class = "control-label" })<br />
-
-            @Html.TextBoxFor(m => m.DateOfBirth, new { @class = "form-control", type = "date" })
-        </div>
-        <div class="form-floating">
-            @Html.LabelFor(m => m.Password, new { @class = "control-label" })<br />
-
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-        <div class="form-floating">
-            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "control-label", @for = "password" })<br />
-
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", id = "password" })
         </div>
 
-        <input type="submit" class="btn btn-primary" value="Kaydol" />
-    }
-</main>
+    </div>
+
+</div>
+
+
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

@@ -5,31 +5,42 @@
 }
 @Styles.Render("~/Content/login.css")
 
-<main class="form-signin">
+<div class="jumbotron justify-content">
+    <div class="row">
+        <div class="col-lg-4">
+            <h3 class="display-3">Giriş Yap</h3>
+            <hr class="hover" />
             @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-group" }))
             {
-                <img class="mb-4" src="https://getbootstrap.com/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
-                <h1 class="h3 mb-3 fw-normal">Giriş Yap</h1>
                 @Html.AntiForgeryToken()
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                 @Html.LabelFor(a => a.UserName)<br />
                 @Html.ValidationMessageFor(a => a.UserName, "", new { @class = "text-danger" })
-                <div class="form-floating">
-                    @Html.TextBox("userName", "", new { @class = "form-control",id="username" })
-                </div>
+
+                @Html.TextBox("userName", "", new { @class = "form-control" })
+
                 @Html.LabelFor(a => a.Password)<br />
                 @Html.ValidationMessageFor(a => a.Password, "", new { @class = "text-danger" })
-                <div class="form-floating">
-                    @Html.TextBox("password", "", new { @class = "form-control",id="password", type = "password" })
-                </div>
+
+                @Html.TextBox("password", "", new { @class = "form-control", type = "password" })
+
                 <input type="submit" value="Giriş Yap" class="btn btn-primary" />
 
                 <p class="text-danger">
                     @ViewBag.state
                 </p>
             }
-</main>
+        </div>
+        <div class="col-lg-8">
+
+        </div>
+
+    </div>
+
+</div>
+
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

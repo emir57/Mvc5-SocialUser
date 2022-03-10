@@ -1,5 +1,8 @@
 ﻿using EntityLayer.Concrete;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
 namespace SocialUser.Models
 {
@@ -14,5 +17,6 @@ namespace SocialUser.Models
         public List<GroupMember> members { get; set; }
         public string userid1 { get; set; }
         public string userid2 { get; set; }
+        public string userid3 { get; set; }
     }
 }

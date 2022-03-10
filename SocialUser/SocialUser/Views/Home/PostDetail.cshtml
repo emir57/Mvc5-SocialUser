@@ -15,53 +15,53 @@
         <!--Post-->
         <div class="card">
             <div class="card-header">
-                <img class="card-profile" src="@Model.User.profilePhoto" />
-                <b>@Model.Post.Username</b>
-                @if (Model.Post.UserId == User.Identity.GetUserId())
+                <img class="card-profile" src="@ViewData["userProfilePhoto"]" />
+                <b>@ViewData["userName"]</b>
+                @if (ViewBag.postUserId == User.Identity.GetUserId())
                 {
                     @*@Html.ActionLink("Sil", "PostDelete", new { id = ViewData["postId"] }, new { @class = "deleteBtn", onclick = "return confirm('Gönderiyi silmek istediğinizden emin misiniz?');" })*@
-                    <a href="@Url.Action("PostDelete", new { id = Model.Post.PostId })" name="" onclick="return confirm('Silmek istediğinizden eminmisiniz?')" class="deleteBtn"><i class="fas fa-trash-alt fa-lg"></i></a>
+                    <a href="@Url.Action("PostDelete", new { id = @ViewData["postId"] })" name="" onclick="return confirm('Silmek istediğinizden eminmisiniz?')" class="deleteBtn"><i class="fas fa-trash-alt fa-lg"></i></a>
                 }
                 else { }
                 <hr class="card-hover-profile" />
             </div>
             <div class="card-description">
-                @Model.Post.Description
+                @ViewData["description"]
             </div>
             <div class="card-image">
                 <!--Image-->
-                <img class="card-picture" src="@Model.Post.PostPicture" />
+                <img class="card-picture" src="@ViewData["postPicture"]" />
             </div>
             <div class="card-footer">
                 <!--DateTime-->
                 <div class="badge">
-                    @{ var date = (DateTime.Now - Model.Post.PostDateTime);
+                    @{ var date = (DateTime.Now - Convert.ToDateTime(ViewData["postDateTime"]));
                         var year = date.TotalDays / 365;
                         if (date.Days >= 365)
                         { <b>@(Convert.ToInt32(year)) yıl önce </b>}
                         else if (date.Days > 0)
                         { <b>@date.Days gün önce</b>}
-                        else if (date.Minutes == 0)
-                        { <b>@date.Seconds saniye önce</b>}
-                        else if (date.Hours == 0)
-                        { <b>@date.Minutes dakika önce</b>}
-                        else if (date.Days == 0)
-                        {<b>@date.Hours saat önce</b> }
-                        else
-                        { <b>@date</b>}
+                    else if (date.Minutes == 0)
+                    { <b>@date.Seconds saniye önce</b>}
+                else if (date.Hours == 0)
+                { <b>@date.Minutes dakika önce</b>}
+            else if (date.Days == 0)
+            {<b>@date.Hours saat önce</b> }
+        else
+        { <b>@date</b>}
                     }
                 </div>
                 <div class="badgeLike">
                     @if (Convert.ToBoolean(ViewData["checkLike"]) == false)
                     {
-                    <a href="@Url.Action("PostLike","Home",new { postid = Model.Post.PostId, check = false })" class="badgeUnlike likeBtn">
-                        <i class="far fa-thumbs-up"></i> @Model.Post.LikeCount Beğen
-                    </a>
+                        <a href="@Url.Action("PostLike","Home",new { postid = ViewData["postId"], check = false })" class="badgeUnlike likeBtn">
+                            <i class="far fa-thumbs-up"></i> @ViewData["likeCount"] Beğen
+                        </a>
                     }
                     else if(Convert.ToBoolean(ViewData["checkLike"]) == true)
                     {
-                        <a href="@Url.Action("PostLike","Home",new { postid = Model.Post.PostId, check = true })" class="badge likeBtn">
-                            <i class="fas fa-thumbs-up"></i> @Model.Post.LikeCount Beğenme
+                        <a href="@Url.Action("PostLike","Home",new { postid = ViewData["postId"], check = true })" class="badge likeBtn">
+                            <i class="fas fa-thumbs-up"></i> @ViewData["likeCount"] Beğen
                         </a>
                     }
                 </div>
@@ -78,7 +78,7 @@
         <table class="table table-bordered">
             @foreach (var postlikes in Model.likes)
             {
-                foreach (var user in Model.users)
+                foreach (var user in Model.user)
                 {
                     if (postlikes.UserId == user.Id)
                     {
@@ -88,6 +88,8 @@
                     }
                 }
             }
+
+
         </table>
         <script>
 
@@ -157,6 +159,7 @@
         <!--Comments-->
 
         <div id="commentDiv">
+
         </div>
 
     </div>
@@ -181,7 +184,7 @@
             var model = $("#commentDiv");
             $.ajax({
                 url: "GetComments",
-                data: { postid:@Model.Post.PostId},
+                data: {postid:@ViewBag.postId},
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
                 dataType: "html",
@@ -196,8 +199,7 @@
                 var postid = $("#postid");
                 var div = $("#errorDiv")
                 e.preventDefault();
-                
-                if (comment.val().length > 1) {
+                if (comment.val().length > 5) {
                     $.ajax({
                         url: "PostDoComment",
                         type: "post",
@@ -208,7 +210,7 @@
                     comment.val("");
                     div.empty().append("");
                 } else {
-                    div.empty().append("Yorum 1 karakterden Fazla Olmalıdır.")
+                    div.empty().append("Yorum 5 karakterden Fazla Olmalıdır.")
                 }
 
             })

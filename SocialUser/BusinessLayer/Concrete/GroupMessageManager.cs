@@ -1,11 +1,12 @@
 ﻿using BusinessLayer.Abstract;
-using BusinessLayer.Utilities.ValidationTool;
 using DataAccessLayer.Abstract;
+using DataAccessLayer.Concrete.Repositories;
 using EntityLayer.Concrete;
-using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.Concrete
@@ -13,21 +14,15 @@ namespace BusinessLayer.Concrete
     public class GroupMessageManager : IGroupMessageService
     {
 
-        private IGroupMessageDal _message;
-        private IValidator<GroupMessage> _groupMessageValidator;
-        public GroupMessageManager(IGroupMessageDal message, IValidator<GroupMessage> groupMessageValidator)
+        IGroupMessageDal _message;
+        public GroupMessageManager(IGroupMessageDal message)
         {
             _message = message;
-            _groupMessageValidator = groupMessageValidator;
         }
 
         public async Task Add(GroupMessage groupMessage)
         {
-            if (ValidationTool.Validate(_groupMessageValidator,groupMessage))
-            {
-                await _message.Insert(groupMessage);
-            }
-
+            await _message.Insert(groupMessage);
         }
 
         public async Task Delete(GroupMessage groupMessage)

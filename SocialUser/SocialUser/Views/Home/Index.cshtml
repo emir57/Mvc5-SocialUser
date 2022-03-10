@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNet.Identity
+﻿@model List<EntityLayer.Concrete.Post>
+@using Microsoft.AspNet.Identity
 @{
     ViewBag.Title = "Ana Sayfa";
 }
@@ -28,6 +29,8 @@
                     </div>
                 </div>
                 <script>
+                    
+
                     $(document).ready(function () {
                         var btn = $("#submit");
                         var message = $("#description");
@@ -50,6 +53,7 @@
                                     success: function () { }
                                 })
                             }
+                            
                         })
                     })
                 </script>
@@ -57,16 +61,19 @@
         </div>
     }
 
+
+
     <div id="load-div">
         <div id="load" class="spinner-border text-info justify-content-center" role="status">
             <span class="visually-hidden"></span>
         </div>
     </div>
-
     <div class="containerFlow" id="containerFlow">
-    </div>
 
+
+    </div>
 </div>
+
 
 @section scripts{
     @Scripts.Render("~/Scripts/jquery.signalR-2.4.2.js")
@@ -81,6 +88,7 @@
             hubNotify.client.refreshPostData = function () {
                 getAll();
             };
+        
             function getAll() {
                 //check path
                 var path = window.location.pathname;
@@ -108,9 +116,19 @@
                         }
                     })
                 },100)
+                
             }
+
+            
+
         });
+        
+
+
+
     </script>
+
+
 }
 
 

@@ -1,7 +1,3 @@
-using Autofac;
-using Autofac.Integration.Mvc;
-using BusinessLayer.DependencyResolvers.Autofac;
-using SocialUser.App_Start;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +16,6 @@ namespace SocialUser
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            ControllerBuilder.Current.SetControllerFactory(new NinjectController());
-            
         }
     }
 }

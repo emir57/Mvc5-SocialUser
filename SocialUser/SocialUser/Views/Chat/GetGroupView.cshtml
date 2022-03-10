@@ -55,7 +55,12 @@
                             </div>
                         </div>
                     </div>
+                    
+                    
+
+
                 </div>
+                
             }
         }
     }
@@ -91,7 +96,9 @@
                         <img class="profilePhoto" src="@user.profilePhoto" /> <b class="UserName">@user.UserName</b>
                     </div>
                 }
+
             }
+
         }
     <div style="display:flex;bottom:0;justify-content:flex-start;position:absolute;">
         @foreach (var member in Model.groupsMembers)
@@ -137,10 +144,14 @@
 </div>
 <div id="rightBar" class="d-block">
     <div id="messages">
+
+
+
+    </div>
+    <div id="errorMessage">
+
     </div>
 
-    <div id="errorMessage">
-    </div>
 
     <div id="messageBar" class="input-group">
         <div id="messageBox">
@@ -148,6 +159,8 @@
             @Html.TextArea("text", "", new { id = "text", rows = "2", cols = "10", @class = "form-control text", placeholder = "" })
             @*<textarea name="text" class="form-control text" id="text" rows="2" placeholder="Bir şeyler yaz.."></textarea>*@
             <button id="send" class=""><i class="fas fa-paper-plane"></i></button>
+
+
             <script>
             $(document).ready(function () {
                 var sendBtn = $("#send");
@@ -205,6 +218,7 @@
                         }
                     }
                 })
+
                 //send method
                 function send() {
                     var currentUser = '@User.Identity.GetUserId()';
@@ -217,7 +231,9 @@
                         })
                     text.val("");
                     text.focusin();
+
                 }
+
                 //show and hide errormessage
                 function showDiv(msg) {
                     message.empty();
@@ -240,24 +256,27 @@
             var currentId = "@User.Identity.GetUserId()";
             var messageDiv = $("#messages");
 
-            $.connection.hub.start().done(function () {
-                getChat();
-            })
+                $.connection.hub.start().done(function () {
+                                    getChat();
+                                })
             hub.client.refreshGroupChat = function () {
-                getChat();
+                    getChat();
             }
-            function getChat() {
-                $.ajax({
-                    url: "/Chat/LoadGroupMessage",
-                    type: "GET",
-                    data: { groupId: '@Model.groupId' },
-                    success: function (result) {
-                        messageDiv.empty().append(result);
-                    }
-                })
-            }
-        })
+                                function getChat() {
+                                $.ajax({
+                                    url: "/Chat/LoadGroupMessage",
+                                    type: "GET",
+                                    data: { groupId: '@Model.groupId' },
+                                    success: function (result) {
+                                        messageDiv.empty().append(result);
+                                    }
+                                })
+                            }
+
+                            })
+
     </script>
+
 }
 
 

@@ -1,5 +1,9 @@
 ﻿using EntityLayer.Concrete;
+using System;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
+using System.Web;
 
 namespace DataAccessLayer.Concrete
 {
@@ -9,10 +13,10 @@ namespace DataAccessLayer.Concrete
         public DbSet<Comment> Comments { get; set; }
         public DbSet<CommentAnswer> CommentAnswers { get; set; }
         public DbSet<PostLike> PostLikes { get; set; }
-        public DbSet<ChatMessage> ChatMessages { get; set; }
-        public DbSet<UserFriend> UserFriends { get; set; }
-        public DbSet<GroupMessage> GroupMessages { get; set; }
-        public DbSet<GroupMember> GroupMembers { get; set; }
-        public DbSet<Group> Groups { get; set; }
+        public DbSet<ChatMessage> chatMessages { get; set; }
+        public DbSet<UserFriend> userFirends { get; set; }
+        public DbSet<GroupMessage> groupsMessages { get; set; }
+        public DbSet<GroupMember> groupMembers { get; set; }
+        public DbSet<Group> groups { get; set; }
     }
 }

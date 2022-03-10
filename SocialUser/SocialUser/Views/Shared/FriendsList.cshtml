@@ -13,7 +13,7 @@
     <table class="table table-bordered">
         @foreach (var userFriends in Model.userFriends)
         {
-            if (userFriends.CheckFriend == false)
+            if (userFriends.Check == false)
             {
 
                 if (userFriends.UserId2 == User.Identity.GetUserId())
@@ -80,7 +80,7 @@
     <table class="table table-bordered">
         @foreach (var userFriends in Model.userFriends)
         {
-            if (userFriends.CheckFriend == true)
+            if (userFriends.Check == true)
             {
 
                 if (userFriends.UserId2 == User.Identity.GetUserId())

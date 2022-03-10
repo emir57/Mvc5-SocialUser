@@ -4,28 +4,28 @@
 
 <script src="../../Scripts/jquery-3.6.0.min.js"></script>
 
-@if (Model.comment.Count == 0)
+@if (Model.c.Count == 0)
 {
     <div align="center" id="statusCheck">
         <span class="comment-Title">Henüz Yorum Yok.</span>
     </div>
 }
-else if (Model.comment.Count > 0)
+else if (Model.c.Count > 0)
 {
     <div align="center" id="statusCheck">
-        <span class="comment-Title">Toplamda @Model.comment.Count yorum.</span>
+        <span class="comment-Title">Toplamda @Model.c.Count yorum.</span>
     </div>
 }
 
 
-@foreach (var comment in Model.comment)
+@foreach (var comment in Model.c)
 {
     var userProfilePhoto = "";
     <!--Get post comments-->
     if (comment.PostId == Model.postid)
     {
         //get current user profile photo
-        foreach (var item in Model.users)
+        foreach (var item in Model.user)
         {
             if (item.Id == comment.UserId)
             {
@@ -150,11 +150,11 @@ else if (Model.comment.Count > 0)
                 </div>
             </div>
             <!--Answers-->
-            @foreach (var answer in Model.commentAnswer)
+            @foreach (var answer in Model.cA)
             {
                 if (answer.CommentId == comment.Id)
                 {
-                    foreach (var item in Model.users)
+                    foreach (var item in Model.user)
                     {
                         if (item.Id == answer.UserId)
                         {

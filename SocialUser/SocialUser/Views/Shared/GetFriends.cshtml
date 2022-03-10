@@ -23,7 +23,7 @@
 <div id="messageUsers">
     @foreach (var friends in Model.friends)
     {
-        if (friends.CheckFriend == false) { continue; }
+        if (friends.Check == false) { continue; }
         foreach (var user in Model.users)
         {
             if (friends.UserId1 == User.Identity.GetUserId())

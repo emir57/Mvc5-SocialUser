@@ -68,16 +68,16 @@
     <Compile Include="Concrete\ApplicationDbContext.cs" />
     <Compile Include="Concrete\Repositories\GenericRepository.cs" />
     <Compile Include="Concrete\SocialUserContext.cs" />
-    <Compile Include="Concrete\EntityFramework\EfApplicationUserDal.cs" />
-    <Compile Include="Concrete\EntityFramework\EfChatMessageDal.cs" />
-    <Compile Include="Concrete\EntityFramework\EfCommentAnswerDal.cs" />
-    <Compile Include="Concrete\EntityFramework\EfCommentDal.cs" />
-    <Compile Include="Concrete\EntityFramework\EfGroupDal.cs" />
-    <Compile Include="Concrete\EntityFramework\EfGroupMemberDal.cs" />
-    <Compile Include="Concrete\EntityFramework\EfGroupMessageDal.cs" />
-    <Compile Include="Concrete\EntityFramework\EfPostDal.cs" />
-    <Compile Include="Concrete\EntityFramework\EfPostLikeDal.cs" />
-    <Compile Include="Concrete\EntityFramework\EfUserFriendDal.cs" />
+    <Compile Include="EntityFramework\EfApplicationUserDal.cs" />
+    <Compile Include="EntityFramework\EfChatMessageDal.cs" />
+    <Compile Include="EntityFramework\EfCommentAnswerDal.cs" />
+    <Compile Include="EntityFramework\EfCommentDal.cs" />
+    <Compile Include="EntityFramework\EfGroupDal.cs" />
+    <Compile Include="EntityFramework\EfGroupMemberDal.cs" />
+    <Compile Include="EntityFramework\EfGroupMessageDal.cs" />
+    <Compile Include="EntityFramework\EfPostDal.cs" />
+    <Compile Include="EntityFramework\EfPostLikeDal.cs" />
+    <Compile Include="EntityFramework\EfUserFriendDal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

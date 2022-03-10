@@ -1,37 +1,31 @@
 ﻿using BusinessLayer.Abstract;
-using BusinessLayer.Aspects.Autofac.Validation;
-using BusinessLayer.Utilities.ValidationTool;
-using BusinessLayer.ValidationRules;
 using DataAccessLayer.Abstract;
+using DataAccessLayer.Concrete.Repositories;
 using EntityLayer.Concrete;
-using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.Concrete
 {
     public class CommentManager : ICommentService
     {
-        private ICommentDal _comment;
-        private IValidator<Comment> _commentValidator;
+        ICommentDal _comment;
 
-        public CommentManager(ICommentDal commentDal, IValidator<Comment> commentValidator)
+        public CommentManager(ICommentDal commentDal)
         {
             _comment = commentDal;
-            _commentValidator = commentValidator;
-        }
-        //[ValidationAspect(typeof(CommentValidator))]
-        public async Task CommentAdd(Comment c)
-        {
-            if (ValidationTool.Validate(_commentValidator, c))
-            {
-                await _comment.Insert(c);
-            }
         }
 
-        public async Task<int> CommentCount(Expression<Func<Comment, bool>> filter)
+        public async Task CommentAdd(Comment c)
+        {
+            await _comment.Insert(c);
+        }
+
+        public async Task<int> CommentCount(Expression<Func<Comment,bool>>filter)
         {
             return await _comment.Count(filter);
         }
@@ -53,14 +47,14 @@ namespace BusinessLayer.Concrete
                 await _comment.List(filter); //not null
         }
 
-        public async Task<List<Comment>> GetCommentListOrderedDateTime(Expression<Func<Comment, DateTime>> filter, Expression<Func<Comment, bool>> search = null)
+        public async Task<List<Comment>> GetCommentListOrderedDateTime(Expression<Func<Comment, DateTime>> filter,Expression<Func<Comment,bool>>search=null)
         {
             return search == null ?
-                await _comment.OrderedDateTimeDesc(filter) :
-                await _comment.OrderedDateTimeDesc(filter, search);
+                await _comment.OrderedDateTimeDesc(filter):
+                await _comment.OrderedDateTimeDesc(filter,search);
         }
 
-        public async Task<List<Comment>> GetCommentListOrderedIdTake(Expression<Func<Comment, int>> filter, int takeCount)
+        public async Task<List<Comment>> GetCommentListOrderedIdTake(Expression<Func<Comment, int>> filter,int takeCount)
         {
             return await _comment.OrderedTake(filter, takeCount);
         }

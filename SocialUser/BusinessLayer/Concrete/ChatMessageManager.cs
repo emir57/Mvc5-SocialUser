@@ -1,9 +1,11 @@
 ﻿using BusinessLayer.Abstract;
-using BusinessLayer.Utilities.ValidationTool;
 using DataAccessLayer.Abstract;
+using DataAccessLayer.Concrete.Repositories;
 using EntityLayer.Concrete;
-using FluentValidation;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.Concrete
@@ -11,20 +13,15 @@ namespace BusinessLayer.Concrete
     public class ChatMessageManager : IChatMessageService
     {
 
-        private IChatMessageDal _messages;
-        private IValidator<ChatMessage> _chatMessageValidator;
-        public ChatMessageManager(IChatMessageDal message, IValidator<ChatMessage> chatMessageValidator)
+        IChatMessageDal _messages;
+        public ChatMessageManager(IChatMessageDal message)
         {
             _messages = message;
-            _chatMessageValidator = chatMessageValidator;
         }
 
         public async Task AddMessages(ChatMessage message)
         {
-            if (ValidationTool.Validate(_chatMessageValidator,message))
-            {
-                await _messages.Insert(message);
-            }
+            await _messages.Insert(message);
         }
 
         public async Task DeleteMessage(ChatMessage message)
@@ -34,7 +31,7 @@ namespace BusinessLayer.Concrete
 
         public async Task<List<ChatMessage>> GetMessages(string user1, string user2)
         {
-            return await _messages.OrderedDateTimeAsc(a => a.MessageDateTime, a => (a.SenderMessageUser == user1 && a.RecipientMessageUser == user2) || (a.SenderMessageUser == user2 && a.RecipientMessageUser == user1));
+            return await _messages.OrderedDateTimeAsc(a => a.MessageDateTime, a=>(a.SenderMessageUser==user1 && a.RecipientMessageUser==user2)||(a.SenderMessageUser==user2&&a.RecipientMessageUser==user1));
         }
     }
 }
