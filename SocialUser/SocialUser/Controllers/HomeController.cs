@@ -171,6 +171,7 @@ namespace SocialUser.Controllers
         [HttpPost]
         public async Task<ActionResult> PostDoComment(int? postid, string text,Comment comment)
         {
+            text = text.TrimStart().TrimEnd();
             var post = await _posts.FindPost(a => a.PostId == postid);
             if (post == null)
                 return RedirectToAction("Index");
