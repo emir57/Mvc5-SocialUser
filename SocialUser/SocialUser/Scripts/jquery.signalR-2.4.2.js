@@ -9,8 +9,8 @@
  *
  */
 
-/// <reference path="Scripts/jquery-3.4.1.js" />
-/// <reference path="Scripts/jquery.signalR-2.4.2.js" />
+///// <reference path="Scripts/jquery-3.4.1.js" />
+///// <reference path="Scripts/jquery.signalR-2.4.2.js" />
 (function ($, window, undefined) {
 
     var resources = {
