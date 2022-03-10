@@ -92,14 +92,14 @@ namespace SocialUser.Controllers
         public async Task<ActionResult> GetGroupView(int groupId)
         {
             string currentUser = User.Identity.GetUserId();
-            GetGroupViewModel chat = new GetGroupViewModel();
-            chat.users = await _users.GetAll();
-            chat.currentUser = await getCurrentUser(currentUser);
-            chat.groupsMembers = await _groupMembers.List(a => a.GroupId == groupId);
-            chat.currentUser = await _users.Find(a => a.Id == currentUser);
-            chat.groupMessage = await _groupMessages.GetMessages(a=>a.GroupId==groupId);
-            chat.group = await _groups.FindGroup(a => a.GroupId == groupId);
-            chat.groupId = groupId;
+            GetGroupViewModel chat = new GetGroupViewModel()
+            {
+                Users = await _users.GetAll(),
+                CurrentUser = await getCurrentUser(currentUser),
+                GroupMembers = await _groupMembers.List(a => a.GroupId == groupId),
+                GroupMessages = await _groupMessages.GetMessages(a => a.GroupId == groupId),
+                Group = await _groups.FindGroup(a => a.GroupId == groupId)
+            };
             return View(chat);
         }
         public async Task<PartialViewResult> LoadGroupMessage(int? groupId)
