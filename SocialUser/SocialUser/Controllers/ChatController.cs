@@ -107,8 +107,7 @@ namespace SocialUser.Controllers
             GetGroupViewModel chat = new GetGroupViewModel()
             {
                 GroupMessages = await _groupMessages.GetMessages(a => a.GroupId == groupId),
-                Users = await _users.GetAll(),
-                Group = new Group { GroupId = (int)groupId }
+                Users = await _users.GetAll()
             };
             return PartialView("LoadGroupMessage", chat);
         }
