@@ -19,5 +19,12 @@ namespace SocialUser.Utilities
             }
             else { databasePath = ""; }
         }
+        public static void DeleteImage(string fullPath)
+        {
+            if (System.IO.File.Exists(fullPath))
+            {
+                System.IO.File.Delete(fullPath);
+            }
+        }
     }
 }

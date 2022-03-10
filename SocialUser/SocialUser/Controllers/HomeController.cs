@@ -88,23 +88,15 @@ namespace SocialUser.Controllers
 
         public async Task<ActionResult> PostDelete(int id)
         {
-            //get post
             var post = await _posts.FindPost(a => a.PostId == id);
-            //get post comments
             var comments = await _comments.GetAll(a => a.PostId == id);
-            //get post comments answers
             var commentAnswers = await _commentAnswers.GetAllBL();
-
-            //delete post picture
             if (!(String.IsNullOrEmpty(post.PostPicture)))
             {
                 string[] pictureName = post.PostPicture.Split('/');
                 string picturePath = Server.MapPath("~/Content/postPicture/");
                 string fullPath = picturePath + pictureName[4];
-                if (System.IO.File.Exists(fullPath))
-                {
-                    System.IO.File.Delete(fullPath);
-                }
+                ImageUtility.DeleteImage(fullPath);
             }
 
             //delete post
