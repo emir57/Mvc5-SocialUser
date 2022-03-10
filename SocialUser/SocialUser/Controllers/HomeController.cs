@@ -147,14 +147,16 @@ namespace SocialUser.Controllers
                 //ViewData["postPicture"] = post.PostPicture;
                 //ViewData["postDateTime"] = post.PostDateTime;
                 //ViewData["likeCount"] = post.LikeCount;
-                
-                DetailViewModel model = new DetailViewModel();
-                model.c = await _comments.GetAll(a => a.PostId == post.PostId);
-                model.c = await _comments.GetCommentListOrderedDateTime(a => a.CommentDateTime);
-                model.cA = await _commentAnswers.GetAllBL(a => a.CommentId == postid);
 
-                model.likes = await _postLikes.PostLikeList(a => a.PostId == postid);
-                model.user = await _users.GetAll();
+                List<Comment> comments = await _comments.GetAll(a => a.PostId == post.PostId);
+                DetailViewModel model = new DetailViewModel()
+                {
+                    Comments = await _comments.GetCommentListOrderedDateTime(a => a.CommentDateTime),
+                    CommentAnwers = await _commentAnswers.GetAllBL(a => a.CommentId == postid),
+                    Likes = await _postLikes.PostLikeList(a => a.PostId == postid),
+                    Users = await _users.GetAll(),
+                    Post = post
+                };
                 return View(model);
             }
         }
