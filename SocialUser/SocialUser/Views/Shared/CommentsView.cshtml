@@ -111,7 +111,8 @@ else if (Model.Comments.Count > 0)
                                             var commentText = $("#commentDoBox" +@comment.Id).val();
                                             var commentId = $("#commentid" +@comment.Id);
                                             var postid = $("#postid" +@comment.Id);
-                                            if (commentText.length >= 2 && commentText.length < 1000 && commentText!=" ") {
+                                            commentText = commentText.trim();
+                                            if (commentText.length < 1000 && commentText!=" ") {
                                                 $.ajax({
                                                     url: "CommentAnswerDo",
                                                     type: "POST",
@@ -121,7 +122,7 @@ else if (Model.Comments.Count > 0)
                                                 });
                                             } else {
                                                 errorDiv.show();
-                                                errorDiv.append("Yorum 2 karakterden fazla olmalı ve boşluk içermemeli!");
+                                                errorDiv.append("Yorum boşluk içermemeli!");
                                             }
                                         })
                                     })
