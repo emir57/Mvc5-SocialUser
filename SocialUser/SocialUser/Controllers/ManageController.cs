@@ -210,32 +210,23 @@ namespace SocialUser.Controllers
                 ViewBag.message = "Fotoğraf Seçilemedi!";
                 return View();
             }
-            
             currentUser.profilePhoto = databasePath;
             await _users.UpdateUser(currentUser);
             SampleHub.BroadcastPost();
             return RedirectToAction("SetProfilePhoto");
-            
         }
 
         [HttpPost]
         public async Task<ActionResult> RemoveProfilePhoto()
         {
             string currentUserId = User.Identity.GetUserId();
-            var currentUser = await getCurrentUser(currentUserId);
-            //old delete photo
+            ApplicationUser currentUser = await getCurrentUser(currentUserId);
             string oldFileName = currentUser.profilePhoto.Split('/')[4];
             if (oldFileName != "person.jpg") 
             {
                 string oldPath = Server.MapPath("~/Content/profilePhoto/" + oldFileName);
-                if (System.IO.File.Exists(oldPath))
-                {
-                    System.IO.File.Delete(oldPath);
-                }
+                ImageUtility.DeleteImage(oldPath);
             }
-            
-            
-            //set default photo
             currentUser.profilePhoto = "../../Content/profilePhoto/person.jpg";
             await _users.UpdateUser(currentUser);
             SampleHub.BroadcastPost();
