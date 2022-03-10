@@ -293,7 +293,6 @@ namespace SocialUser.Controllers
             {
                 if((postid!=null) && (commentid != null))
                 {
-                    //get current user id
                     string currentUserId = User.Identity.GetUserId();
                     var user = await getCurrentUser(currentUserId);
                     answer.CommentId = (int)commentid;
@@ -301,27 +300,21 @@ namespace SocialUser.Controllers
                     answer.UserId = currentUserId;
                     answer.AnswerDescription = commentText;
                     answer.AnswerDateTime = DateTime.Now;
-                    //save answer
                     await _commentAnswers.CommentAnswerAddBL(answer);
                     SampleHub.BroadcastComment();
                     return RedirectToAction("PostDetail", new { @postid = postid });
                 }
                 else
-                {
                     return RedirectToAction("Index");
-                }
             }
             else
-            {
                 return RedirectToAction("PostDetail", new { @postid = postid });
-            }
         }
         [AllowAnonymous]
         public async Task<ActionResult> UserProfile(string id)
         {
             
             string currentUserId = User.Identity.GetUserId();
-            //get user
             var user = await _users.Find(a => a.Id == id);
             if (user!=null)
             {
