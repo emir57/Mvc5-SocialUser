@@ -230,13 +230,13 @@ namespace SocialUser.Controllers
         [HttpPost]
         public async Task<ActionResult> CommentAnswerDo(int? postid,int? commentid,string commentText,CommentAnswer answer)
         {
-            var comment = await _comments.FindComment(a => a.Id == commentid);
+            Comment comment = await _comments.FindComment(a => a.Id == commentid);
             if (comment != null)
             {
                 if((postid!=null) && (commentid != null))
                 {
                     string currentUserId = User.Identity.GetUserId();
-                    var user = await getCurrentUser(currentUserId);
+                    ApplicationUser user = await getCurrentUser(currentUserId);
                     answer.CommentId = (int)commentid;
                     answer.UserName = user.UserName;
                     answer.UserId = currentUserId;
@@ -256,10 +256,10 @@ namespace SocialUser.Controllers
         public async Task<ActionResult> UserProfile(string id)
         {
             string currentUserId = User.Identity.GetUserId();
-            var user = await _users.Find(a => a.Id == id);
+            ApplicationUser user = await _users.Find(a => a.Id == id);
             if (user!=null)
             {
-                var friend = await _userFriend.Find(a => (a.UserId1 == id && a.UserId2 == currentUserId) || (a.UserId1 == currentUserId && a.UserId2 == id));
+                UserFriend friend = await _userFriend.Find(a => (a.UserId1 == id && a.UserId2 == currentUserId) || (a.UserId1 == currentUserId && a.UserId2 == id));
                 ProfileView model = new ProfileView()
                 {
                     User = user,
@@ -280,7 +280,7 @@ namespace SocialUser.Controllers
         public async Task<PartialViewResult> GetComments(int postid)
         {
             DetailViewModel model = new DetailViewModel();
-            var comments = await _comments.GetAll(a => a.PostId == postid);
+            List<Comment> comments = await _comments.GetAll(a => a.PostId == postid);
             model.Comments = await _comments.GetCommentListOrderedDateTime(a=>a.CommentDateTime,b=>b.PostId==postid);
             model.CommentAnwers = await _commentAnswers.GetAllBL();
             model.Users = await _users.GetAll();
