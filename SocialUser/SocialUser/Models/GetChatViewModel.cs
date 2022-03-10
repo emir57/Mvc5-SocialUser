@@ -15,8 +15,8 @@ namespace SocialUser.Models
         public List<GroupMessage> GroupMessages { get; set; }
         public List<Group> Groups { get; set; }
         public List<GroupMember> Members { get; set; }
-        public string Userid1 { get; set; }
-        public string Userid2 { get; set; }
-        public string Userid3 { get; set; }
+        public ApplicationUser User1 { get; set; }
+        public ApplicationUser User2 { get; set; }
+        public ApplicationUser User3 { get; set; }
     }
 }
