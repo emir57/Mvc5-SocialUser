@@ -13,13 +13,13 @@
 
 <div id="userProfileBar">
     <div id="TopBar">
-        <img id="userProfilePhoto" src="@Model.user.profilePhoto" /><h4 id="Username">@Model.user.UserName</h4> <div id="infos"><span><b>Gönderi Sayısı</b> <span class="text-info">@Model.postCount</span></span> <b>|</b> <span><b>Arkadaş Sayısı</b> <span class="text-info">@Model.friendsCount</span></span></div>
+        <img id="userProfilePhoto" src="@Model.User.profilePhoto" /><h4 id="Username">@Model.User.UserName</h4> <div id="infos"><span><b>Gönderi Sayısı</b> <span class="text-info">@Model.PostCount</span></span> <b>|</b> <span><b>Arkadaş Sayısı</b> <span class="text-info">@Model.FriendsCount</span></span></div>
         @if (User.Identity.IsAuthenticated)
         {
-            if (User.Identity.GetUserId() == Model.user.Id) { }
-            else if (Model.isFriend == false)
+            if (User.Identity.GetUserId() == Model.User.Id) { }
+            else if (Model.IsFriend == false)
             {<button id="send" class="friendSend" title="arkadaşlık isteği gönder"><i class="fas fa-user-friends"></i></button> }
-            else if (Model.isFriend == true)
+            else if (Model.IsFriend == true)
             { <button id="delete" class="friendSend" title="arkadaşlıktan çıkar"><i class="fas fa-users-slash"></i></button>}
             else { }
     <script>
@@ -31,7 +31,7 @@
                         $.ajax({
                             url: "/Manage/Send",
                             type: "POST",
-                            data: { username: '@Model.user.UserName' },
+                            data: { username: '@Model.User.UserName' },
                             dataType: "json",
                             success: function () { }
                         })
@@ -41,27 +41,27 @@
                         $.ajax({
                             url: "/Manage/Delete",
                             type: "POST",
-                            data: { id: '@Model.userFriendId' },
+                            data: { id: '@Model.UserFriendId' },
                             dataType: "json",
                             success: function () { }
                         })
-                        alert("@(Model.user.UserName) arkadaşlıktan çıkartıldı.");
+                        alert("@(Model.User.UserName) arkadaşlıktan çıkartıldı.");
                     })
 
                 })
     </script>
         }
-        <div id="description">@Model.user.profileDescription</div>
+        <div id="description">@Model.User.profileDescription</div>
     </div>
 
 </div>
 
 
 
-@if (User.Identity.GetUserId() == Model.user.Id)
+@if (User.Identity.GetUserId() == Model.User.Id)
 {<h2 class="">Gönderilerim</h2> }
 else
-{<h2 class="">@Model.user.UserName adlı kullanıcının gönderileri</h2>}
+{<h2 class="">@Model.User.UserName adlı kullanıcının gönderileri</h2>}
 
 <hr />
 <!--User posts-->
@@ -89,7 +89,7 @@ else
                 $.ajax({
                     url: "/Home/ProfileGetPosts",
                     type: "GET",
-                    data: { id:'@Model.user.Id'},
+                    data: { id:'@Model.User.Id'},
                     contentType:"application/html; charset=utf-8",
                     success: function (result) { div.empty().append(result); }
                 })
