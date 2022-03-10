@@ -359,10 +359,10 @@ namespace SocialUser.Controllers
         {
             DetailViewModel model = new DetailViewModel();
             var comments = await _comments.GetAll(a => a.PostId == postid);
-            model.c = await _comments.GetCommentListOrderedDateTime(a=>a.CommentDateTime,b=>b.PostId==postid);
-            model.cA = await _commentAnswers.GetAllBL();
-            model.user = await _users.GetAll();
-            model.postid = (int)postid;
+            model.Comments = await _comments.GetCommentListOrderedDateTime(a=>a.CommentDateTime,b=>b.PostId==postid);
+            model.CommentAnwers = await _commentAnswers.GetAllBL();
+            model.Users = await _users.GetAll();
+            model.Post.PostId = (int)postid;
             //if (comments.Count() == 0)
             //{
             //    //0 comments
