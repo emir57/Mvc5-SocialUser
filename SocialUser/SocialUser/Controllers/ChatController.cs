@@ -55,8 +55,10 @@ namespace SocialUser.Controllers
         public async Task<PartialViewResult> LoadChatMessage(string user1, string user2)
         {
 
-            GetChatViewModel chat = new GetChatViewModel();
-            chat.msg = await _chatMessage.GetMessages(user1, user2);
+            GetChatViewModel chat = new GetChatViewModel()
+            {
+                ChatMessages = await _chatMessage.GetMessages(user1, user2)
+            };
             return PartialView("LoadChatMessage", chat);
         }
         [HttpPost]
