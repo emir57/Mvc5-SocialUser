@@ -333,7 +333,7 @@ namespace SocialUser.Controllers
                     PostCount = await _posts.PostCount(a => a.UserId == id),
                     FriendsCount = await _userFriend.FriendCount(a => a.UserId1 == id || a.UserId2 == id),
                     IsFriend = friend == null ? false : true,
-                    UserFriendId = friend.Id
+                    UserFriendId = friend == null ? 0 : friend.Id
                 };
                 return View(model);
             }
