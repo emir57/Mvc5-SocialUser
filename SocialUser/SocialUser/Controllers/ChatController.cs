@@ -91,8 +91,8 @@ namespace SocialUser.Controllers
         //Groups
         public async Task<ActionResult> GetGroupView(int groupId)
         {
-            GetGroupViewModel chat = new GetGroupViewModel();
             string currentUser = User.Identity.GetUserId();
+            GetGroupViewModel chat = new GetGroupViewModel();
             chat.users = await _users.GetAll();
             chat.currentUser = await getCurrentUser(currentUser);
             chat.groupsMembers = await _groupMembers.List(a => a.GroupId == groupId);

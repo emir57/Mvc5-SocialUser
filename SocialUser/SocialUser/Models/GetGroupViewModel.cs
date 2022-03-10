@@ -8,14 +8,14 @@ namespace SocialUser.Models
 {
     public class GetGroupViewModel
     {
-        public List<ApplicationUser> users { get; set; }
-        public ApplicationUser userid1 { get; set; }
-        public ApplicationUser userid2 { get; set; }
-        public ApplicationUser userid3 { get; set; }
-        public ApplicationUser currentUser { get; set; }
-        public List<GroupMember> groupsMembers { get; set; }
-        public List<GroupMessage> groupMessage { get; set; }
-        public Group group { get; set; }
-        public int groupId { get; set; }
+        public List<ApplicationUser> Users { get; set; }
+        public ApplicationUser User1 { get; set; }
+        public ApplicationUser User2 { get; set; }
+        public ApplicationUser User3 { get; set; }
+        public ApplicationUser CurrentUser { get; set; }
+        public List<GroupMember> GroupMembers { get; set; }
+        public List<GroupMessage> GroupMessages { get; set; }
+        public Group Group { get; set; }
+        public int GroupId { get; set; }
     }
 }
