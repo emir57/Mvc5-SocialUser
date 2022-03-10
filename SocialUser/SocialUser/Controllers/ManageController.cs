@@ -12,6 +12,7 @@ using System.Data.Entity;
 using EntityLayer.Concrete;
 using BusinessLayer.Concrete;
 using DataAccessLayer.EntityFramework;
+using System.Collections.Generic;
 
 namespace SocialUser.Controllers
 {
@@ -152,16 +153,12 @@ namespace SocialUser.Controllers
 
             //friends Check
             string userId = User.Identity.GetUserId();
-            var friends = await _userFriend.GetAll(a => (a.Check == true) && ((a.UserId1 == userId) || (a.UserId2 == userId)));
-            var friendsRequest = await _userFriend.GetAll(a => (a.Check == false) && ((a.UserId1 == userId) || a.UserId2 == userId));
+            List<UserFriend> friends = await _userFriend.GetAll(a => (a.Check == true) && ((a.UserId1 == userId) || (a.UserId2 == userId)));
+            List<UserFriend> friendsRequest = await _userFriend.GetAll(a => (a.Check == false) && ((a.UserId1 == userId) || a.UserId2 == userId));
             if (friends.Count == 0)
-            {
                 model.friends = "Henüz arkadaşınız yok.";
-            }
             if (friendsRequest.Count == 0)
-            {
                 model.friendsRequest = "Arkadaşlık isteğiniz yok.";
-            }
 
             return PartialView("FriendsList",model);
         }
@@ -170,12 +167,11 @@ namespace SocialUser.Controllers
             return View();
         }
         [HttpGet]
-        public async Task<ActionResult> SetProfilePhoto(int?id)
+        public async Task<ActionResult> SetProfilePhoto(int? id)
         {
             string currentUserId = User.Identity.GetUserId();
-            var currentUser = await getCurrentUser(currentUserId);
+            ApplicationUser currentUser = await getCurrentUser(currentUserId);
             ViewBag.photo = currentUser.profilePhoto;
-
             return View();
         }
 
