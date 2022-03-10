@@ -118,7 +118,7 @@ namespace SocialUser.Controllers
 
         public async Task<ActionResult> PostDetail(int? postid)
         {
-            var post = await _posts.FindPost(a => a.PostId == postid);
+            Post post = await _posts.FindPost(a => a.PostId == postid);
             if (post == null)
             {
                 return RedirectToAction("Index");
@@ -127,7 +127,7 @@ namespace SocialUser.Controllers
             {
                 string currentUserId = User.Identity.GetUserId();
                 //do current user like post? null=not like
-                var search = await _postLikes.PostLikeFind(a => a.UserId == currentUserId && a.PostId == postid);
+                PostLike search = await _postLikes.PostLikeFind(a => a.UserId == currentUserId && a.PostId == postid);
                 if(search == null)
                 {
                     //user not like = false
@@ -135,8 +135,8 @@ namespace SocialUser.Controllers
                     ViewData["checkLike"] = false;
                 }
                 else { ViewData["checkLike"] = true; }
-                var postUserId = post.UserId;
-                var user = await _users.Find(a => a.Id == postUserId);
+                string postUserId = post.UserId;
+                ApplicationUser user = await _users.Find(a => a.Id == postUserId);
                 ViewData["userProfilePhoto"] = user.profilePhoto;
                 ViewData["userName"] = post.Username;
                 ViewBag.postUserId = post.UserId;
