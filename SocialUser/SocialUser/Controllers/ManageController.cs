@@ -13,6 +13,7 @@ using EntityLayer.Concrete;
 using BusinessLayer.Concrete;
 using DataAccessLayer.EntityFramework;
 using System.Collections.Generic;
+using SocialUser.Utilities;
 
 namespace SocialUser.Controllers
 {
@@ -180,7 +181,7 @@ namespace SocialUser.Controllers
             if(!string.IsNullOrWhiteSpace(description))
             {
                 string currentUserId = User.Identity.GetUserId();
-                var currentUser = await getCurrentUser(currentUserId);
+                ApplicationUser currentUser = await getCurrentUser(currentUserId);
                 currentUser.profileDescription = description;
                 await _users.UpdateUser(currentUser);
             }
@@ -191,27 +192,18 @@ namespace SocialUser.Controllers
         public async Task<ActionResult> SetProfilePhoto(HttpPostedFileBase picture)
         {
             string currentUserId = User.Identity.GetUserId();
-            var currentUser = await getCurrentUser(currentUserId);
+            ApplicationUser currentUser = await getCurrentUser(currentUserId);
             string databasePath ="";
             if (picture.ContentLength >= 0)
             {
-                //delete old photo
                 string oldFileName = currentUser.profilePhoto.Split('/')[4];
                 if (oldFileName != "person.jpg")
                 {
                     string oldPath = Server.MapPath("~/Content/profilePhoto/" + oldFileName);
-                    if (System.IO.File.Exists(oldPath))
-                    {
-                        System.IO.File.Delete(oldPath);
-                    }
+                    ImageUtility.DeleteImage(oldPath);
                 }
-                
-                //save new photo
-                string getEx = Path.GetExtension(picture.FileName);
-                string filename = Guid.NewGuid() + getEx;
                 string path = Server.MapPath("~/Content/profilePhoto/");
-                databasePath = "../../Content/profilePhoto/" + filename;
-                picture.SaveAs(Path.Combine(path, filename));
+                ImageUtility.UploadImage(picture, out databasePath, path);
             }
             else
             {
