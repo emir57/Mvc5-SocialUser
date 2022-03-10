@@ -127,13 +127,10 @@ namespace SocialUser.Controllers
         {
             var now = DateTime.Now;
             string currentuserid = User.Identity.GetUserId();
-            //var currentUser = await getCurrentUser(currentuserid);
             group.GroupName = groupName;
             group.GroupDateTime = now;
             group.CreateGroupUserId = currentuserid;
-            
             await _groups.Add(group);
-
             SampleHub.BroadcastAddFriend();
             return RedirectToAction("Index",new {@message= "Grup başarıyla oluşturuldu.\nGrubu aktif etmek için arkadaşlarınızı ekleyin." });
         }
@@ -146,13 +143,13 @@ namespace SocialUser.Controllers
             }
             return RedirectToAction("Index");
         }
-        public async Task<ActionResult> AddUserGroup(string userId,int groupId,GroupMember m,GroupMember CreateGroupUser)
+        public async Task<ActionResult> AddUserGroup(string userId,int groupId,GroupMember groupMember,GroupMember CreateGroupUser)
         {
             if(userId!=null && groupId != 0)
             {
                 string currentUserId = User.Identity.GetUserId();
-                var getGroup = await _groups.FindGroup(a => a.GroupId == groupId);
-                var check = await _groupMembers.FindMember(a => a.GroupId == groupId && a.UserId == getGroup.CreateGroupUserId);
+                Group getGroup = await _groups.FindGroup(a => a.GroupId == groupId);
+                GroupMember check = await _groupMembers.FindMember(a => a.GroupId == groupId && a.UserId == getGroup.CreateGroupUserId);
                 if(check == null)
                 {
                     CreateGroupUser.GroupId = groupId;
@@ -160,21 +157,19 @@ namespace SocialUser.Controllers
                     CreateGroupUser.Role = "Manager";
                     await _groupMembers.Add(CreateGroupUser);
                 }
-                //add group members
-                m.UserId = userId;
-                m.GroupId = groupId;
-                m.Role = "User";
-                await _groupMembers.Add(m);
+                groupMember.UserId = userId;
+                groupMember.GroupId = groupId;
+                groupMember.Role = "User";
+                await _groupMembers.Add(groupMember);
                 SampleHub.BroadcastAddFriend();
             }
-
             return RedirectToAction("Index");
         }
 
         public async Task<ActionResult> DoManager(int id)
         {
-            var getMember = await _groupMembers.FindMember(a => a.MemberId == id);
-            var getGroup = await _groups.FindGroup(a => a.GroupId == getMember.GroupId);
+            GroupMember getMember = await _groupMembers.FindMember(a => a.MemberId == id);
+            Group getGroup = await _groups.FindGroup(a => a.GroupId == getMember.GroupId);
             if (getGroup.CreateGroupUserId != getMember.UserId)
             {
                 getMember.Role = "Manager";
