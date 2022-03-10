@@ -371,8 +371,10 @@ namespace SocialUser.Controllers
         {
             string currentId = User.Identity.GetUserId();
             ViewBag.currentUserId = currentId;
-            PostViewModel model = new PostViewModel();
-            //model.posts = await _context.Posts.OrderByDescending(a => a.PostDateTime).ToListAsync();
+            PostViewModel model = new PostViewModel()
+            {
+
+            };
             model.posts = await _posts.GetPostListOrdered(a=>a.PostDateTime);
             model.postLike = await _postLikes.PostLikeList();
             model.users = await _users.GetAll();

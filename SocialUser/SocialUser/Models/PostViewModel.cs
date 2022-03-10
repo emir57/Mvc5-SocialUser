@@ -8,9 +8,9 @@ namespace SocialUser.Models
 {
     public class PostViewModel
     {
-        public List<Post> posts { get; set; }
-        public List<PostLike> postLike { get; set; }
-        public List<ApplicationUser> users { get; set; }
+        public List<Post> Posts { get; set; }
+        public List<PostLike> PostLikes { get; set; }
+        public List<ApplicationUser> Users { get; set; }
         
     }
 }
