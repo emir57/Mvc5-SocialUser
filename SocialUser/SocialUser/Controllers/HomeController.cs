@@ -171,16 +171,15 @@ namespace SocialUser.Controllers
         public async Task<ActionResult> PostDoComment(int? postid, string text,Comment comment)
         {
             text = text.TrimStart().TrimEnd();
-            var post = await _posts.FindPost(a => a.PostId == postid);
+            Post post = await _posts.FindPost(a => a.PostId == postid);
             if (post == null)
                 return RedirectToAction("Index");
             else
             {
                 if(User.Identity.IsAuthenticated)
                 {
-                    var currentUserId = User.Identity.GetUserId();
-                    var user = await getCurrentUser(currentUserId);
-
+                    string currentUserId = User.Identity.GetUserId();
+                    ApplicationUser user = await getCurrentUser(currentUserId);
                     comment.PostId = post.PostId;
                     comment.UserName = user.UserName;
                     comment.UserId = user.Id;
@@ -198,12 +197,12 @@ namespace SocialUser.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                var comment = await _comments.FindComment(a => a.Id == id);
-                var commentAnswers = await _commentAnswers.GetAllBL(a=>a.CommentId==comment.Id);
+                Comment comment = await _comments.FindComment(a => a.Id == id);
+                List<CommentAnswer> commentAnswers = await _commentAnswers.GetAllBL(a=>a.CommentId==comment.Id);
                 if (comment == null){ return RedirectToAction("Index"); }
                 else
                 {
-                    foreach (var answer in commentAnswers)
+                    foreach (CommentAnswer answer in commentAnswers)
                     {
                         await _commentAnswers.CommentAnswerDeleteBL(answer);
                     }
@@ -220,7 +219,7 @@ namespace SocialUser.Controllers
             string currentUserId = User.Identity.GetUserId();
             if (currentUserId == UserId && id!=null)
             {
-                var getAnswer = await _commentAnswers.FindPostBL(a => a.Id == id);
+                CommentAnswer getAnswer = await _commentAnswers.FindPostBL(a => a.Id == id);
                 await _commentAnswers.CommentAnswerDeleteBL(getAnswer);
                 SampleHub.BroadcastComment();
                 return RedirectToAction("PostDetail", new { @postid = postid });
