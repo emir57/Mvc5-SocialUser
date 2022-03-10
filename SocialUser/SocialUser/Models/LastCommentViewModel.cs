@@ -8,7 +8,7 @@ namespace SocialUser.Models
 {
     public class LastCommentViewModel
     {
-        public IEnumerable<Comment> comments { get; set; }
+        public IEnumerable<Comment> Comments { get; set; }
 
     }
 }
