@@ -8,15 +8,15 @@ namespace SocialUser.Models
 {
     public class GetChatViewModel
     {
-        public List<ApplicationUser> users { get; set; }
-        public ApplicationUser currentUser { get; set; }
-        public List<UserFriend> friends { get; set; }
-        public List<ChatMessage> msg { get; set; }
-        public List<GroupMessage> groupMessage { get; set; }
-        public List<Group> groups { get; set; }
-        public List<GroupMember> members { get; set; }
-        public string userid1 { get; set; }
-        public string userid2 { get; set; }
-        public string userid3 { get; set; }
+        public List<ApplicationUser> Users { get; set; }
+        public ApplicationUser CurrentUser { get; set; }
+        public List<UserFriend> Friends { get; set; }
+        public List<ChatMessage> ChatMessages { get; set; }
+        public List<GroupMessage> GroupMessages { get; set; }
+        public List<Group> Groups { get; set; }
+        public List<GroupMember> Members { get; set; }
+        public string Userid1 { get; set; }
+        public string Userid2 { get; set; }
+        public string Userid3 { get; set; }
     }
 }
