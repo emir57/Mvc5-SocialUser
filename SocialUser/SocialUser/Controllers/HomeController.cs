@@ -401,10 +401,12 @@ namespace SocialUser.Controllers
         [AllowAnonymous]
         public async Task<PartialViewResult> GetUsers(string searchKey)
         {
-            GetUserViewModel model = new GetUserViewModel();
             string currentUserId = User.Identity.GetUserId();
-            model.users = await _users.GetAll(a=>a.UserName.ToLower().Contains(searchKey.ToLower())&& a.Id!=currentUserId);
-            model.userFriend = await _userFriend.GetAll(a => (a.Check == true)&&(a.UserId1==currentUserId || a.UserId2==currentUserId));
+            GetUserViewModel model = new GetUserViewModel()
+            {
+                Users = await _users.GetAll(a => a.UserName.ToLower().Contains(searchKey.ToLower()) && a.Id != currentUserId),
+                UserFriends = await _userFriend.GetAll(a => (a.Check == true) && (a.UserId1 == currentUserId || a.UserId2 == currentUserId))
+            };
             return PartialView("GetUsersView",model);
         }
 
