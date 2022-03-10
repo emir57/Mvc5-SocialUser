@@ -319,32 +319,22 @@ namespace SocialUser.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> UserProfile(string id)
         {
-            ProfileView model = new ProfileView();
+            
             string currentUserId = User.Identity.GetUserId();
             //get user
             var user = await _users.Find(a => a.Id == id);
             if (user!=null)
             {
-                model.user = user;
-                //get user posts
-                var posts = await _posts.GetPostListOrdered(a => a.PostDateTime, b => b.UserId == id);
-                model.posts = posts;
-                //get infos
-                model.postCount = await _posts.PostCount(a => a.UserId == id);
-                model.friendsCount = await _userFriend.FriendCount(a => a.UserId1 == id || a.UserId2 == id);
-                //current user is friend?
                 var friend = await _userFriend.Find(a => (a.UserId1 == id && a.UserId2 == currentUserId) || (a.UserId1 == currentUserId && a.UserId2 == id));
-                //null not friend
-                if (friend == null)
+                ProfileView model = new ProfileView()
                 {
-                    model.isFriend = false;
-                }
-                else
-                {
-                    model.isFriend = true;
-                    model.userFriendId = friend.Id;
-
-                }
+                    User = user,
+                    Posts = await _posts.GetPostListOrdered(a => a.PostDateTime, b => b.UserId == id),
+                    PostCount = await _posts.PostCount(a => a.UserId == id),
+                    FriendsCount = await _userFriend.FriendCount(a => a.UserId1 == id || a.UserId2 == id),
+                    IsFriend = friend == null ? false : true,
+                    UserFriendId = friend.Id
+                };
                 return View(model);
             }
             else
