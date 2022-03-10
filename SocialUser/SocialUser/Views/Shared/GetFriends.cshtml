@@ -5,7 +5,7 @@
 @Scripts.Render("~/Scripts/jquery-2.2.4.js")
 
 <div class="user">
-    <div><img class="profilePhoto" id="img" src="@Model.currentUser.profilePhoto" /> <b class="UserName">@Model.currentUser.UserName</b><div id="bgHover" class="" style="width:70px;height:70px;border-radius:50%;position:absolute;top:20px;display:none;background-color:RGBA(0,0,0,0.3);"><a title="profil fotoğrafını güncelle" href="@Url.Action("SetProfilePhoto","Manage")"><i style="position:absolute;left:30px;top:30px;color:white;" class="far fa-edit fx-3x"></i></a></div> </div>
+    <div><img class="profilePhoto" id="img" src="@Model.CurrentUser.profilePhoto" /> <b class="UserName">@Model.CurrentUser.UserName</b><div id="bgHover" class="" style="width:70px;height:70px;border-radius:50%;position:absolute;top:20px;display:none;background-color:RGBA(0,0,0,0.3);"><a title="profil fotoğrafını güncelle" href="@Url.Action("SetProfilePhoto","Manage")"><i style="position:absolute;left:30px;top:30px;color:white;" class="far fa-edit fx-3x"></i></a></div> </div>
 </div>
 <script>
     var img = document.getElementById("img");
@@ -21,10 +21,10 @@
 </script>
 
 <div id="messageUsers">
-    @foreach (var friends in Model.friends)
+    @foreach (var friends in Model.Friends)
     {
         if (friends.Check == false) { continue; }
-        foreach (var user in Model.users)
+        foreach (var user in Model.Users)
         {
             if (friends.UserId1 == User.Identity.GetUserId())
             {
@@ -81,9 +81,9 @@
         }
     }
 
-    @foreach (var memberGroups in Model.members)
+    @foreach (var memberGroups in Model.Members)
     {
-        foreach (var group in Model.groups)
+        foreach (var group in Model.Groups)
         {
             if (memberGroups.GroupId == group.GroupId && memberGroups.UserId== User.Identity.GetUserId())
             {
