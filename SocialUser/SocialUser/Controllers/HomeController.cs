@@ -26,8 +26,6 @@ namespace SocialUser.Controllers
         PostLikeManager _postLikes = new PostLikeManager(new EfPostLikeDal());
         UserManager _users = new UserManager(new EfApplicationUserDal());
         UserFriendManager _userFriend = new UserFriendManager(new EfUserFriendDal());
-        //****************************************************
-        //Methods
 
         //get current user
         public async Task<ApplicationUser> getCurrentUser(string id)
@@ -42,7 +40,6 @@ namespace SocialUser.Controllers
             await _posts.PostUpdate(count);
         }
 
-        //************************************************
         [AllowAnonymous]
         public ActionResult Index()
         {
@@ -54,21 +51,19 @@ namespace SocialUser.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> PostAdd(string description,HttpPostedFileBase picture,Post post)
         {
-            
             string databasePath = "";
             if (User.Identity.IsAuthenticated)
             {
                 string currentId = User.Identity.GetUserId();
                 var currentUser = await getCurrentUser(currentId);
-
                 if (picture != null)
                 {
                     string path = Server.MapPath("~/Content/postPicture/");
                     ImageUtility.UploadImage(picture, out databasePath, path);
                     
                 }
-                else { databasePath = ""; }
-                //add post
+                else
+                    databasePath = ""; 
                 post.Description = description;
                 post.LikeCount = 0;
                 post.PostPicture = databasePath;
@@ -77,12 +72,9 @@ namespace SocialUser.Controllers
                 post.UserId = currentUser.Id;
                 post.PostDateTime = DateTime.Now;
                 await _posts.PostAdd(post);
-
                 SampleHub.BroadcastPost();
-
                 return RedirectToAction("Index");
             }
-            else{}
             return RedirectToAction("Index");
         }
 
@@ -104,15 +96,11 @@ namespace SocialUser.Controllers
                 foreach (var answers in commentAnswers)
                 {
                     if (answers.CommentId == comment.Id)
-                    {
                         await _commentAnswers.CommentAnswerDeleteBL(answers);
-                    }
                 }
                 await _comments.CommentDelete(comment);
             }
-
             SampleHub.BroadcastPost();
-
             return RedirectToAction("Index");
         }
 
@@ -120,34 +108,19 @@ namespace SocialUser.Controllers
         {
             Post post = await _posts.FindPost(a => a.PostId == postid);
             if (post == null)
-            {
                 return RedirectToAction("Index");
-            }
             else
             {
                 string currentUserId = User.Identity.GetUserId();
-                //do current user like post? null=not like
+                //do current user like post? null=not like -- /user not like = false -- /user like = true
                 PostLike search = await _postLikes.PostLikeFind(a => a.UserId == currentUserId && a.PostId == postid);
                 if(search == null)
                 {
-                    //user not like = false
-                    //user like = true
                     ViewData["checkLike"] = false;
                 }
                 else { ViewData["checkLike"] = true; }
                 string postUserId = post.UserId;
                 ApplicationUser user = await _users.Find(a => a.Id == postUserId);
-
-                //ViewData["userProfilePhoto"] = 
-                //ViewData["userName"] = post.Username;
-                //ViewBag.postUserId = post.UserId;
-                //ViewBag.postId = post.PostId;
-                //ViewData["postId"] = post.PostId;
-                //ViewData["description"] = post.Description;
-                //ViewData["postPicture"] = post.PostPicture;
-                //ViewData["postDateTime"] = post.PostDateTime;
-                //ViewData["likeCount"] = post.LikeCount;
-
                 List<Comment> comments = await _comments.GetAll(a => a.PostId == post.PostId);
                 DetailViewModel model = new DetailViewModel()
                 {
@@ -161,7 +134,6 @@ namespace SocialUser.Controllers
                 return View(model);
             }
         }
-
         public async Task<ActionResult> PostLike(int? postid, bool? check)
         {
             if (User.Identity.IsAuthenticated)
@@ -170,15 +142,11 @@ namespace SocialUser.Controllers
                 string currentUserId = User.Identity.GetUserId();
                 if(postid != null && check==false)
                 {
-                    //like
                     like.UserId = currentUserId;
                     like.PostId = (int)postid;
                     await _postLikes.PostLikeAdd(like);
-
                     var likes = await _postLikes.PostLikeList(a => a.PostId == postid);
                     int likecount = likes.Count();
-
-                    //update post like count
                     await updateLikeCount((int)postid, likecount);
                     SampleHub.BroadcastPost();
 
@@ -186,14 +154,10 @@ namespace SocialUser.Controllers
                 }
                 else if(postid!= null && check==true)
                 {
-                    //like delete
                     var search = await _postLikes.PostLikeFind(a => a.PostId == postid && a.UserId == currentUserId);
                     await _postLikes.PostLikeDelete(search);
-
                     var likes = await _postLikes.PostLikeList(a => a.PostId == postid);
                     int likecount = likes.Count();
-
-                    //update post like count
                     await updateLikeCount((int)postid, likecount);
                     SampleHub.BroadcastPost();
 
@@ -202,11 +166,8 @@ namespace SocialUser.Controllers
                 return RedirectToAction("Index");
             }
             else
-            {
                 return RedirectToAction("Index");
-            }
         }
-        //[ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<ActionResult> PostDoComment(int? postid, string text,Comment comment)
         {
@@ -295,7 +256,6 @@ namespace SocialUser.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> UserProfile(string id)
         {
-            
             string currentUserId = User.Identity.GetUserId();
             var user = await _users.Find(a => a.Id == id);
             if (user!=null)
@@ -317,8 +277,6 @@ namespace SocialUser.Controllers
                 return RedirectToAction("Index");
             }
         }
-
-    //********************************************************************
         //AJAX PartialViews
         public async Task<PartialViewResult> GetComments(int postid)
         {
