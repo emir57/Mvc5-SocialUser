@@ -78,17 +78,12 @@ namespace SocialUser.Controllers
             string currentUserId = User.Identity.GetUserId();
             GetChatViewModel chat = new GetChatViewModel()
             {
-
+                CurrentUser = await getCurrentUser(currentUserId),
+                Users = await _users.GetAll(),
+                Friends = await _userFriends.GetAll(a => a.UserId1 == currentUserId || a.UserId2 == currentUserId),
+                Groups = await _groups.List(),
+                Members = await _groupMembers.List()
             };
-            chat.currentUser = await getCurrentUser(currentUserId);
-            chat.users = await _users.GetAll();
-            chat.friends = await _userFriends.GetAll(a => a.UserId1 == currentUserId || a.UserId2 == currentUserId);
-            //get current user group id
-            var userGroups = await _groupMembers.List(a => a.UserId == currentUserId);
-            //get groups
-            chat.groups = await _groups.List();
-            //get members
-            chat.members = await _groupMembers.List();
             return PartialView("GetFriends",chat);
         }
 
