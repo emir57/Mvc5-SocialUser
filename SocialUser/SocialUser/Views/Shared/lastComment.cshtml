@@ -2,7 +2,7 @@
 <h4 id="lastCommentTitle">Son Yorumlar</h4>
 <hr />
 <ul>
-    @foreach (var comment in Model.comments)
+    @foreach (var comment in Model.Comments)
     {
         <li>
             <a href="@Url.Action("PostDetail",new { postid= comment.PostId })">
