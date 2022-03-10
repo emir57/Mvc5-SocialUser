@@ -363,18 +363,6 @@ namespace SocialUser.Controllers
             model.CommentAnwers = await _commentAnswers.GetAllBL();
             model.Users = await _users.GetAll();
             model.Post = new Post {PostId = (int)postid };
-            //if (comments.Count() == 0)
-            //{
-            //    //0 comments
-            //    model.status = "Henüz Yorum Yok.";
-            //}
-            //else
-            //{
-            //    //comments count
-            //    model.status = $"Toplam {comments.Count()} yorum.";
-            //}
-            
-
             return PartialView("CommentsView",model);
 
         }
