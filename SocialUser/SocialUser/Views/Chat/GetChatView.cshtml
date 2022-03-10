@@ -11,7 +11,7 @@
 
 <div id="leftBar" class="d-block">
     <div class="user">
-        <div><img class="profilePhoto" id="img" src="@ViewBag.userid1ProfilePhoto" /> <b class="UserName">@ViewBag.userid1userName</b><div id="bgHover" class="" style="width:70px;height:70px;border-radius:50%;position:absolute;top:20px;display:none;background-color:RGBA(0,0,0,0.3);"><a title="profil fotoğrafını güncelle" href="@Url.Action("SetProfilePhoto","Manage")"><i style="position:absolute;left:30px;top:30px;color:white;" class="far fa-edit fx-3x"></i></a></div> </div>
+        <div><img class="profilePhoto" id="img" src="@Model.User1.profilePhoto" /> <b class="UserName">@Model.User1.UserName"</b><div id="bgHover" class="" style="width:70px;height:70px;border-radius:50%;position:absolute;top:20px;display:none;background-color:RGBA(0,0,0,0.3);"><a title="profil fotoğrafını güncelle" href="@Url.Action("SetProfilePhoto","Manage")"><i style="position:absolute;left:30px;top:30px;color:white;" class="far fa-edit fx-3x"></i></a></div> </div>
     </div>
     <script>
         var img = document.getElementById("img");
@@ -31,12 +31,12 @@
 
     <div id="messageUsers">
         <div class="user2">
-            <img class="profilePhoto" src="@ViewBag.userid2ProfilePhoto" /> <b class="UserName">@ViewBag.userid2userName</b>
+            <img class="profilePhoto" src="@Model.User2.profilePhoto" /> <b class="UserName">@Model.User2.UserName</b>
         </div>
     </div>
 
     <div class="bottom-button">
-        @Html.ActionLink("Geri Dön", "Index", new { user1 = Model.userid1, user2 = Model.userid2 }, new { id = "back", @class = "btn btn-danger" })
+        @Html.ActionLink("Geri Dön", "Index", new { user1 = Model.User1.Id, user2 = Model.User1.Id }, new { id = "back", @class = "btn btn-danger" })
     </div>
 </div>
 <div id="rightBar" class="d-block">
@@ -114,7 +114,7 @@
                         $.ajax({
                             url: "/Chat/ChatDo",
                             type: "POST",
-                            data: { user1: '@User.Identity.GetUserId()', user2: '@Model.userid2', text: text.val() },
+                            data: { user1: '@User.Identity.GetUserId()', user2: '@Model.User2.Id', text: text.val() },
                             dataType: "json",
                             success: function () { }
                         })
@@ -153,7 +153,7 @@
                                 $.ajax({
                                     url: "/Chat/LoadChatMessage",
                                     type: "GET",
-                                    data: { user1: '@User.Identity.GetUserId()', user2: '@Model.userid2' },
+                                    data: { user1: '@User.Identity.GetUserId()', user2: '@Model.User2.Id' },
                                     success: function (result) {
                                         messageDiv.empty().append(result);
                                     }
