@@ -120,23 +120,17 @@ namespace SocialUser.Controllers
         }
         public async Task<ActionResult> Send(string username, UserFriend userFriend)
         {
-            //Userid1 currentuser
-            IndexViewModel model = new IndexViewModel();
             string currentUserId = User.Identity.GetUserId();
-
+            IndexViewModel model = new IndexViewModel();
             ApplicationUser user = await _users.Find(a => a.UserName == username);
-
-            //check
-            var userFriendCheck = await _userFriend.Find(a => (a.UserId1 == currentUserId && a.UserId2 == user.Id) || (a.UserId2 == currentUserId && a.UserId1 == user.Id));
+            UserFriend userFriendCheck = await _userFriend.Find(a => (a.UserId1 == currentUserId && a.UserId2 == user.Id) || (a.UserId2 == currentUserId && a.UserId1 == user.Id));
             if (userFriendCheck == null)
             {
                 if (user == null)
-                {
                     return RedirectToAction("Index");
-                }
                 else
                 {
-                    var userCheck = _userFriend.Find(a => a.UserId1 == currentUserId && a.UserId2 == user.Id);
+                    UserFriend userCheck = await _userFriend.Find(a => a.UserId1 == currentUserId && a.UserId2 == user.Id);
                     if (userCheck != null)
                     {
                         userFriend.Check = false;
@@ -146,18 +140,10 @@ namespace SocialUser.Controllers
                         SampleHub.BroadcastFriend(currentUserId, user.Id);
                         return RedirectToAction("Index");
                     }
-
                 }
             }
-            else 
-            { 
-                return RedirectToAction("Index"); 
-            }
-
-           
             return RedirectToAction("Index");
         }
-
         public async Task<PartialViewResult> GetFriendList()
         {
             IndexViewModel model = new IndexViewModel();
