@@ -13,5 +13,6 @@ namespace SocialUser.Models
         public List<ApplicationUser> user { get; set; }
         public List<PostLike> likes { get; set; }
         public int postid { get; set; }
+        public Post Post { get; set; }
     }
 }
