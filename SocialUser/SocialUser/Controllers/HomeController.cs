@@ -210,37 +210,27 @@ namespace SocialUser.Controllers
         [HttpPost]
         public async Task<ActionResult> PostDoComment(int? postid, string text,Comment comment)
         {
-
-            //get post
             var post = await _posts.FindPost(a => a.PostId == postid);
             if (post == null)
-            {
                 return RedirectToAction("Index");
-            }
             else
             {
                 if(User.Identity.IsAuthenticated)
                 {
-                    //get current user
                     var currentUserId = User.Identity.GetUserId();
                     var user = await getCurrentUser(currentUserId);
 
-                    //add comment
                     comment.PostId = post.PostId;
                     comment.UserName = user.UserName;
                     comment.UserId = user.Id;
                     comment.CommentDescription = text;
                     comment.CommentDateTime = DateTime.Now;
-
                     await _comments.CommentAdd(comment);
-
                     SampleHub.BroadcastComment();
                     return RedirectToAction("PostDetail", new{ @postid = postid });
                 }
                 else
-                {
                     return RedirectToAction("PostDetail", postid);
-                }
             }
         }
         public async Task<ActionResult> PostCommentDelete(int? id,int postid)
