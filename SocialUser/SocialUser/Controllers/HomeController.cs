@@ -98,11 +98,7 @@ namespace SocialUser.Controllers
                 string fullPath = picturePath + pictureName[4];
                 ImageUtility.DeleteImage(fullPath);
             }
-
-            //delete post
             await _posts.PostDelete(post);
-
-            //delete comments and answers
             foreach (var comment in comments)
             {
                 foreach (var answers in commentAnswers)
@@ -122,8 +118,6 @@ namespace SocialUser.Controllers
 
         public async Task<ActionResult> PostDetail(int? postid)
         {
-
-            //get post
             var post = await _posts.FindPost(a => a.PostId == postid);
             if (post == null)
             {
@@ -141,14 +135,8 @@ namespace SocialUser.Controllers
                     ViewData["checkLike"] = false;
                 }
                 else { ViewData["checkLike"] = true; }
-
-                //get sharing post userId
                 var postUserId = post.UserId;
-                //get user
                 var user = await _users.Find(a => a.Id == postUserId);
-
-
-                //post info
                 ViewData["userProfilePhoto"] = user.profilePhoto;
                 ViewData["userName"] = post.Username;
                 ViewBag.postUserId = post.UserId;
@@ -159,17 +147,15 @@ namespace SocialUser.Controllers
                 ViewData["postDateTime"] = post.PostDateTime;
                 ViewData["likeCount"] = post.LikeCount;
                 
-                
                 DetailViewModel model = new DetailViewModel();
                 model.c = await _comments.GetAll(a => a.PostId == post.PostId);
                 model.c = await _comments.GetCommentListOrderedDateTime(a => a.CommentDateTime);
                 model.cA = await _commentAnswers.GetAllBL(a => a.CommentId == postid);
 
-                //get like users
                 model.likes = await _postLikes.PostLikeList(a => a.PostId == postid);
                 model.user = await _users.GetAll();
                 return View(model);
-        }
+            }
         }
 
         public async Task<ActionResult> PostLike(int? postid, bool? check)
