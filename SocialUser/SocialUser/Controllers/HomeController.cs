@@ -137,15 +137,16 @@ namespace SocialUser.Controllers
                 else { ViewData["checkLike"] = true; }
                 string postUserId = post.UserId;
                 ApplicationUser user = await _users.Find(a => a.Id == postUserId);
-                ViewData["userProfilePhoto"] = user.profilePhoto;
-                ViewData["userName"] = post.Username;
-                ViewBag.postUserId = post.UserId;
-                ViewBag.postId = post.PostId;
-                ViewData["postId"] = post.PostId;
-                ViewData["description"] = post.Description;
-                ViewData["postPicture"] = post.PostPicture;
-                ViewData["postDateTime"] = post.PostDateTime;
-                ViewData["likeCount"] = post.LikeCount;
+
+                //ViewData["userProfilePhoto"] = user.profilePhoto;
+                //ViewData["userName"] = post.Username;
+                //ViewBag.postUserId = post.UserId;
+                //ViewBag.postId = post.PostId;
+                //ViewData["postId"] = post.PostId;
+                //ViewData["description"] = post.Description;
+                //ViewData["postPicture"] = post.PostPicture;
+                //ViewData["postDateTime"] = post.PostDateTime;
+                //ViewData["likeCount"] = post.LikeCount;
                 
                 DetailViewModel model = new DetailViewModel();
                 model.c = await _comments.GetAll(a => a.PostId == post.PostId);

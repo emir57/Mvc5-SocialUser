@@ -8,11 +8,11 @@ namespace SocialUser.Models
 {
     public class DetailViewModel
     {
-        public List<Comment> c { get; set; }
-        public List<CommentAnswer> cA { get; set; }
-        public List<ApplicationUser> user { get; set; }
-        public List<PostLike> likes { get; set; }
-        public int postid { get; set; }
+        public List<Comment> Comments { get; set; }
+        public List<CommentAnswer> CommentAnwers { get; set; }
+        public List<ApplicationUser> Users { get; set; }
+        public List<PostLike> Likes { get; set; }
+        public int PostId { get; set; }
         public Post Post { get; set; }
     }
 }
