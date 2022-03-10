@@ -4,6 +4,7 @@ using DataAccessLayer.EntityFramework;
 using EntityLayer.Concrete;
 using Microsoft.AspNet.Identity;
 using SocialUser.Models;
+using SocialUser.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -62,16 +63,8 @@ namespace SocialUser.Controllers
 
                 if (picture != null)
                 {
-                    //string getEx = Path.GetExtension(picture.FileName);
-                    //if (getEx != ".jpg" || getEx != ".png")
-                    //{
-                    //    string filename = Guid.NewGuid() + getEx;
-                    //    string path = Server.MapPath("~/Content/postPicture/");
-                    //    picture.SaveAs(Path.Combine(path, filename));
-                    //    databasePath = "../../Content/postPicture/" + filename;
-                    //}
-                    //else { return RedirectToAction("Index"); }
-
+                    string path = Server.MapPath("~/Content/postPicture/");
+                    ImageUtility.UploadImage(picture, out databasePath, path);
                     
                 }
                 else { databasePath = ""; }

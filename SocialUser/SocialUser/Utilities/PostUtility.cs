@@ -1,6 +1,5 @@
 ﻿using BusinessLayer.Abstract;
 using BusinessLayer.Concrete;
-using BusinessLayer.Utilities.NinjectInstance;
 using DataAccessLayer.EntityFramework;
 using System;
 using System.Collections.Generic;
