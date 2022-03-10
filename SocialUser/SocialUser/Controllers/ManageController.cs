@@ -80,7 +80,7 @@ namespace SocialUser.Controllers
                 : "";
 
             string userId = User.Identity.GetUserId();
-            var currentUser = await getCurrentUser(userId);
+            ApplicationUser currentUser = await getCurrentUser(userId);
             ViewData["photoUrl"] = currentUser.profilePhoto;
             ViewData["description"] = currentUser.profileDescription;
             var model = new IndexViewModel
@@ -111,9 +111,9 @@ namespace SocialUser.Controllers
         }
         public async Task<ActionResult> Delete(int? id)
         {
-            var result = await _userFriend.Find(a => a.Id == id);
-            var userid1 = result.UserId1;
-            var userid2 = result.UserId2;
+            UserFriend result = await _userFriend.Find(a => a.Id == id);
+            string userid1 = result.UserId1;
+            string userid2 = result.UserId2;
             await _userFriend.Delete(result);
             SampleHub.BroadcastFriend(userid1, userid2);
             return RedirectToAction("Index");
@@ -124,7 +124,7 @@ namespace SocialUser.Controllers
             IndexViewModel model = new IndexViewModel();
             string currentUserId = User.Identity.GetUserId();
 
-            var user = await _users.Find(a => a.UserName == username);
+            ApplicationUser user = await _users.Find(a => a.UserName == username);
 
             //check
             var userFriendCheck = await _userFriend.Find(a => (a.UserId1 == currentUserId && a.UserId2 == user.Id) || (a.UserId2 == currentUserId && a.UserId1 == user.Id));
