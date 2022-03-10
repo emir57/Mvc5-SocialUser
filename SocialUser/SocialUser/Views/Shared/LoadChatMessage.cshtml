@@ -3,12 +3,12 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-@if(Model.msg.Count == 0)
+@if(Model.ChatMessages.Count == 0)
 {
-    <b style="display:flex;align-items:center;justify-content:center;">Konuşma Başlat. (@Model.currentUser.UserName)</b>
+    <b style="display:flex;align-items:center;justify-content:center;">Konuşma Başlat. (@Model.CurrentUser.UserName)</b>
 }
 
-@foreach (var messages in Model.msg)
+@foreach (var messages in Model.ChatMessages)
 {
     if (messages.SenderMessageUser == User.Identity.GetUserId())
     {
