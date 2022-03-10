@@ -68,18 +68,18 @@ namespace SocialUser.Controllers
             message.RecipientMessageUser = user2;
             message.MessageText = text;
             message.MessageDateTime = DateTime.Now;
-            
             await _chatMessage.AddMessages(message);
             SampleHub.BroadcastChat(user1, user2);
-
-
             return RedirectToAction("Index");
         }
 
         public async Task<PartialViewResult> GetLeftBarFriends()
         {
-            GetChatViewModel chat = new GetChatViewModel();
             string currentUserId = User.Identity.GetUserId();
+            GetChatViewModel chat = new GetChatViewModel()
+            {
+
+            };
             chat.currentUser = await getCurrentUser(currentUserId);
             chat.users = await _users.GetAll();
             chat.friends = await _userFriends.GetAll(a => a.UserId1 == currentUserId || a.UserId2 == currentUserId);
