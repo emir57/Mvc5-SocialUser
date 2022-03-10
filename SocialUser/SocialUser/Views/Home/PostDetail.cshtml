@@ -15,7 +15,7 @@
         <!--Post-->
         <div class="card">
             <div class="card-header">
-                <img class="card-profile" src="@ViewData["userProfilePhoto"]" />
+                <img class="card-profile" src="@Model.UserProfilePhoto" />
                 <b>@Model.Post.Username</b>
                 @if (ViewBag.postUserId == User.Identity.GetUserId())
                 {
