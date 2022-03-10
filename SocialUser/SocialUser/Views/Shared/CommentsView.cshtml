@@ -4,28 +4,28 @@
 
 <script src="../../Scripts/jquery-3.6.0.min.js"></script>
 
-@if (Model.c.Count == 0)
+@if (Model.Comments.Count == 0)
 {
     <div align="center" id="statusCheck">
         <span class="comment-Title">Henüz Yorum Yok.</span>
     </div>
 }
-else if (Model.c.Count > 0)
+else if (Model.Comments.Count > 0)
 {
     <div align="center" id="statusCheck">
-        <span class="comment-Title">Toplamda @Model.c.Count yorum.</span>
+        <span class="comment-Title">Toplamda @Model.Comments.Count yorum.</span>
     </div>
 }
 
 
-@foreach (var comment in Model.c)
+@foreach (var comment in Model.Comments)
 {
     var userProfilePhoto = "";
     <!--Get post comments-->
-    if (comment.PostId == Model.postid)
+    if (comment.PostId == Model.Post.PostId)
     {
         //get current user profile photo
-        foreach (var item in Model.user)
+        foreach (var item in Model.Users)
         {
             if (item.Id == comment.UserId)
             {
@@ -48,7 +48,7 @@ else if (Model.c.Count > 0)
                                             $.ajax({
                                                 url: "PostCommentDelete",
                                                 type: "Post",
-                                                data: { id:@comment.Id , postid:@Model.postid},
+                                                data: { id:@comment.Id , postid:@Model.Post.PostId},
                                                 dataType: "json",
                                                 success: function () {}
                                             })
@@ -150,11 +150,11 @@ else if (Model.c.Count > 0)
                 </div>
             </div>
             <!--Answers-->
-            @foreach (var answer in Model.cA)
+            @foreach (var answer in Model.CommentAnwers)
             {
                 if (answer.CommentId == comment.Id)
                 {
-                    foreach (var item in Model.user)
+                    foreach (var item in Model.Users)
                     {
                         if (item.Id == answer.UserId)
                         {

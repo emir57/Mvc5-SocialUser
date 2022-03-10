@@ -13,7 +13,6 @@ namespace SocialUser.Models
         public List<CommentAnswer> CommentAnwers { get; set; }
         public List<ApplicationUser> Users { get; set; }
         public List<PostLike> Likes { get; set; }
-        public int PostId { get; set; }
         public Post Post { get; set; }
     }
 }
