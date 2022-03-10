@@ -86,8 +86,6 @@ namespace SocialUser.Controllers
             };
             return PartialView("GetFriends",chat);
         }
-
-
         //Groups
         public async Task<ActionResult> GetGroupView(int groupId)
         {
