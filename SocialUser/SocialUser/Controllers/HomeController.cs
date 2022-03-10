@@ -394,8 +394,10 @@ namespace SocialUser.Controllers
         [AllowAnonymous]
         public async Task<PartialViewResult> GetLastComment()
         {
-            LastCommentViewModel model = new LastCommentViewModel();
-            model.comments = await _comments.GetCommentListOrderedIdTake(a => a.Id,5);
+            LastCommentViewModel model = new LastCommentViewModel()
+            {
+                Comments = await _comments.GetCommentListOrderedIdTake(a => a.Id, 5)
+            };
             return PartialView("lastComment", model);
         }
         [AllowAnonymous]
