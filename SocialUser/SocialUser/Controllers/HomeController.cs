@@ -373,11 +373,10 @@ namespace SocialUser.Controllers
             ViewBag.currentUserId = currentId;
             PostViewModel model = new PostViewModel()
             {
-
+                Posts = await _posts.GetPostListOrdered(a => a.PostDateTime),
+                PostLikes = await _postLikes.PostLikeList(),
+                Users = await _users.GetAll()
             };
-            model.posts = await _posts.GetPostListOrdered(a=>a.PostDateTime);
-            model.postLike = await _postLikes.PostLikeList();
-            model.users = await _users.GetAll();
             return PartialView("PostsView", model);
         }
         [AllowAnonymous]
