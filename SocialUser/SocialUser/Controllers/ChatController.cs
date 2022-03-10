@@ -175,33 +175,28 @@ namespace SocialUser.Controllers
                 getMember.Role = "Manager";
                 await _groupMembers.Update(getMember);
             }
-            
-
             return RedirectToAction("GetGroupView",new { @groupId=getGroup.GroupId });
         }
         public async Task<ActionResult> RemoveManager(int id)
         {
-            var getMember = await _groupMembers.FindMember(a => a.MemberId == id);
-            var getGroup = await _groups.FindGroup(a => a.GroupId == getMember.GroupId);
+            GroupMember getMember = await _groupMembers.FindMember(a => a.MemberId == id);
+            Group getGroup = await _groups.FindGroup(a => a.GroupId == getMember.GroupId);
             if(getGroup.CreateGroupUserId != getMember.UserId)
             {
                 getMember.Role = "User";
                 await _groupMembers.Update(getMember);
             }
-            
-
             return RedirectToAction("GetGroupView",new { @groupId = getGroup.GroupId });
         }
 
         public async Task<ActionResult> GroupRemoveUser(int memberId,int groupId)
         {
-            var getMember = await _groupMembers.FindMember(a => a.MemberId == memberId);
-            var getGroup = await _groups.FindGroup(a => a.GroupId == groupId);
+            GroupMember getMember = await _groupMembers.FindMember(a => a.MemberId == memberId);
+            Group getGroup = await _groups.FindGroup(a => a.GroupId == groupId);
             if(getGroup.CreateGroupUserId!= getMember.UserId)
             {
                 await _groupMembers.Delete(getMember);
             }
-            
             return RedirectToAction("GetGroupView", new { @groupId = groupId });
         }
 
