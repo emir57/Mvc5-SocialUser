@@ -28,12 +28,13 @@ namespace SocialUser.Controllers
         // GET: Chat
         public async Task<ActionResult> Index(string message)
         {
-            GetChatViewModel model = new GetChatViewModel();
             string currentUserId = User.Identity.GetUserId();
-            model.friends = await _userFriends.GetAll(a => (a.UserId1 == currentUserId || a.UserId2 == currentUserId)&&(a.Check==true));
-            model.users = await _users.GetAll();
-            model.groups = await _groups.List(a=>a.CreateGroupUserId==currentUserId);
-
+            GetChatViewModel model = new GetChatViewModel()
+            {
+                Friends = await _userFriends.GetAll(a => (a.UserId1 == currentUserId || a.UserId2 == currentUserId) && (a.Check == true)),
+                Users = await _users.GetAll(),
+                Groups = await _groups.List(a => a.CreateGroupUserId == currentUserId)
+            };
             ViewBag.message = message;
             return View(model);
         }
