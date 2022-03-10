@@ -104,11 +104,12 @@ namespace SocialUser.Controllers
         }
         public async Task<PartialViewResult> LoadGroupMessage(int? groupId)
         {
-            //user1 sender
-            GetGroupViewModel chat = new GetGroupViewModel();
-            chat.groupMessage = await _groupMessages.GetMessages(a => a.GroupId == groupId);
-            chat.users = await _users.GetAll();
-            chat.groupId = (int)groupId;
+            GetGroupViewModel chat = new GetGroupViewModel()
+            {
+                GroupMessages = await _groupMessages.GetMessages(a => a.GroupId == groupId),
+                Users = await _users.GetAll(),
+                Group = new Group { GroupId = (int)groupId }
+            };
             return PartialView("LoadGroupMessage", chat);
         }
 
