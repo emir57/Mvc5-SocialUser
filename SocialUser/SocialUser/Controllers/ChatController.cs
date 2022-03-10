@@ -42,20 +42,14 @@ namespace SocialUser.Controllers
         public async Task<ActionResult> GetChatView(string user1, string user2)
         {
             string currentUserId = User.Identity.GetUserId();
-            var userid1 = await _users.Find(a => a.Id == user1);
-            var userid2 = await _users.Find(a => a.Id == user2);
+            ApplicationUser getUser1 = await _users.Find(a => a.Id == user1);
+            ApplicationUser getUser2 = await _users.Find(a => a.Id == user2);
             GetChatViewModel chat = new GetChatViewModel()
             {
-                Userid1 = user1,
-                Userid2 = user2,
+                User1 = getUser1,
+                User2 = getUser2,
                 CurrentUser = await getCurrentUser(currentUserId)
             };
-            ViewBag.userid1ProfilePhoto = userid1.profilePhoto;
-            ViewBag.userid2ProfilePhoto = userid2.profilePhoto;
-
-            ViewBag.userid1userName = userid1.UserName;
-            ViewBag.userid2userName = userid2.UserName;
-
             return View(chat);
         }
         public async Task<PartialViewResult> LoadChatMessage(string user1, string user2)
