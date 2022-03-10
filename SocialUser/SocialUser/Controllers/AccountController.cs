@@ -136,7 +136,6 @@ namespace SocialUser.Controllers
                     return View(model);
             }
         }
-
         //
         // GET: /Account/Register
         [AllowAnonymous]
@@ -144,7 +143,6 @@ namespace SocialUser.Controllers
         {
             return View();
         }
-
         //
         // POST: /Account/Register
         ApplicationDbContext _appContext = new ApplicationDbContext();
@@ -155,21 +153,14 @@ namespace SocialUser.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email,DateOfBirth=model.DateOfBirth };
-                var result = await UserManager.CreateAsync(user, model.Password);
+                ApplicationUser user = new ApplicationUser { UserName = model.UserName, Email = model.Email,DateOfBirth=model.DateOfBirth };
+                IdentityResult result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     var registerUser = await _appContext.Users.SingleOrDefaultAsync(a => a.UserName == model.UserName);
                     registerUser.profilePhoto = "../../Content/profilePhoto/person.jpg";
                     await _appContext.SaveChangesAsync();
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
-                    // Hesap onayını ve parola sıfırlamayı etkinleştirme hakkında daha fazla bilgi için lütfen https://go.microsoft.com/fwlink/?LinkID=320771 adresini ziyaret edin.
-                    // Bu bağlantı ile bir e-posta yollayın
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Hesabınızı onaylayın", "Lütfen hesabınızı onaylamak için <a href=\"" + callbackUrl + "\">buraya tıklayın</a>");
-
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
@@ -188,7 +179,7 @@ namespace SocialUser.Controllers
             {
                 return View("Error");
             }
-            var result = await UserManager.ConfirmEmailAsync(userId, code);
+            IdentityResult result = await UserManager.ConfirmEmailAsync(userId, code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
@@ -209,7 +200,7 @@ namespace SocialUser.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
+                ApplicationUser user = await UserManager.FindByNameAsync(model.Email);
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     // Kullanıcının mevcut olmadığını veya onaylanmadığını gösterme
