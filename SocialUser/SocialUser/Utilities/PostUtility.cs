@@ -1,5 +1,7 @@
 ﻿using BusinessLayer.Abstract;
+using BusinessLayer.Concrete;
 using BusinessLayer.Utilities.NinjectInstance;
+using DataAccessLayer.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace SocialUser.Utilities
 {
     public static class PostUtility
     {
-        private static IPostService _postService = NinjectInstanceFactory.GetInstance<IPostService>();
+        private static IPostService _postService = new PostManager(new EfPostDal());
         /// <summary>
         /// Save like count
         /// </summary>

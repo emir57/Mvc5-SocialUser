@@ -1,5 +1,7 @@
 ﻿using BusinessLayer.Abstract;
+using BusinessLayer.Concrete;
 using BusinessLayer.Utilities.NinjectInstance;
+using DataAccessLayer.EntityFramework;
 using EntityLayer.Concrete;
 using System;
 using System.Collections.Generic;
@@ -11,7 +13,7 @@ namespace SocialUser.Utilities
 {
     public static class UserUtility
     {
-        private static IUserService _userService = NinjectInstanceFactory.GetInstance<IUserService>();
+        private static IUserService _userService = new UserManager(new EfApplicationUserDal());
         /// <summary>
         /// Get Current User
         /// </summary>
