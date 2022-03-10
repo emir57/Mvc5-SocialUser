@@ -364,7 +364,6 @@ namespace SocialUser.Controllers
             model.Users = await _users.GetAll();
             model.Post = new Post {PostId = (int)postid };
             return PartialView("CommentsView",model);
-
         }
         [AllowAnonymous]
         public async Task<PartialViewResult> GetPosts()
@@ -391,7 +390,6 @@ namespace SocialUser.Controllers
                 Users = await _users.GetAll()
             };
             return PartialView("PostsView", model);
-
         }
         [AllowAnonymous]
         public async Task<PartialViewResult> GetLastComment()
@@ -405,11 +403,9 @@ namespace SocialUser.Controllers
         {
             GetUserViewModel model = new GetUserViewModel();
             string currentUserId = User.Identity.GetUserId();
-            //get search users
             model.users = await _users.GetAll(a=>a.UserName.ToLower().Contains(searchKey.ToLower())&& a.Id!=currentUserId);
-            //get current user friend
             model.userFriend = await _userFriend.GetAll(a => (a.Check == true)&&(a.UserId1==currentUserId || a.UserId2==currentUserId));
-           return PartialView("GetUsersView",model);
+            return PartialView("GetUsersView",model);
         }
 
     }
