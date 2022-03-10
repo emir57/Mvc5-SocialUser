@@ -62,15 +62,16 @@ namespace SocialUser.Controllers
 
                 if (picture != null)
                 {
-                    string getEx = Path.GetExtension(picture.FileName);
-                    if (getEx != ".jpg" || getEx != ".png")
-                    {
-                        string filename = Guid.NewGuid() + getEx;
-                        string path = Server.MapPath("~/Content/postPicture/");
-                        picture.SaveAs(Path.Combine(path, filename));
-                        databasePath = "../../Content/postPicture/" + filename;
-                    }
-                    else { return RedirectToAction("Index"); }
+                    //string getEx = Path.GetExtension(picture.FileName);
+                    //if (getEx != ".jpg" || getEx != ".png")
+                    //{
+                    //    string filename = Guid.NewGuid() + getEx;
+                    //    string path = Server.MapPath("~/Content/postPicture/");
+                    //    picture.SaveAs(Path.Combine(path, filename));
+                    //    databasePath = "../../Content/postPicture/" + filename;
+                    //}
+                    //else { return RedirectToAction("Index"); }
+
                     
                 }
                 else { databasePath = ""; }
