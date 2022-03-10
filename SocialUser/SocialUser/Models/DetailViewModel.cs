@@ -8,6 +8,7 @@ namespace SocialUser.Models
 {
     public class DetailViewModel
     {
+        public string UserProfilePhoto { get; set; }
         public List<Comment> Comments { get; set; }
         public List<CommentAnswer> CommentAnwers { get; set; }
         public List<ApplicationUser> Users { get; set; }

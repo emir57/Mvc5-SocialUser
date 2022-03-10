@@ -138,7 +138,7 @@ namespace SocialUser.Controllers
                 string postUserId = post.UserId;
                 ApplicationUser user = await _users.Find(a => a.Id == postUserId);
 
-                //ViewData["userProfilePhoto"] = user.profilePhoto;
+                //ViewData["userProfilePhoto"] = 
                 //ViewData["userName"] = post.Username;
                 //ViewBag.postUserId = post.UserId;
                 //ViewBag.postId = post.PostId;
@@ -151,6 +151,7 @@ namespace SocialUser.Controllers
                 List<Comment> comments = await _comments.GetAll(a => a.PostId == post.PostId);
                 DetailViewModel model = new DetailViewModel()
                 {
+                    UserProfilePhoto = user.profilePhoto,
                     Comments = await _comments.GetCommentListOrderedDateTime(a => a.CommentDateTime),
                     CommentAnwers = await _commentAnswers.GetAllBL(a => a.CommentId == postid),
                     Likes = await _postLikes.PostLikeList(a => a.PostId == postid),
