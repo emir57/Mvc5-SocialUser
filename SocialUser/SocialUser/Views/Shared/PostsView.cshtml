@@ -3,11 +3,11 @@
 
 @Styles.Render("~/Content/post.css")
 
-@foreach (var post in Model.posts)
+@foreach (var post in Model.Posts)
 {
     //Get user current profile photo
     var postUserProfilePhoto = "";
-    foreach (var item in Model.users)
+    foreach (var item in Model.Users)
     {
         if (item.Id == post.UserId)
         {
@@ -107,7 +107,7 @@
                     {
                         var check = false;
                         var currentUserId = User.Identity.GetUserId();
-                        foreach (var postLike in Model.postLike)
+                        foreach (var postLike in Model.PostLikes)
                         {
 
                             //user like = true
