@@ -1,14 +1,14 @@
 ﻿@model SocialUser.Models.GetUserViewModel
 @using Microsoft.AspNet.Identity
 
-@if (Model.users.Count == 0)
+@if (Model.Users.Count == 0)
 {
     <h4 class="text-danger">Kullanıcı Bulunamadı</h4>
 
 }
 <table class="table table-bordered table-hover">
 
-    @foreach (var user in Model.users)
+    @foreach (var user in Model.Users)
     {
 
         if (user.Id == User.Identity.GetUserId()) { continue; }
