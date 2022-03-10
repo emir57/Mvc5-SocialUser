@@ -8,12 +8,12 @@ namespace SocialUser.Models
 {
     public class ProfileView
     {
-        public ApplicationUser user { get; set; }
-        public List<Post> posts { get; set; }
-        public int postCount { get; set; }
-        public int friendsCount { get; set; }
-        public bool isFriend { get; set; }
-        public int userFriendId { get; set; }
+        public ApplicationUser User { get; set; }
+        public List<Post> Posts { get; set; }
+        public int PostCount { get; set; }
+        public int FriendsCount { get; set; }
+        public bool IsFriend { get; set; }
+        public int UserFriendId { get; set; }
 
     }
 }
