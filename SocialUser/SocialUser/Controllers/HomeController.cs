@@ -35,9 +35,9 @@ namespace SocialUser.Controllers
         //save like count
         public async Task updateLikeCount(int postid, int currentLike)
         {
-            var count = await _posts.FindPost(a => a.PostId == postid);
-            count.LikeCount = currentLike;
-            await _posts.PostUpdate(count);
+            Post post = await _posts.FindPost(a => a.PostId == postid);
+            post.LikeCount = currentLike;
+            await _posts.PostUpdate(post);
         }
 
         [AllowAnonymous]
@@ -55,15 +55,15 @@ namespace SocialUser.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 string currentId = User.Identity.GetUserId();
-                var currentUser = await getCurrentUser(currentId);
+                ApplicationUser currentUser = await getCurrentUser(currentId);
                 if (picture != null)
                 {
                     string path = Server.MapPath("~/Content/postPicture/");
                     ImageUtility.UploadImage(picture, out databasePath, path);
-                    
                 }
                 else
                     databasePath = ""; 
+
                 post.Description = description;
                 post.LikeCount = 0;
                 post.PostPicture = databasePath;
@@ -80,9 +80,9 @@ namespace SocialUser.Controllers
 
         public async Task<ActionResult> PostDelete(int id)
         {
-            var post = await _posts.FindPost(a => a.PostId == id);
-            var comments = await _comments.GetAll(a => a.PostId == id);
-            var commentAnswers = await _commentAnswers.GetAllBL();
+            Post post = await _posts.FindPost(a => a.PostId == id);
+            List<Comment> comments = await _comments.GetAll(a => a.PostId == id);
+            List<CommentAnswer> commentAnswers = await _commentAnswers.GetAllBL();
             if (!(String.IsNullOrEmpty(post.PostPicture)))
             {
                 string[] pictureName = post.PostPicture.Split('/');
@@ -91,9 +91,9 @@ namespace SocialUser.Controllers
                 ImageUtility.DeleteImage(fullPath);
             }
             await _posts.PostDelete(post);
-            foreach (var comment in comments)
+            foreach (Comment comment in comments)
             {
-                foreach (var answers in commentAnswers)
+                foreach (CommentAnswer answers in commentAnswers)
                 {
                     if (answers.CommentId == comment.Id)
                         await _commentAnswers.CommentAnswerDeleteBL(answers);
@@ -145,7 +145,7 @@ namespace SocialUser.Controllers
                     like.UserId = currentUserId;
                     like.PostId = (int)postid;
                     await _postLikes.PostLikeAdd(like);
-                    var likes = await _postLikes.PostLikeList(a => a.PostId == postid);
+                    List<PostLike> likes = await _postLikes.PostLikeList(a => a.PostId == postid);
                     int likecount = likes.Count();
                     await updateLikeCount((int)postid, likecount);
                     SampleHub.BroadcastPost();
@@ -154,13 +154,12 @@ namespace SocialUser.Controllers
                 }
                 else if(postid!= null && check==true)
                 {
-                    var search = await _postLikes.PostLikeFind(a => a.PostId == postid && a.UserId == currentUserId);
-                    await _postLikes.PostLikeDelete(search);
-                    var likes = await _postLikes.PostLikeList(a => a.PostId == postid);
+                    PostLike postLike = await _postLikes.PostLikeFind(a => a.PostId == postid && a.UserId == currentUserId);
+                    await _postLikes.PostLikeDelete(postLike);
+                    List<PostLike> likes = await _postLikes.PostLikeList(a => a.PostId == postid);
                     int likecount = likes.Count();
                     await updateLikeCount((int)postid, likecount);
                     SampleHub.BroadcastPost();
-
                     return RedirectToAction("PostDetail", new { @postid = postid });
                 }
                 return RedirectToAction("Index");
