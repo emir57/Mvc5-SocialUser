@@ -35,9 +35,9 @@
         <h5>Kullanıcı Seçin.</h5>
         <select class="form-control" id="user">
             <option value="0">Kullanıcılar</option>
-            @foreach (var friend in Model.friends)
+            @foreach (var friend in Model.Friends)
             {
-                foreach (var user in Model.users)
+                foreach (var user in Model.Users)
                 {
                     if (friend.UserId1 == user.Id && friend.UserId1 != User.Identity.GetUserId())
                     {
@@ -53,7 +53,7 @@
         <h5>Eklemek istediğiniz grubu seçin.</h5>
         <select class="form-control" id="group">
             <option value="0">Grup seçiniz.</option>
-            @foreach (var group in Model.groups)
+            @foreach (var group in Model.Groups)
             {
                 if (group.CreateGroupUserId == User.Identity.GetUserId())
                 {
