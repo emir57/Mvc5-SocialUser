@@ -355,14 +355,14 @@ namespace SocialUser.Controllers
 
     //********************************************************************
         //AJAX PartialViews
-        public async Task<PartialViewResult> GetComments(int? postid)
+        public async Task<PartialViewResult> GetComments(int postid)
         {
             DetailViewModel model = new DetailViewModel();
             var comments = await _comments.GetAll(a => a.PostId == postid);
             model.Comments = await _comments.GetCommentListOrderedDateTime(a=>a.CommentDateTime,b=>b.PostId==postid);
             model.CommentAnwers = await _commentAnswers.GetAllBL();
             model.Users = await _users.GetAll();
-            model.Post.PostId = (int)postid;
+            model.Post = new Post {PostId = (int)postid };
             //if (comments.Count() == 0)
             //{
             //    //0 comments

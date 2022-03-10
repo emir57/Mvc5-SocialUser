@@ -184,7 +184,7 @@
             var model = $("#commentDiv");
             $.ajax({
                 url: "GetComments",
-                data: {postid:@ViewBag.postId},
+                data: { postid:@Model.Post.PostId},
                 contentType: "application/json; charset=utf-8",
                 type: "GET",
                 dataType: "html",
